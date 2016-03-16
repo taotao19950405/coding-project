@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Built application files
 *.apk
 *.ap_
@@ -37,3 +38,12 @@ captures/
 
 # Mac User
 .DS_Store
+=======
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+>>>>>>> a391d009f0e678e4b7c58382275755bf9e4b5680
