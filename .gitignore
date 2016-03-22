@@ -38,6 +38,9 @@ captures/
 
 # Mac User
 .DS_Store
+
+# cached file
+contributor.txt~
 =======
 .gradle
 /local.properties
