@@ -14,12 +14,13 @@ import orionhealth.app.MedicationDatabase.DatabaseContract.*;
 public class DatabaseOperations extends SQLiteOpenHelper {
 
 	private static final String TEXT_TYPE = " TEXT";
+	private static final String INTEGER_TYPE = " INTEGER";
 	private static final String COMMA_SEP = ",";
 	private static final String SQL_CREATE_ENTRIES =
 		"CREATE TABLE " + MedTableInfo.TABLE_NAME + " (" +
 			MedTableInfo._ID + " INTEGER PRIMARY KEY," +
 			MedTableInfo.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-			MedTableInfo.COLUMN_NAME_DOSAGE + TEXT_TYPE +
+			MedTableInfo.COLUMN_NAME_DOSAGE + INTEGER_TYPE +
 			" )";
 
 	private static final String SQL_DELETE_ENTRIES =
