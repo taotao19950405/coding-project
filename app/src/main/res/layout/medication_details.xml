@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+							xmlns:tools="http://schemas.android.com/tools"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical"
+							android:id="@+id/linear_layout_vertical_details_medication"
+							tools:context="orionhealth.app.activities.AddMedicationActivity">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+								xmlns:tools="http://schemas.android.com/tools"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:orientation="horizontal">
+		<TextView
+			android:id="@+id/text_label_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_name"/>
+
+		<EditText android:id="@+id/edit_text_name"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:hint="@string/edit_text_name_hint"/>
+
+	</LinearLayout>
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+								xmlns:tools="http://schemas.android.com/tools"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:orientation="horizontal">
+		<TextView
+			android:id="@+id/text_label_dosage"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_dosage"/>
+
+		<EditText android:id="@+id/edit_text_dosage"
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							android:hint="@string/edit_text_dosage_hint"/>
+
+	</LinearLayout>
+</LinearLayout>

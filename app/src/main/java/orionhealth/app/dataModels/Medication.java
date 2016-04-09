@@ -1,27 +1,22 @@
 package orionhealth.app.dataModels;
 
-import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
-import orionhealth.app.medicationDatabase.DatabaseContract;
-import orionhealth.app.medicationDatabase.DatabaseOperations;
-
 /**
  * Created by bill on 8/04/16.
  */
 public class Medication {
-	private String name;
-	private int dosage;
+	private String mName;
+	private int mDosage;
 
-	public Medication(String name, int dosage){
-		this.name = name;
-		this.dosage = dosage;
+	public Medication(String name, int dosage) {
+		this.mName = name;
+		this.mDosage = dosage;
 	}
 
-	public void addToMedTable(DatabaseOperations dob){
-		SQLiteDatabase database = dob.getWritableDatabase();
-		ContentValues cv = new ContentValues();
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, name);
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE, dosage);
-		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
+	public String getName() {
+		return mName;
+	}
+
+	public int getDosage() {
+		return mDosage;
 	}
 }
