@@ -21,10 +21,10 @@ public class AddMedicationActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_medication);
-		LinearLayout parent = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_medication);
+		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_medication);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View custom = inflater.inflate(R.layout.medication_details, null);
-		parent.addView(custom, 0);
+		View details_layout = inflater.inflate(R.layout.medication_details, null);
+		context.addView(details_layout, 0);
 	}
 
 	@Override
