@@ -1,9 +1,9 @@
-package orionhealth.app.DataModels;
+package orionhealth.app.dataModels;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
-import orionhealth.app.MedicationDatabase.DatabaseContract;
-import orionhealth.app.MedicationDatabase.DatabaseOperations;
+import orionhealth.app.medicationDatabase.DatabaseContract;
+import orionhealth.app.medicationDatabase.DatabaseOperations;
 
 /**
  * Created by bill on 8/04/16.

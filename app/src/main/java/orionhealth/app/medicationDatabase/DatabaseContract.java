@@ -1,4 +1,4 @@
-package orionhealth.app.MedicationDatabase;
+package orionhealth.app.medicationDatabase;
 
 import android.provider.BaseColumns;
 
