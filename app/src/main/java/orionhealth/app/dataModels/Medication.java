@@ -17,14 +17,6 @@ public class Medication {
 		this.dosage = dosage;
 	}
 
-	public void addToMedTable(DatabaseOperations dob) {
-		SQLiteDatabase database = dob.getWritableDatabase();
-		ContentValues cv = new ContentValues();
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, name);
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE, dosage);
-		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
-	}
-
 	public String getName() {
 		return name;
 	}

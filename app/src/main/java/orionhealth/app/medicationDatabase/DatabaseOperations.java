@@ -1,9 +1,11 @@
 package orionhealth.app.medicationDatabase;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import orionhealth.app.dataModels.Medication;
 import orionhealth.app.medicationDatabase.DatabaseContract.*;
 
 /**
@@ -47,6 +49,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		onUpgrade(db, oldVersion, newVersion);
+	}
+
+	public void addToMedTable(Medication med) {
+		SQLiteDatabase database = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, med.getName());
+		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE, med.getDosage());
+		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public Cursor getAllRows(DatabaseOperations dob){
