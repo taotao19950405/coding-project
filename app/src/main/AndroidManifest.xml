@@ -24,6 +24,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="orionhealth.app.activities.MyMedicationActivity" />
         </activity>
+        <activity
+            android:name=".activities.EditMedicationActivity"
+            android:label="@string/title_activity_edit_medication"
+            android:parentActivityName=".activities.MyMedicationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="orionhealth.app.activities.MyMedicationActivity" />
+        </activity>
     </application>
 
 </manifest>

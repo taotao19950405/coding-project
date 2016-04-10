@@ -4,9 +4,11 @@
 	<string name="title_activity_my_medication">My Medication</string>
 	<string name="action_settings">Settings</string>
 	<string name="button_add">Add</string>
+	<string name="button_save">Save</string>
 	<string name="title_activity_add_medication">Add Medication</string>
 	<string name="text_label_name">Name:</string>
 	<string name="text_label_dosage">Dosage:</string>
-	<string name="edit_text_name_hint">Please Enter Name</string>
-	<string name="edit_text_dosage_hint">Please enter dosage</string>
+	<string name="edit_text_name_hint">please enter a name</string>
+	<string name="edit_text_dosage_hint">please enter a dosage</string>
+	<string name="title_activity_edit_medication">Edit Medication</string>
 </resources>

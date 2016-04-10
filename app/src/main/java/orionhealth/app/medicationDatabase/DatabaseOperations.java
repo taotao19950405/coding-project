@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import orionhealth.app.dataModels.Medication;
 import orionhealth.app.medicationDatabase.DatabaseContract.*;
 
@@ -59,8 +60,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
 	}
 
-	public Cursor getAllRows(DatabaseOperations dob){
-		SQLiteDatabase db = dob.getReadableDatabase();
+	public Cursor getAllRows(){
+		SQLiteDatabase db = this.getReadableDatabase();
 
 		String[] projection = {
 			MedTableInfo._ID,
@@ -69,14 +70,33 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 		};
 
 		String sortOrder =
-			MedTableInfo._ID + " DESC";
+			MedTableInfo._ID + " ASC";
 
 		Cursor cursor = db.query(
 			MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
 		);
-
 		return cursor;
 	}
+
+	public Medication getMedication(int id){
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		String[] projection = {
+		  MedTableInfo.COLUMN_NAME_NAME,
+		  MedTableInfo.COLUMN_NAME_DOSAGE
+		};
+
+		Cursor cursor = db.query(
+		  MedTableInfo.TABLE_NAME, projection, MedTableInfo._ID+" = "+id, null, null, null, null
+		);
+
+		if (cursor.moveToFirst()) {
+			String name = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_NAME));
+			int dosage = cursor.getInt(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_DOSAGE));
+			return new Medication(name, dosage);
+		}
+		return null;
+	};
 
 }
 
