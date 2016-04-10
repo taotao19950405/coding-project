@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import orionhealth.app.R;
 import orionhealth.app.medicationDatabase.DatabaseContract.*;
-import orionhealth.app.medicationDatabase.DatabaseOperations;
+import orionhealth.app.medicationDatabase.DatabaseOpener;
 
 public class MyMedicationActivity extends AppCompatActivity {
 	public final static String SELECTED_MED_ID = "orionhealth.app.SELECTED_MED_ID";
@@ -27,7 +27,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_medication);
 
-		DatabaseOperations dob = new DatabaseOperations(this);
+		DatabaseOpener dob = new DatabaseOpener(this);
 		Cursor cursor = dob.getAllRows();
 		SimpleCursorAdapter adapter =
 		  	new SimpleCursorAdapter(this, R.layout.list_medication_layout, cursor, fromColumns, toViews, 0);

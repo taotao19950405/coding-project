@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.medicationDatabase.DatabaseOperations;
+import orionhealth.app.medicationDatabase.*;
 
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;
-	private Medication mMed;
+	private Medication mMedication;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +30,13 @@ public class EditMedicationActivity extends AppCompatActivity {
 		Intent intent = getIntent();
 		mMedicationID = (int) intent.getLongExtra(MyMedicationActivity.SELECTED_MED_ID, 0);
 
-		DatabaseOperations dob = new DatabaseOperations(this);
-		mMed = dob.getMedication(mMedicationID);
+
+		mMedication = MedTableOperations.getMedication(this, mMedicationID);
 
 		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
-		nameEditTextField.setText(mMed.getName());
+		nameEditTextField.setText(mMedication.getName());
 		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
-		dosageEditTextField.setText(""+mMed.getDosage());
+		dosageEditTextField.setText(""+ mMedication.getDosage());
 	}
 
 	@Override
@@ -56,5 +56,11 @@ public class EditMedicationActivity extends AppCompatActivity {
 		//noinspection SimplifiableIfStatement
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void removeMedication(View view){
+		MedTableOperations.removeMedication(this, mMedicationID);
+		Intent intent = new Intent(this, MyMedicationActivity.class);
+		startActivity(intent);
 	}
 }

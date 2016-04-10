@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.medicationDatabase.DatabaseOperations;
+import orionhealth.app.medicationDatabase.*;
 
 public class AddMedicationActivity extends AppCompatActivity {
 
@@ -57,8 +57,7 @@ public class AddMedicationActivity extends AppCompatActivity {
 			try {
 				int dosageInt = Integer.parseInt(dosage);
 				Medication med = new Medication(name, dosageInt);
-				DatabaseOperations dob = new DatabaseOperations(this);
-				dob.addToMedTable(med);
+				MedTableOperations.addToMedTable(this, med);
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");
 			}
