@@ -35,7 +35,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 
 			public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-				Log.d("LISTINDEX", ""+id);
 				Intent intent = new Intent(getBaseContext(), EditMedicationActivity.class);
 				intent.putExtra(SELECTED_MED_ID, id);
 				startActivity(intent);
