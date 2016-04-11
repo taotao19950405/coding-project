@@ -9,7 +9,7 @@ import orionhealth.app.dataModels.Medication;
 /**
  * Created by bill on 11/04/16.
  */
-public class MedTableOperations {
+public final class MedTableOperations {
 
 	public static void addToMedTable(Context context, Medication med) {
 		DatabaseOpener dbo = new DatabaseOpener(context);
@@ -63,11 +63,8 @@ public class MedTableOperations {
 	public static void removeMedication(Context context, int id){
 		DatabaseOpener dbo = new DatabaseOpener(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
-		// Define 'where' part of query.
 		String selection = DatabaseContract.MedTableInfo._ID + " LIKE ?";
-		// Specify arguments in placeholder order.
 		String[] selectionArgs = { String.valueOf(id) };
-		// Issue SQL statement.
 		db.delete(DatabaseContract.MedTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 }
