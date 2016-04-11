@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import orionhealth.app.dataModels.Medication;
 import orionhealth.app.medicationDatabase.DatabaseContract.*;
 
 /**
  * Created by bill on 8/04/16.
  */
-public class DatabaseOperations extends SQLiteOpenHelper {
+public class DatabaseOpener extends SQLiteOpenHelper {
 
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String INTEGER_TYPE = " INTEGER";
@@ -30,7 +31,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "Main.db";
 
-	public DatabaseOperations(Context context) {
+	public DatabaseOpener(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -49,33 +50,6 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
 	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		onUpgrade(db, oldVersion, newVersion);
-	}
-
-	public void addToMedTable(Medication med) {
-		SQLiteDatabase database = this.getWritableDatabase();
-		ContentValues cv = new ContentValues();
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, med.getName());
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE, med.getDosage());
-		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
-	}
-
-	public Cursor getAllRows(DatabaseOperations dob){
-		SQLiteDatabase db = dob.getReadableDatabase();
-
-		String[] projection = {
-			MedTableInfo._ID,
-			MedTableInfo.COLUMN_NAME_NAME,
-			MedTableInfo.COLUMN_NAME_DOSAGE
-		};
-
-		String sortOrder =
-			MedTableInfo._ID + " DESC";
-
-		Cursor cursor = db.query(
-			MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
-		);
-
-		return cursor;
 	}
 
 }

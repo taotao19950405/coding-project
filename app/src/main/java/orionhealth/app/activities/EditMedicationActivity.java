@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,22 +14,35 @@ import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
 import orionhealth.app.medicationDatabase.*;
 
-public class AddMedicationActivity extends AppCompatActivity {
+public class EditMedicationActivity extends AppCompatActivity {
+	private int mMedicationID;
+	private Medication mMedication;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add_medication);
-		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_medication);
+		setContentView(R.layout.activity_edit_medication);
+		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_edit_medication);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View details_layout = inflater.inflate(R.layout.medication_details, null);
 		context.addView(details_layout, 0);
+
+		Intent intent = getIntent();
+		mMedicationID = (int) intent.getLongExtra(MyMedicationActivity.SELECTED_MED_ID, 0);
+
+
+		mMedication = MedTableOperations.getMedication(this, mMedicationID);
+
+		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
+		nameEditTextField.setText(mMedication.getName());
+		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
+		dosageEditTextField.setText(""+ mMedication.getDosage());
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_add_medication, menu);
+		getMenuInflater().inflate(R.menu.menu_edit_medication, menu);
 		return true;
 	}
 
@@ -46,22 +58,9 @@ public class AddMedicationActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void addMedication(View view) {
-		//Do something in response to clicking add button
+	public void removeMedication(View view){
+		MedTableOperations.removeMedication(this, mMedicationID);
 		Intent intent = new Intent(this, MyMedicationActivity.class);
-		EditText editText = (EditText) findViewById(R.id.edit_text_name);
-		String name = editText.getText().toString();
-		editText = (EditText) findViewById(R.id.edit_text_dosage);
-		String dosage = editText.getText().toString();
-		if (!(name.equals("") || dosage.equals(""))){
-			try {
-				int dosageInt = Integer.parseInt(dosage);
-				Medication med = new Medication(name, dosageInt);
-				MedTableOperations.addToMedTable(this, med);
-			} catch (NumberFormatException e) {
-				Log.d("hello", "dosage not an int");
-			}
-		}
 		startActivity(intent);
 	}
 }
