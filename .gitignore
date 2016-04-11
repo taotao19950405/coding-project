@@ -45,6 +45,7 @@ contributor.txt~
 .gradle
 /local.properties
 /.idea/workspace.xml
+/.idea/misc.xml
 /.idea/libraries
 .DS_Store
 /build
