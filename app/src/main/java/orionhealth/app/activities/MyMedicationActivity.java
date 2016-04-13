@@ -1,7 +1,12 @@
+//       Description:
+//		 @author:  Bill
+
 package orionhealth.app.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +27,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 	private String[] fromColumns = {MedTableInfo.COLUMN_NAME_NAME, MedTableInfo.COLUMN_NAME_DOSAGE};
 	private int[] toViews = {R.id.list_display_name, R.id.list_display_dosage};
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
