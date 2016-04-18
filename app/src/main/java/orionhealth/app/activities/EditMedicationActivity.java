@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,6 +61,32 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 	public void removeMedication(View view){
 		MedTableOperations.removeMedication(this, mMedicationID);
+		Intent intent = new Intent(this, MyMedicationActivity.class);
+		startActivity(intent);
+	}
+
+	public void saveMedication(View view){
+		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
+		String updatedName = nameEditTextField.getText().toString();
+		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
+		String updatedDosage = dosageEditTextField.getText().toString();
+
+		if (!(updatedName.equals("") || updatedDosage.equals(""))){
+			try {
+				int dosageInt = Integer.parseInt(updatedDosage);
+				Medication updatedMed = new Medication(updatedName, dosageInt);
+
+				if (!mMedication.equals(updatedMed)){
+					MedTableOperations.updateMedication(this, mMedicationID, updatedMed);
+				}else{
+					Log.d("hello", "no changes seem to be made");
+				}
+
+			} catch (NumberFormatException e) {
+				Log.d("hello", "dosage not an int");
+			}
+		}
+
 		Intent intent = new Intent(this, MyMedicationActivity.class);
 		startActivity(intent);
 	}

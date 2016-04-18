@@ -12,7 +12,13 @@ public class Medication {
 		this.mDosage = dosage;
 	}
 
-	public String getName() {
+	@Override
+	public boolean equals(Object obj) {
+		Medication med = (Medication) obj;
+		return (mName.equals(med.mName) && mDosage == med.mDosage);
+	};
+
+	public String getName(){
 		return mName;
 	}
 

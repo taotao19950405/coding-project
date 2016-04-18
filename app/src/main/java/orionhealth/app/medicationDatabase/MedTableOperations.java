@@ -12,7 +12,7 @@ import orionhealth.app.dataModels.Medication;
 public final class MedTableOperations {
 
 	public static void addToMedTable(Context context, Medication med) {
-		DatabaseOpener dbo = new DatabaseOpener(context);
+		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, med.getName());
@@ -21,7 +21,7 @@ public final class MedTableOperations {
 	}
 
 	public static Cursor getAllRows(Context context){
-		DatabaseOpener dbo = new DatabaseOpener(context);
+		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -40,7 +40,7 @@ public final class MedTableOperations {
 	}
 
 	public static Medication getMedication(Context context, int id){
-		DatabaseOpener dbo = new DatabaseOpener(context);
+		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -61,10 +61,17 @@ public final class MedTableOperations {
 	};
 
 	public static void removeMedication(Context context, int id){
-		DatabaseOpener dbo = new DatabaseOpener(context);
+		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 		String selection = DatabaseContract.MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
 		db.delete(DatabaseContract.MedTableInfo.TABLE_NAME, selection, selectionArgs);
+	}
+
+	public static void updateMedication(Context context, int id, Medication updatedMed){
+		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		SQLiteDatabase db = dbo.getReadableDatabase();
+		db.close();
+		// Tao see if you can finish this method
 	}
 }
