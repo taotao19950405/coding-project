@@ -78,9 +78,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 				if (!mMedication.equals(updatedMed)){
 					MedTableOperations.updateMedication(this, mMedicationID, updatedMed);
-				}else{
-					Log.d("hello", "no changes seem to be made");
-				}
+				};
 
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");

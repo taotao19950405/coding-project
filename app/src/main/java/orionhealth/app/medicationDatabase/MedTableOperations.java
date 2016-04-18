@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import orionhealth.app.dataModels.Medication;
 
 /**
@@ -71,7 +72,7 @@ public final class MedTableOperations {
 	public static void updateMedication(Context context, int id, Medication updatedMed){
 		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
-		db.close();
+
 		// Tao see if you can finish this method
 	}
 }
