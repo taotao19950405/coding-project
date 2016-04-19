@@ -13,4 +13,7 @@
 
 	<string name="edit_text_name_hint">please enter a name</string>
 	<string name="edit_text_dosage_hint">please enter a dosage</string>
+
+	<string name="drawer_open">Open navigation drawer</string>
+	<string name="drawer_close">Close navigation drawer</string>
 </resources>
