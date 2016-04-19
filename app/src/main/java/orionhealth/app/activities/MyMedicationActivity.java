@@ -9,11 +9,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,12 +39,15 @@ public class MyMedicationActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_medication);
 
-		mDrawerList = (ListView)findViewById(R.id.navList);
+		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
 
         addDrawerItems();
         setupDrawer();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
 		Cursor cursor = MedTableOperations.getAllRows(this);
 		SimpleCursorAdapter adapter =
@@ -63,9 +64,12 @@ public class MyMedicationActivity extends AppCompatActivity {
 		});
 	}
 
+    /** Populates Navigation Menu with Names
+     * Sets a click listener for an action to be specified
+     * if an item in the menu is clicked*/
     private void addDrawerItems() {
-		String[] testArray = { "Test", "Test1", "Test2", "Test3"};
-		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testArray);
+		String[] navDrawerArray = { "My Medication", "My Allergies", "My Symptoms", "My Calendar", "Settings"};
+		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navDrawerArray);
 		mDrawerList.setAdapter(mAdapter);
 
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,13 +80,15 @@ public class MyMedicationActivity extends AppCompatActivity {
         });
 	}
 
+    /** Methods to be called when drawer is toggled
+     * between open and closed states */
     private void setupDrawer() {
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation!");
+                getSupportActionBar().setTitle("Menu");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
@@ -124,7 +130,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+		// as a parent activity is specified in AndroidManifest.xml.
 		int id = item.getItemId();
 
 		//noinspection SimplifiableIfStatement
