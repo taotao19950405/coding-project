@@ -1,5 +1,9 @@
 //       Description:
+// 			Store data in table
+// 			Fetch data from readable table in the format of Sqlite database instance
+//			Query the datababse
 //		 @author:  Bill
+//			@Reviewer: 19 Apr 2016
 package orionhealth.app.medicationDatabase;
 
 import android.content.ContentValues;
