@@ -48,6 +48,9 @@ public class MyMedicationActivity extends AppCompatActivity {
         addDrawerItems();
         setupDrawer();
 
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
 		Cursor cursor = MedTableOperations.getAllRows(this);
 		SimpleCursorAdapter adapter =
 		  	new SimpleCursorAdapter(this, R.layout.list_medication_layout, cursor, fromColumns, toViews, 0);
@@ -61,6 +64,9 @@ public class MyMedicationActivity extends AppCompatActivity {
 				startActivity(intent);
 			}
 		});
+
+
+
 	}
 
     private void addDrawerItems() {
