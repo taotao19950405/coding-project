@@ -1,4 +1,4 @@
-//       Description:
+//       Description: Instance of database
 //		 @author:  Bill
 package orionhealth.app.dataModels;
 
