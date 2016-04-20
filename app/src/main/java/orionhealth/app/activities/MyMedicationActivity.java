@@ -25,7 +25,7 @@ import orionhealth.app.medicationDatabase.MedTableOperations;
 public class MyMedicationActivity extends AppCompatActivity {
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
