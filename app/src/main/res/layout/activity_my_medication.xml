@@ -9,9 +9,8 @@
 								tools:context="orionhealth.app.activities.MyMedicationActivity">
 
 
-	<ListView
-		android:id="@+id/my_medication_list_view"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true" android:layout_alignParentTop="true"/>
+	<fragment android:name="orionhealth.app.fragments.ListFragments$MedicationListFragment"
+						android:id="@+id/list_medication"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent" />
 </RelativeLayout>
