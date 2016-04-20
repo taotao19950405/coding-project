@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
+import orionhealth.app.fragments.ListFragments.*;
 import orionhealth.app.medicationDatabase.*;
 
 public class EditMedicationActivity extends AppCompatActivity {
@@ -32,7 +33,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 		context.addView(details_layout, 0);
 
 		Intent intent = getIntent();
-		mMedicationID = (int) intent.getLongExtra(MyMedicationActivity.SELECTED_MED_ID, 0);
+		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
 
 
 		mMedication = MedTableOperations.getMedication(this, mMedicationID);
