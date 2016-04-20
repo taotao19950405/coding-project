@@ -13,7 +13,7 @@ import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
 /**
  * Created by bill on 8/04/16.
  */
-public class DatabaseOpener extends SQLiteOpenHelper {
+public class DatabaseInitializer extends SQLiteOpenHelper {
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -32,15 +32,15 @@ public class DatabaseOpener extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Main.db";
 
-    private static DatabaseOpener sInstance;
+    private static DatabaseInitializer sInstance;
 
-    private DatabaseOpener(Context context) {
+    private DatabaseInitializer(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static synchronized DatabaseOpener getsInstance(Context context) {
+    public static synchronized DatabaseInitializer getsInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new DatabaseOpener(context.getApplicationContext());
+            sInstance = new DatabaseInitializer(context.getApplicationContext());
         }
         return sInstance;
     }

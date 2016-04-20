@@ -36,7 +36,7 @@ public class ListFragments {
 			super.onActivityCreated(savedInstanceState);
 			Cursor cursor = MedTableOperations.getAllRows(getContext());
 			SimpleCursorAdapter adapter =
-			  new SimpleCursorAdapter(getContext(), R.layout.list_medication_layout, cursor, mFromColumns, mToViews, 0);
+			  new SimpleCursorAdapter(getContext(), R.layout.item_medication_list_layout, cursor, mFromColumns, mToViews, 0);
 			setListAdapter(adapter);
 		}
 
