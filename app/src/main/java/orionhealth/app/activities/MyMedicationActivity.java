@@ -12,7 +12,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.*;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.*;
 import orionhealth.app.R;
 import orionhealth.app.fragments.ListFragments.*;
@@ -21,10 +20,10 @@ import java.util.Locale;
 
 public class MyMedicationActivity extends AppCompatActivity {
 
-	SectionsPagerAdapter trialPagerAdapter;
+	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	Toolbar toolbar;
 	TabLayout tabs;
+	String[] tabsTitles = {"My Medication", "Today", "My Allergies", "Notifications", "Calendar"};
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -32,12 +31,36 @@ public class MyMedicationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
 
-		trialPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(trialPagerAdapter);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		tabs = (TabLayout) findViewById(R.id.sliding_tabs);
 		tabs.setupWithViewPager(mViewPager);
+
+		tabs.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
+		tabs.getTabAt(1).setIcon(R.mipmap.ic_wb_sunny_white_24dp);
+		tabs.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
+		tabs.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
+		tabs.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
+
+		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int i, float v, int i1) {
+
+			}
+
+			@Override
+			public void onPageSelected(int i) {
+				setTitle(tabsTitles[i]);
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int i) {
+
+			}
+		});
+
 	}
 
 	@Override
@@ -75,8 +98,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 			if (position == 0){
 				return new MedicationListFragment();
 			}
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class below).
 			return PlaceholderFragment.newInstance(position + 1);
 		}
 
@@ -88,19 +109,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			Locale l = Locale.getDefault();
-			switch (position) {
-				case 0:
-					return getString(R.string.title_section1).toUpperCase(l);
-				case 1:
-					return getString(R.string.title_section2).toUpperCase(l);
-				case 2:
-					return getString(R.string.title_section3).toUpperCase(l);
-				case 3:
-					return getString(R.string.title_section4).toUpperCase(l);
-				case 4:
-					return getString(R.string.title_section5).toUpperCase(l);
-			}
 			return null;
 		}
 	}
@@ -111,7 +119,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 		 * fragment.
 		 */
 		private static final String ARG_SECTION_NUMBER = "section_number";
-
 		/**
 		 * Returns a new instance of this fragment for the given section
 		 * number.
