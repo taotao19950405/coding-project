@@ -1,31 +1,27 @@
 //       Description:
 //		 @author:  Bill
+// 		 @Reviewer:
 
 package orionhealth.app.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
-import android.widget.AdapterView.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 import orionhealth.app.R;
-import orionhealth.app.medicationDatabase.*;
-import orionhealth.app.medicationDatabase.DatabaseContract.*;
 
 public class MyMedicationActivity extends AppCompatActivity {
-	public final static String SELECTED_MED_ID = "orionhealth.app.SELECTED_MED_ID";
-
-	private String[] fromColumns = {MedTableInfo.COLUMN_NAME_NAME, MedTableInfo.COLUMN_NAME_DOSAGE};
-	private int[] toViews = {R.id.list_display_name, R.id.list_display_dosage};
 
 	private ListView mDrawerList;
 	private ArrayAdapter<String> mAdapter;
@@ -48,20 +44,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
-
-		Cursor cursor = MedTableOperations.getAllRows(this);
-		SimpleCursorAdapter adapter =
-		  	new SimpleCursorAdapter(this, R.layout.list_medication_layout, cursor, fromColumns, toViews, 0);
-		ListView listView = (ListView) findViewById(R.id.my_medication_list_view);
-		listView.setAdapter(adapter);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> adapter, View v, int position, long id) {
-				Intent intent = new Intent(getBaseContext(), EditMedicationActivity.class);
-				intent.putExtra(SELECTED_MED_ID, id);
-				startActivity(intent);
-			}
-		});
 	}
 
     /** Populates Navigation Menu with Names

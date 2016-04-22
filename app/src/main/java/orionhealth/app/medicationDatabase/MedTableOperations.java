@@ -1,12 +1,15 @@
 //       Description:
+// 			Store data in table
+// 			Fetch data from readable table in the format of Sqlite database instance
+//			Query the datababse
 //		 @author:  Bill
+//			@Reviewer: 19 Apr 2016
 package orionhealth.app.medicationDatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import orionhealth.app.dataModels.Medication;
 
 /**
@@ -15,7 +18,7 @@ import orionhealth.app.dataModels.Medication;
 public final class MedTableOperations {
 
 	public static void addToMedTable(Context context, Medication med) {
-		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, med.getName());
@@ -24,7 +27,7 @@ public final class MedTableOperations {
 	}
 
 	public static Cursor getAllRows(Context context){
-		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -43,7 +46,7 @@ public final class MedTableOperations {
 	}
 
 	public static Medication getMedication(Context context, int id){
-		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -64,7 +67,7 @@ public final class MedTableOperations {
 	};
 
 	public static void removeMedication(Context context, int id){
-		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 		String selection = DatabaseContract.MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
@@ -72,7 +75,7 @@ public final class MedTableOperations {
 	}
 
 	public static void updateMedication(Context context, int id, Medication updatedMed){
-		DatabaseOpener dbo = DatabaseOpener.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		// Tao see if you can finish this method
