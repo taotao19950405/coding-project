@@ -18,6 +18,9 @@ import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
  */
 public final class MedTableOperations {
 
+	public MedTableOperations(){
+	}
+
 	public static void addToMedTable(Context context, Medication med) {
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
