@@ -5,4 +5,11 @@
 		<!-- Customize your theme here. -->
 	</style>
 
+	<style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+		<item name="tabIndicatorColor">@android:color/holo_orange_dark</item>
+		<item name="tabIndicatorHeight">3dp</item>
+		<item name="tabBackground">?attr/colorAccent</item>
+		<item name="tabSelectedTextColor">?android:textColorPrimary</item>
+	</style>
+
 </resources>

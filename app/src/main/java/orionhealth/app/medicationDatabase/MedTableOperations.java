@@ -11,19 +11,23 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import orionhealth.app.dataModels.Medication;
+import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
 
 /**
  * Created by bill on 11/04/16.
  */
 public final class MedTableOperations {
 
+	public MedTableOperations(){
+	}
+
 	public static void addToMedTable(Context context, Medication med) {
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME, med.getName());
-		cv.put(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE, med.getDosage());
-		database.insert(DatabaseContract.MedTableInfo.TABLE_NAME, null, cv);
+		cv.put(MedTableInfo.COLUMN_NAME_NAME, med.getName());
+		cv.put(MedTableInfo.COLUMN_NAME_DOSAGE, med.getDosage());
+		database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public static Cursor getAllRows(Context context){
@@ -31,16 +35,16 @@ public final class MedTableOperations {
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  DatabaseContract.MedTableInfo._ID,
-		  DatabaseContract.MedTableInfo.COLUMN_NAME_NAME,
-		  DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE
+		  MedTableInfo._ID,
+		  MedTableInfo.COLUMN_NAME_NAME,
+		  MedTableInfo.COLUMN_NAME_DOSAGE
 		};
 
 		String sortOrder =
-		  DatabaseContract.MedTableInfo._ID + " ASC";
+		  MedTableInfo._ID + " ASC";
 
 		Cursor cursor = db.query(
-		  DatabaseContract.MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
+		  MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
 		);
 		return cursor;
 	}
@@ -50,17 +54,17 @@ public final class MedTableOperations {
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  DatabaseContract.MedTableInfo.COLUMN_NAME_NAME,
-		  DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE
+		  MedTableInfo.COLUMN_NAME_NAME,
+		  MedTableInfo.COLUMN_NAME_DOSAGE
 		};
 
 		Cursor cursor = db.query(
-		  DatabaseContract.MedTableInfo.TABLE_NAME, projection, DatabaseContract.MedTableInfo._ID+" = "+id, null, null, null, null
+		  MedTableInfo.TABLE_NAME, projection, MedTableInfo._ID+" = "+id, null, null, null, null
 		);
 
 		if (cursor.moveToFirst()) {
-			String name = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_NAME));
-			int dosage = cursor.getInt(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_DOSAGE));
+			String name = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_NAME));
+			int dosage = cursor.getInt(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_DOSAGE));
 			return new Medication(name, dosage);
 		}
 		return null;
@@ -69,15 +73,20 @@ public final class MedTableOperations {
 	public static void removeMedication(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
-		String selection = DatabaseContract.MedTableInfo._ID + " LIKE ?";
+		String selection = MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
-		db.delete(DatabaseContract.MedTableInfo.TABLE_NAME, selection, selectionArgs);
+		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
 	public static void updateMedication(Context context, int id, Medication updatedMed){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
-		SQLiteDatabase db = dbo.getReadableDatabase();
+		SQLiteDatabase db = dbo.getWritableDatabase();
 
-		// Tao see if you can finish this method
+		ContentValues cv = new ContentValues();
+		cv.put(MedTableInfo.COLUMN_NAME_NAME, updatedMed.getName());
+		cv.put(MedTableInfo.COLUMN_NAME_DOSAGE, updatedMed.getDosage());
+		String selection = MedTableInfo._ID + " = ?";
+		String[] selectionArgs = new String[]{String.valueOf(id)};
+		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
 	}
 }

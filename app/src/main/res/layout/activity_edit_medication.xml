@@ -6,6 +6,11 @@
 							android:id="@+id/linear_layout_vertical_edit_medication"
 							tools:context="orionhealth.app.activities.EditMedicationActivity">
 
+	<fragment android:name="orionhealth.app.fragments.fragments.MedicationDetailsFragment"
+						android:id="@+id/fragment_medication_details"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content" />
+
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 								xmlns:tools="http://schemas.android.com/tools"
 								android:layout_width="match_parent"
@@ -17,13 +22,13 @@
 						android:layout_weight="1"
 						android:layout_width="0dp"
 					  android:layout_height="wrap_content"
-					  android:onClick="saveMedication" />
+					  android:onClick="updateMedicationInDatabase" />
 
 		<Button android:text="@string/button_remove"
 						android:layout_weight="1"
 						android:layout_width="0dp"
 						android:layout_height="wrap_content"
-						android:onClick="removeMedication"/>
+						android:onClick="removeMedicationFromDatabase"/>
 		</LinearLayout>
 
 </LinearLayout>

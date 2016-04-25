@@ -3,20 +3,19 @@
 
 package orionhealth.app.activities;
 
-import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.fragments.ListFragments.*;
+import orionhealth.app.fragments.fragments.*;
+import orionhealth.app.fragments.listFragments.*;
 import orionhealth.app.medicationDatabase.*;
 
 public class EditMedicationActivity extends AppCompatActivity {
@@ -27,21 +26,17 @@ public class EditMedicationActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edit_medication);
-		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_edit_medication);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View details_layout = inflater.inflate(R.layout.medication_details, null);
-		context.addView(details_layout, 0);
 
 		Intent intent = getIntent();
 		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
-
-
 		mMedication = MedTableOperations.getMedication(this, mMedicationID);
 
-		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
-		nameEditTextField.setText(mMedication.getName());
-		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
-		dosageEditTextField.setText(""+ mMedication.getDosage());
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		MedicationDetailsFragment medDetailsfragment =
+		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
+		medDetailsfragment.populateFields(mMedication);
+
+
 	}
 
 	@Override
@@ -63,13 +58,13 @@ public class EditMedicationActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void removeMedication(View view){
+	public void removeMedicationFromDatabase(View view){
 		MedTableOperations.removeMedication(this, mMedicationID);
 		Intent intent = new Intent(this, MyMedicationActivity.class);
 		startActivity(intent);
 	}
 
-	public void saveMedication(View view){
+	public void updateMedicationInDatabase(View view){
 		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
 		String updatedName = nameEditTextField.getText().toString();
 		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
