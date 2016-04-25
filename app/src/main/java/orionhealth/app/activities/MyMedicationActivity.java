@@ -194,7 +194,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 			if (position == 0){
 				return new MedicationListFragment();
 			}
-			return UnderConstructionFragment.newInstance(position + 1);
+			return UnderConstructionFragment.newInstance();
 		}
 
 		@Override

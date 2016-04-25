@@ -6,9 +6,13 @@
 							android:id="@+id/linear_layout_vertical_add_medication"
 							tools:context="orionhealth.app.activities.AddMedicationActivity">
 
+	<fragment android:name="orionhealth.app.fragments.Fragments$MedicationDetailsFragment"
+						android:id="@+id/fragment_medication_details"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content" />
 
 	<Button android:text="@string/button_add"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:onClick="addMedication" android:layout_gravity="center_vertical"/>
+					android:onClick="addMedicationToDatabase" android:layout_gravity="center_vertical"/>
 </LinearLayout>

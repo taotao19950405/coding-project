@@ -17,7 +17,7 @@ import orionhealth.app.medicationDatabase.MedTableOperations;
 /**
  * Created by bill on 20/04/16.
  */
-public class ListFragments {
+public final class ListFragments {
 
 	public static class MedicationListFragment extends ListFragment {
 
@@ -36,7 +36,7 @@ public class ListFragments {
 			super.onActivityCreated(savedInstanceState);
 			Cursor cursor = MedTableOperations.getAllRows(getContext());
 			SimpleCursorAdapter adapter =
-			  new SimpleCursorAdapter(getContext(), R.layout.item_medication_list_layout, cursor, mFromColumns, mToViews, 0);
+			  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
 			setListAdapter(adapter);
 		}
 
