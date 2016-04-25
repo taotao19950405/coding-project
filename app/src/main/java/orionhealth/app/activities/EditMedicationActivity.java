@@ -3,25 +3,19 @@
 
 package orionhealth.app.activities;
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.fragments.Fragments;
-import orionhealth.app.fragments.ListFragments.*;
+import orionhealth.app.fragments.fragments.*;
+import orionhealth.app.fragments.listFragments.*;
 import orionhealth.app.medicationDatabase.*;
 
 public class EditMedicationActivity extends AppCompatActivity {
@@ -38,8 +32,8 @@ public class EditMedicationActivity extends AppCompatActivity {
 		mMedication = MedTableOperations.getMedication(this, mMedicationID);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		Fragments.MedicationDetailsFragment medDetailsfragment =
-		  		(Fragments.MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
+		MedicationDetailsFragment medDetailsfragment =
+		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
 		medDetailsfragment.populateFields(mMedication);
 
 

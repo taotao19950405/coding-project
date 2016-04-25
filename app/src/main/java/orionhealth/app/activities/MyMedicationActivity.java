@@ -25,8 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
-import orionhealth.app.fragments.Fragments.UnderConstructionFragment;
-import orionhealth.app.fragments.ListFragments.MedicationListFragment;
+import orionhealth.app.fragments.fragments.UnderConstructionFragment;
+import orionhealth.app.fragments.listFragments.MedicationListFragment;
 
 public class MyMedicationActivity extends AppCompatActivity {
 
@@ -192,7 +192,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 		@Override
 		public Fragment getItem(int position) {
 			if (position == 0){
-				return new MedicationListFragment();
+				return MedicationListFragment.newInstance();
 			}
 			return UnderConstructionFragment.newInstance();
 		}
