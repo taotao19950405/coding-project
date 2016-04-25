@@ -13,4 +13,22 @@
 
 	<string name="edit_text_name_hint">please enter a name</string>
 	<string name="edit_text_dosage_hint">please enter a dosage</string>
+
+	<string name="drawer_open">Open navigation drawer</string>
+	<string name="drawer_close">Close navigation drawer</string>
+	<string name="title_activity_trial">TrialActivity</string>
+
+	<string name="title_section1">1</string>
+	<string name="title_section2">2</string>
+	<string name="title_section3">3</string>
+	<string name="title_section4">4</string>
+	<string name="title_section5">5</string>
+
+	<string name="hello_world">Hello world!</string>
+	<string name="construction_message">Sorry this page is currently under construction</string>
+
+	<string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+	<string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

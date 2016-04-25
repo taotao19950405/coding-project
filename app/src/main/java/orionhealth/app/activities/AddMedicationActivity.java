@@ -23,10 +23,6 @@ public class AddMedicationActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_medication);
-		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_medication);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View details_layout = inflater.inflate(R.layout.medication_details, null);
-		context.addView(details_layout, 0);
 	}
 
 	@Override
@@ -48,7 +44,7 @@ public class AddMedicationActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void addMedication(View view) {
+	public void addMedicationToDatabase(View view) {
 		//Do something in response to clicking add button
 		Intent intent = new Intent(this, MyMedicationActivity.class);
 		EditText editText = (EditText) findViewById(R.id.edit_text_name);

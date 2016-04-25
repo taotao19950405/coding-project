@@ -32,6 +32,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="orionhealth.app.activities.MyMedicationActivity" />
         </activity>
-    </application>
+		</application>
 
 </manifest>

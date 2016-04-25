@@ -6,23 +6,41 @@ package orionhealth.app.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
 import orionhealth.app.R;
-import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
-import orionhealth.app.medicationDatabase.MedTableOperations;
+import orionhealth.app.fragments.fragments.UnderConstructionFragment;
+import orionhealth.app.fragments.listFragments.MedicationListFragment;
 
 public class MyMedicationActivity extends AppCompatActivity {
+
+	private TabbedPagerAdapter mTabbedPagerAdapter;
+	private ViewPager mViewPager;
+	private TabLayout mTabLayout;
+	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Notifications", "Calendar"};
+	private int mNumOfTabs = 5;
+
+	private ListView mDrawerList;
+	private ArrayAdapter<String> mAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+	private String[] mHamburgerTitles = {"Profile", "Notifications", "Settings"};
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -30,30 +48,164 @@ public class MyMedicationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
 
+		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+		int width = getResources().getDisplayMetrics().widthPixels/4 * 3;
+		DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerList.getLayoutParams();
+		params.width = width;
+		mDrawerList.setLayoutParams(params);
+
+        addDrawerItems();
+        setupDrawer();
+
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setHomeButtonEnabled(true);
+
+		mTabbedPagerAdapter = new TabbedPagerAdapter(getSupportFragmentManager());
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mTabbedPagerAdapter);
+
+		mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+		mTabLayout.setupWithViewPager(mViewPager);
+
+		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
+		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_wb_sunny_white_24dp);
+		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
+		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
+		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
+
+		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override
+			public void onPageScrolled(int i, float v, int i1) {
+				return;
+			}
+
+			@Override
+			public void onPageSelected(int i) {
+				getSupportActionBar().setTitle(mTabsTitles[i]);
+			}
+
+			@Override
+			public void onPageScrollStateChanged(int i) {
+				return;
+			}
+		});
+
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_my_medication, menu);
-        return true;
-    }
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_my_medication, menu);
+		return true;
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as a parent activity is specified in AndroidManifest.xml.
+		int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.button_add) {
-            Intent intent = new Intent(this, AddMedicationActivity.class);
-            startActivity(intent);
-            return true;
-        }
+		if (id == R.id.button_add) {
+			Intent intent = new Intent(this, AddMedicationActivity.class);
+			startActivity(intent);
+			return true;
+		}
 
-        return super.onOptionsItemSelected(item);
+		// Activate the navigation drawer toggle
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	/*-------------The following methods were added to support HamburgerMenu-----------*/
+
+    /** Populates Navigation Menu with Names
+     * Sets a click listener for an action to be specified
+     * if an item in the menu is clicked*/
+    private void addDrawerItems() {
+		String[] navDrawerArray = mHamburgerTitles;
+		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navDrawerArray);
+		mDrawerList.setAdapter(mAdapter);
+
+        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MyMedicationActivity.this, "This Item", Toast.LENGTH_SHORT).show();
+            }
+        });
+	}
+
+    /** Methods to be called when drawer is toggled
+     * between open and closed states */
+    private void setupDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
+
+			private CharSequence titleStore;
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+				titleStore = getSupportActionBar().getTitle();
+                getSupportActionBar().setTitle("Menu");
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(titleStore);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        mDrawerToggle.setDrawerIndicatorEnabled(true);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
+
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+	/*--------the following class was added to support tabbed navigation--------*/
+
+	public class TabbedPagerAdapter extends FragmentPagerAdapter {
+
+		public TabbedPagerAdapter(FragmentManager fm) {
+			super(fm);
+		}
+
+		@Override
+		public Fragment getItem(int position) {
+			if (position == 0){
+				return MedicationListFragment.newInstance();
+			}
+			return UnderConstructionFragment.newInstance();
+		}
+
+		@Override
+		public int getCount() {
+			return mNumOfTabs;
+		}
+
+		@Override
+		public CharSequence getPageTitle(int position) {
+			return null;
+		}
+	}
 
 }
