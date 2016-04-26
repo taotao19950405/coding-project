@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
 
@@ -15,17 +16,17 @@ import orionhealth.app.dataModels.Medication;
 public class MedicationDetailsFragment extends Fragment {
 
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-							 Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_medication_details, container, false);
-		return rootView;
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_medication_details, container, false);
+        return rootView;
+    }
 
-	public void populateFields(Medication medication){
-		EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-		nameEditTextField.setText(medication.getName());
-		EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-		dosageEditTextField.setText(""+ medication.getDosage());
-	}
+    public void populateFields(Medication medication) {
+        EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
+        nameEditTextField.setText(medication.getName());
+        EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
+        dosageEditTextField.setText("" + medication.getDosage());
+    }
 }

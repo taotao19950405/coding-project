@@ -4,19 +4,20 @@
 package orionhealth.app.activities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.fragments.fragments.*;
-import orionhealth.app.fragments.listFragments.*;
-import orionhealth.app.medicationDatabase.*;
+import orionhealth.app.fragments.fragments.MedicationDetailsFragment;
+import orionhealth.app.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;

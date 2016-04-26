@@ -12,12 +12,12 @@ import orionhealth.app.R;
  */
 public class UnderConstructionFragment extends Fragment {
 
+	public UnderConstructionFragment() {
+	}
+
 	public static UnderConstructionFragment newInstance() {
 		UnderConstructionFragment fragment = new UnderConstructionFragment();
 		return fragment;
-	}
-
-	public UnderConstructionFragment() {
 	}
 
 	@Override

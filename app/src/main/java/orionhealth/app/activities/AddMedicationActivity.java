@@ -2,20 +2,18 @@
 //		 @author:  Bill
 package orionhealth.app.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.medicationDatabase.*;
+import orionhealth.app.medicationDatabase.MedTableOperations;
 
 public class AddMedicationActivity extends AppCompatActivity {
 
