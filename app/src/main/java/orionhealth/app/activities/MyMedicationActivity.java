@@ -135,7 +135,7 @@ public class MyMedicationActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MyMedicationActivity.this, "This Item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyMedicationActivity.this, "Item", Toast.LENGTH_SHORT).show();
             }
         });
 	}
