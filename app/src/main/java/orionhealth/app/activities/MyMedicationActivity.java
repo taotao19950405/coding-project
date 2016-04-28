@@ -178,7 +178,7 @@ public class MyMedicationActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-	/*--------the following class was added to support tabbed navigation--------*/
+	/*--------the following was added to support tabbed navigation--------*/
 
 	public void setTabIcons(){
 		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
