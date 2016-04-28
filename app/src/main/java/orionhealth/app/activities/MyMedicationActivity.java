@@ -70,11 +70,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 		mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		mTabLayout.setupWithViewPager(mViewPager);
 
-		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
-		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_wb_sunny_white_24dp);
-		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
-		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
-		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
+		setTabIcons();
 
 		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override
@@ -182,7 +178,15 @@ public class MyMedicationActivity extends AppCompatActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-	/*--------the following class was added to support tabbed navigation--------*/
+	/*--------the following was added to support tabbed navigation--------*/
+
+	public void setTabIcons(){
+		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
+		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_wb_sunny_white_24dp);
+		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
+		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
+		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
+	}
 
 	public class TabbedPagerAdapter extends FragmentPagerAdapter {
 

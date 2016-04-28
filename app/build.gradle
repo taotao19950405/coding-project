@@ -10,6 +10,10 @@ apply plugin: 'com.android.application'
 
 repositories {
 	jcenter()
+	mavenCentral()
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots"
+	}
 }
 
 android {
@@ -40,4 +44,8 @@ dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 	compile 'com.android.support:appcompat-v7:23.1.0'
 	compile 'com.android.support:design:23.0.1'
+	compile (group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-android', version: '1.6-SNAPSHOT', classifier: 'dstu2') {
+		exclude module: 'javax.servlet-api'
+		exclude module: 'hapi-fhir-base'
+	}
 }
