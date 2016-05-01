@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
 
@@ -23,10 +25,11 @@ public class MedicationDetailsFragment extends Fragment {
         return rootView;
     }
 
-    public void populateFields(Medication medication) {
+    public void populateFields(MedicationStatement medicationStatement) {
         EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-        nameEditTextField.setText(medication.getName());
+		CodeableConceptDt codeableConcept = (CodeableConceptDt) medicationStatement.getMedication();
+        nameEditTextField.setText(codeableConcept.getText());
         EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-        dosageEditTextField.setText("" + medication.getDosage());
+        dosageEditTextField.setText("");
     }
 }

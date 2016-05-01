@@ -13,15 +13,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.dataModels.Medication;
+import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;
-	private Medication mMedication;
+	private MedicationStatement mMedication;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +34,14 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 		Intent intent = getIntent();
 		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
-		mMedication = MedTableOperations.getMedication(this, mMedicationID);
+		String jsonMedString = MedTableOperations.getMedication(this, mMedicationID);
+		FhirContext fhirContext = FhirServices.getFhirContextInstance();
+		mMedication = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
-		MedicationDetailsFragment medDetailsfragment =
+		MedicationDetailsFragment medDetailsFragment =
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
-		medDetailsfragment.populateFields(mMedication);
+		medDetailsFragment.populateFields(mMedication);
 
 
 	}
@@ -73,12 +79,13 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 		if (!(updatedName.equals("") || updatedDosage.equals(""))){
 			try {
-				int dosageInt = Integer.parseInt(updatedDosage);
-				Medication updatedMed = new Medication(updatedName, dosageInt);
+//				int dosageInt = Integer.parseInt(updatedDosage);
 
-				if (!mMedication.equals(updatedMed)){
-					MedTableOperations.updateMedication(this, mMedicationID, updatedMed);
-				};
+				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
+				codeableConceptDt.setText(updatedName);
+				FhirContext fhirContext = FhirServices.getFhirContextInstance();
+				String jsonMedString = fhirContext.newJsonParser().encodeResourceToString(mMedication);
+				MedTableOperations.updateMedication(this, mMedicationID, jsonMedString);
 
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");

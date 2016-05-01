@@ -12,7 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import orionhealth.app.dataModels.Medication;
-import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
+import orionhealth.app.medicationDatabase.DatabaseContract.*;
 
 /**
  * Created by bill on 11/04/16.
@@ -22,13 +22,12 @@ public final class MedTableOperations {
 	public MedTableOperations(){
 	}
 
-	public static void addToMedTable(Context context, Medication med) {
+	public static void addToMedTable(Context context, String jsonStringMed) {
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		cv.put(MedTableInfo.COLUMN_NAME_NAME, med.getName());
-		cv.put(MedTableInfo.COLUMN_NAME_DOSAGE, med.getDosage());
-		database.insert(MedTableInfo.TABLE_NAME, null, cv);
+		cv.put(MedTableInfo2.COLUMN_NAME_JSON_STRING, jsonStringMed);
+		database.insert(MedTableInfo2.TABLE_NAME, null, cv);
 	}
 
 	public static Cursor getAllRows(Context context){
@@ -36,37 +35,34 @@ public final class MedTableOperations {
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  MedTableInfo._ID,
-		  MedTableInfo.COLUMN_NAME_NAME,
-		  MedTableInfo.COLUMN_NAME_DOSAGE
+		  MedTableInfo2._ID,
+		  MedTableInfo2.COLUMN_NAME_JSON_STRING
 		};
 
 		String sortOrder =
-		  MedTableInfo._ID + " ASC";
+		  MedTableInfo2._ID + " ASC";
 
 		Cursor cursor = db.query(
-		  MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
+		  MedTableInfo2.TABLE_NAME, projection, null, null, null, null, sortOrder
 		);
 		return cursor;
 	}
 
-	public static Medication getMedication(Context context, int id){
+	public static String getMedication(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  MedTableInfo.COLUMN_NAME_NAME,
-		  MedTableInfo.COLUMN_NAME_DOSAGE
+		  MedTableInfo2.COLUMN_NAME_JSON_STRING
 		};
 
 		Cursor cursor = db.query(
-		  MedTableInfo.TABLE_NAME, projection, MedTableInfo._ID+" = "+id, null, null, null, null
+		  MedTableInfo2.TABLE_NAME, projection, MedTableInfo2._ID+" = "+id, null, null, null, null
 		);
 
 		if (cursor.moveToFirst()) {
-			String name = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_NAME));
-			int dosage = cursor.getInt(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_DOSAGE));
-			return new Medication(name, dosage);
+			String jsonMedString = cursor.getString(cursor.getColumnIndex(MedTableInfo2.COLUMN_NAME_JSON_STRING));
+			return jsonMedString;
 		}
 		return null;
 	};
@@ -74,20 +70,19 @@ public final class MedTableOperations {
 	public static void removeMedication(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
-		String selection = MedTableInfo._ID + " LIKE ?";
+		String selection = MedTableInfo2._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
-		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
+		db.delete(MedTableInfo2.TABLE_NAME, selection, selectionArgs);
 	}
 
-	public static void updateMedication(Context context, int id, Medication updatedMed){
+	public static void updateMedication(Context context, int id, String updatedJsonMedString){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 
 		ContentValues cv = new ContentValues();
-		cv.put(MedTableInfo.COLUMN_NAME_NAME, updatedMed.getName());
-		cv.put(MedTableInfo.COLUMN_NAME_DOSAGE, updatedMed.getDosage());
-		String selection = MedTableInfo._ID + " = ?";
+		cv.put(MedTableInfo2.COLUMN_NAME_JSON_STRING, updatedJsonMedString);
+		String selection = MedTableInfo2._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
-		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
+		db.update(MedTableInfo2.TABLE_NAME, cv, selection, selectionArgs);
 	}
 }

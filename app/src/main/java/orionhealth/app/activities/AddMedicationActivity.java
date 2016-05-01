@@ -11,8 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
-import orionhealth.app.dataModels.Medication;
+import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.medicationDatabase.MedTableOperations;
 
 public class AddMedicationActivity extends AppCompatActivity {
@@ -52,8 +57,12 @@ public class AddMedicationActivity extends AppCompatActivity {
 		if (!(name.equals("") || dosage.equals(""))){
 			try {
 				int dosageInt = Integer.parseInt(dosage);
-				Medication med = new Medication(name, dosageInt);
-				MedTableOperations.addToMedTable(this, med);
+				MedicationStatement medicationStatement = new MedicationStatement();
+				medicationStatement.setMedication(new CodeableConceptDt().setText(name));
+				medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
+				medicationStatement.setPatient(new ResourceReferenceDt("LOCAL"));
+				FhirContext fhirContext = FhirServices.getFhirContextInstance();
+				MedTableOperations.addToMedTable(this, fhirContext.newJsonParser().encodeResourceToString(medicationStatement));
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");
 			}
