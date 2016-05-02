@@ -12,13 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.dataModels.Medication;
-import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.medicationDatabase.MedTableOperations;
@@ -34,9 +30,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 		Intent intent = getIntent();
 		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
-		String jsonMedString = MedTableOperations.getMedication(this, mMedicationID);
-		FhirContext fhirContext = FhirServices.getFhirContextInstance();
-		mMedication = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
+		mMedication = MedTableOperations.getMedicationStatement(this, mMedicationID);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		MedicationDetailsFragment medDetailsFragment =
@@ -83,9 +77,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
 				codeableConceptDt.setText(updatedName);
-				FhirContext fhirContext = FhirServices.getFhirContextInstance();
-				String jsonMedString = fhirContext.newJsonParser().encodeResourceToString(mMedication);
-				MedTableOperations.updateMedication(this, mMedicationID, jsonMedString);
+				MedTableOperations.updateMedication(this, mMedicationID, mMedication);
 
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");

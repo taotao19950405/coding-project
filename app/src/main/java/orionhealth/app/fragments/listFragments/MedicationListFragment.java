@@ -21,7 +21,7 @@ import orionhealth.app.medicationDatabase.MedTableOperations;
 public class MedicationListFragment extends ListFragment {
 
 	public final static String SELECTED_MED_ID = "orionhealth.app.fragments.listfragments.SELECTED_MED_ID";
-	private String[] mFromColumns = {DatabaseContract.MedTableInfo2.COLUMN_NAME_JSON_STRING};
+	private String[] mFromColumns = {DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING};
 	private int[] mToViews = {R.id.list_display_name};
 
 	public MedicationListFragment() {

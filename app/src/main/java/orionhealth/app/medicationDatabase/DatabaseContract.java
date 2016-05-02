@@ -11,13 +11,7 @@ public final class DatabaseContract {
     public DatabaseContract() {
     }
 
-    public static abstract class MedTableInfo implements BaseColumns {
-        public static final String TABLE_NAME = "medication";
-        public static final String COLUMN_NAME_NAME = "name";
-        public static final String COLUMN_NAME_DOSAGE = "dosage";
-    }
-
-	public static  abstract class MedTableInfo2 implements BaseColumns {
+	public static  abstract class MedTableInfo implements BaseColumns {
 		public static final String TABLE_NAME = "medication";
 		public static final String COLUMN_NAME_JSON_STRING = "json_string";
 	}
