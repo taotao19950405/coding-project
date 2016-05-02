@@ -8,7 +8,6 @@ package orionhealth.app.medicationDatabase;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
 
 /**
@@ -22,15 +21,14 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + MedTableInfo.TABLE_NAME + " (" +
                     MedTableInfo._ID + " INTEGER PRIMARY KEY," +
-                    MedTableInfo.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-                    MedTableInfo.COLUMN_NAME_DOSAGE + INTEGER_TYPE +
+                    MedTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
