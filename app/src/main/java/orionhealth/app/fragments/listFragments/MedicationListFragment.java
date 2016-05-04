@@ -7,11 +7,14 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.EditMedicationActivity;
+import orionhealth.app.adaptors.MyExpandableListAdapter;
 import orionhealth.app.medicationDatabase.DatabaseContract;
 import orionhealth.app.medicationDatabase.MedTableOperations;
 
@@ -42,9 +45,11 @@ public class MedicationListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Cursor cursor = MedTableOperations.getAllRows(getContext());
-		SimpleCursorAdapter adapter =
-		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
-		setListAdapter(adapter);
+//		SimpleCursorAdapter adapter =
+//		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
+		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext());
+		ExpandableListView expandableListView = (ExpandableListView) getListView();
+		expandableListView.setAdapter(listAdapter);
 	}
 
 	@Override

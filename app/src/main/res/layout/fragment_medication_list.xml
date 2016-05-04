@@ -5,11 +5,12 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical" >
 
-	<ListView
+	<ExpandableListView
 		android:id="@android:id/list"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content" >
-	</ListView>
+		android:layout_height="wrap_content"
+		android:indicatorRight="@dimen/activity_vertical_margin">
+	</ExpandableListView>
 
 	<TextView
 		android:id="@android:id/empty"
