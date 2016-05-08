@@ -10,7 +10,7 @@ import orionhealth.app.R;
 /**
  * Created by bill on 4/05/16.
  */
-public class MyExpandableListAdapter extends BaseExpandableListAdapter {
+public class MyExpandableListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 	private Context context;
 
 	public MyExpandableListAdapter(Context context) {
@@ -22,10 +22,6 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 		return 3;
 	}
 
-	@Override
-	public int getChildrenCount(int groupPosition) {
-		return 1;
-	}
 
 	@Override
 	public Object getGroup(int groupPosition) {
@@ -49,7 +45,7 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
 	@Override
 	public boolean hasStableIds() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -61,13 +57,16 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getChildView(int groupPosition, final int childPosition,
-							 boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) this.context
 		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_trial, null);
 		return result;
+	}
 
+	@Override
+	public int getRealChildrenCount(int groupPosition) {
+		return 1;
 	}
 
 	@Override

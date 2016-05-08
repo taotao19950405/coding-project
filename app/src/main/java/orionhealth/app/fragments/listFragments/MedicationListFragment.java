@@ -14,6 +14,7 @@ import android.widget.SimpleCursorAdapter;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.EditMedicationActivity;
+import orionhealth.app.adaptors.AnimatedExpandableListView;
 import orionhealth.app.adaptors.MyExpandableListAdapter;
 import orionhealth.app.medicationDatabase.DatabaseContract;
 import orionhealth.app.medicationDatabase.MedTableOperations;
@@ -48,8 +49,24 @@ public class MedicationListFragment extends ListFragment {
 //		SimpleCursorAdapter adapter =
 //		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
 		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext());
-		ExpandableListView expandableListView = (ExpandableListView) getListView();
+		final AnimatedExpandableListView expandableListView = (AnimatedExpandableListView) getListView();
 		expandableListView.setAdapter(listAdapter);
+		expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+			@Override
+			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+				// We call collapseGroupWithAnimation(int) and
+				// expandGroupWithAnimation(int) to animate group
+				// expansion/collapse.
+				if (expandableListView.isGroupExpanded(groupPosition)) {
+					expandableListView.collapseGroupWithAnimation(groupPosition);
+				} else {
+					expandableListView.expandGroupWithAnimation(groupPosition);
+				}
+				return true;
+			}
+
+		});
 	}
 
 	@Override

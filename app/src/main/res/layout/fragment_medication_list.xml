@@ -5,12 +5,12 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical" >
 
-	<ExpandableListView
+	<orionhealth.app.adaptors.AnimatedExpandableListView
 		android:id="@android:id/list"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="match_parent"
 		android:indicatorRight="@dimen/activity_vertical_margin">
-	</ExpandableListView>
+	</orionhealth.app.adaptors.AnimatedExpandableListView>
 
 	<TextView
 		android:id="@android:id/empty"
