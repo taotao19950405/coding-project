@@ -1,4 +1,4 @@
-package orionhealth.app.fragments.listFragments;
+package orionhealth.app.layouts.fragments.listFragments;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,24 +7,22 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.EditMedicationActivity;
-import orionhealth.app.adaptors.AnimatedExpandableListView;
-import orionhealth.app.adaptors.MyExpandableListAdapter;
-import orionhealth.app.medicationDatabase.DatabaseContract;
-import orionhealth.app.medicationDatabase.MedTableOperations;
+import orionhealth.app.layouts.externalResources.AnimatedExpandableListView;
+import orionhealth.app.layouts.adaptors.MyExpandableListAdapter;
+import orionhealth.app.data.medicationDatabase.DatabaseContract;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
  * Created by bill on 25/04/16.
  */
 public class MedicationListFragment extends ListFragment {
 
-	public final static String SELECTED_MED_ID = "orionhealth.app.fragments.listfragments.SELECTED_MED_ID";
+	public final static String SELECTED_MED_ID = "orionhealth.app.layouts.fragments.listfragments.SELECTED_MED_ID";
 	private String[] mFromColumns = {DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING};
 	private int[] mToViews = {R.id.list_display_name};
 

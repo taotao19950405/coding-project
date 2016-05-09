@@ -4,7 +4,7 @@
 //			Query the datababse
 //		 @author:  Bill
 //			@Reviewer: 19 Apr 2016
-package orionhealth.app.medicationDatabase;
+package orionhealth.app.data.medicationDatabase;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 
 /**
  * Created by bill on 11/04/16.

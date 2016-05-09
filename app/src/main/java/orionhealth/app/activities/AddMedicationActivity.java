@@ -15,7 +15,7 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
-import orionhealth.app.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class AddMedicationActivity extends AppCompatActivity {
 

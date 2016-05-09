@@ -15,9 +15,9 @@ import android.widget.EditText;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.fragments.fragments.MedicationDetailsFragment;
-import orionhealth.app.fragments.listFragments.MedicationListFragment;
-import orionhealth.app.medicationDatabase.MedTableOperations;
+import orionhealth.app.layouts.fragments.fragments.MedicationDetailsFragment;
+import orionhealth.app.layouts.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;

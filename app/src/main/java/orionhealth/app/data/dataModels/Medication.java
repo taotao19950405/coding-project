@@ -1,6 +1,6 @@
 //       Description: Instance of database
 //		 @author:  Bill
-package orionhealth.app.dataModels;
+package orionhealth.app.data.dataModels;
 
 /**
  * Created by bill on 8/04/16.

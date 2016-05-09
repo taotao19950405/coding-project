@@ -3,12 +3,12 @@
 //		 @ Author:  Bill
 //			@Review: Lu
 //			@Reviewer: 19 Apr 2016
-package orionhealth.app.medicationDatabase;
+package orionhealth.app.data.medicationDatabase;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import orionhealth.app.medicationDatabase.DatabaseContract.MedTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 
 /**
  * Created by bill on 8/04/16.

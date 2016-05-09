@@ -1,4 +1,4 @@
-package orionhealth.app.fragments.fragments;
+package orionhealth.app.layouts.fragments.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +10,6 @@ import android.widget.EditText;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.dataModels.Medication;
 
 /**
  * Created by bill on 25/04/16.

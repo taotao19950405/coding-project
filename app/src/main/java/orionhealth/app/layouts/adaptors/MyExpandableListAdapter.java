@@ -1,11 +1,11 @@
-package orionhealth.app.adaptors;
+package orionhealth.app.layouts.adaptors;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import orionhealth.app.R;
+import orionhealth.app.layouts.externalResources.AnimatedExpandableListView;
 
 /**
  * Created by bill on 4/05/16.
