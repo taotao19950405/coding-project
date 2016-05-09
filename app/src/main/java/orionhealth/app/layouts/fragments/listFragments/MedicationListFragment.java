@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class MedicationListFragment extends ListFragment {
 	public final static String SELECTED_MED_ID = "orionhealth.app.layouts.fragments.listfragments.SELECTED_MED_ID";
 	private String[] mFromColumns = {DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING};
 	private int[] mToViews = {R.id.list_display_name};
+	private AnimatedExpandableListView animatedExpandableListView;
 
 	public MedicationListFragment() {
 	}
@@ -44,22 +46,21 @@ public class MedicationListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Cursor cursor = MedTableOperations.getAllRows(getContext());
-//		SimpleCursorAdapter adapter =
-//		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
-		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext());
-		final AnimatedExpandableListView expandableListView = (AnimatedExpandableListView) getListView();
-		expandableListView.setAdapter(listAdapter);
-		expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
+		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor);
+		animatedExpandableListView = (AnimatedExpandableListView) getListView();
+		animatedExpandableListView.setAdapter(listAdapter);
+		animatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 				// We call collapseGroupWithAnimation(int) and
 				// expandGroupWithAnimation(int) to animate group
 				// expansion/collapse.
-				if (expandableListView.isGroupExpanded(groupPosition)) {
-					expandableListView.collapseGroupWithAnimation(groupPosition);
+				if (animatedExpandableListView.isGroupExpanded(groupPosition)) {
+					animatedExpandableListView.collapseGroupWithAnimation(groupPosition);
 				} else {
-					expandableListView.expandGroupWithAnimation(groupPosition);
+					animatedExpandableListView.expandGroupWithAnimation(groupPosition);
 				}
 				return true;
 			}
