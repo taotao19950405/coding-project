@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,8 @@ public class MedicationListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Cursor cursor = MedTableOperations.getAllRows(getContext());
-		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
+//		SimpleCursorAdapter adapter =
+//		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
 		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor);
 		animatedExpandableListView = (AnimatedExpandableListView) getListView();
 		animatedExpandableListView.setAdapter(listAdapter);
