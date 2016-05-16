@@ -84,7 +84,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) this.context
 		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View result = inflater.inflate(R.layout.fragment_trial, null);
+		View result = inflater.inflate(R.layout.fragment_medication_list_child, null);
 		return result;
 	}
 
