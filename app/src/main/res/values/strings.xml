@@ -11,6 +11,11 @@
 	<string name="text_label_name">Name:</string>
 	<string name="text_label_dosage">Dosage:</string>
 
+	<string name="text_label_reasonForUse">For treating:</string>
+	<string name="text_hardcoded_reasonForUse">Pain</string>
+	<string name="text_label_Note">Instructions:</string>
+	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
+
 	<string name="edit_text_name_hint">please enter a name</string>
 	<string name="edit_text_dosage_hint">please enter a dosage</string>
 
