@@ -16,6 +16,7 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.fhir.FhirServices;
 
 public class AddMedicationActivity extends AppCompatActivity {
 
@@ -57,8 +58,10 @@ public class AddMedicationActivity extends AppCompatActivity {
 				MedicationStatement medicationStatement = new MedicationStatement();
 				medicationStatement.setMedication(new CodeableConceptDt().setText(name));
 				medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
-				medicationStatement.setPatient(new ResourceReferenceDt("LOCAL"));
-				MedTableOperations.addToMedTable(this, medicationStatement);
+				ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
+				medicationStatement.setPatient(patientRef);
+				MedTableOperations.getInstance().addToMedTable(this, medicationStatement);
+				FhirServices.getFhirServices().sendToServer(medicationStatement);
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");
 			}

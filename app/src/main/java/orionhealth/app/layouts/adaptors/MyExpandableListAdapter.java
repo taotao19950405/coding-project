@@ -39,7 +39,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	public Object getGroup(int groupPosition) {
 		if (cursor.moveToPosition(groupPosition)) {
 			String jsonMedString = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
-			FhirContext fhirContext = FhirServices.getFhirContextInstance();
+			FhirContext fhirContext = FhirServices.getFhirServices().getFhirContextInstance();
 			MedicationStatement medStatement = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
 			return medStatement;
 		}else {

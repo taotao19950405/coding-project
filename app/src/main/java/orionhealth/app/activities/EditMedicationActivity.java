@@ -30,7 +30,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 
 		Intent intent = getIntent();
 		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
-		mMedication = MedTableOperations.getMedicationStatement(this, mMedicationID);
+		mMedication = MedTableOperations.getInstance().getMedicationStatement(this, mMedicationID);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		MedicationDetailsFragment medDetailsFragment =
@@ -60,7 +60,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 	}
 
 	public void removeMedicationFromDatabase(View view){
-		MedTableOperations.removeMedication(this, mMedicationID);
+		MedTableOperations.getInstance().removeMedication(this, mMedicationID);
 		Intent intent = new Intent(this, MyMedicationActivity.class);
 		startActivity(intent);
 	}
@@ -74,10 +74,9 @@ public class EditMedicationActivity extends AppCompatActivity {
 		if (!(updatedName.equals("") || updatedDosage.equals(""))){
 			try {
 //				int dosageInt = Integer.parseInt(updatedDosage);
-
 				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
 				codeableConceptDt.setText(updatedName);
-				MedTableOperations.updateMedication(this, mMedicationID, mMedication);
+				MedTableOperations.getInstance().updateMedication(this, mMedicationID, mMedication);
 
 			} catch (NumberFormatException e) {
 				Log.d("hello", "dosage not an int");

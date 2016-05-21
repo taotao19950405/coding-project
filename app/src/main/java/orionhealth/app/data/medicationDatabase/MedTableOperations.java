@@ -19,16 +19,29 @@ import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
  * Created by bill on 11/04/16.
  */
 public final class MedTableOperations {
+	private static MedTableOperations medTableOperations;
+	private FhirServices fhirServices;
 
-	public MedTableOperations(){
+	private MedTableOperations(){
+		fhirServices = FhirServices.getFhirServices();
 	}
 
-	public static void addToMedTable(Context context, MedicationStatement medStatement) {
+	public static MedTableOperations getInstance(){
+		if (medTableOperations == null){
+			medTableOperations = new MedTableOperations();
+			return medTableOperations;
+		}else{
+			return medTableOperations;
+		}
+	}
+
+	public void addToMedTable(Context context, MedicationStatement medStatement) {
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-		FhirContext fhirContext = FhirServices.getFhirContextInstance();
+
+		FhirContext fhirContext = fhirServices.getFhirContextInstance();
 		String jsonStringMed = fhirContext.newJsonParser().encodeResourceToString(medStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
 		database.insert(MedTableInfo.TABLE_NAME, null, cv);
@@ -52,7 +65,7 @@ public final class MedTableOperations {
 		return cursor;
 	}
 
-	public static MedicationStatement getMedicationStatement(Context context, int id){
+	public MedicationStatement getMedicationStatement(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
@@ -66,14 +79,14 @@ public final class MedTableOperations {
 
 		if (cursor.moveToFirst()) {
 			String jsonMedString = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
-			FhirContext fhirContext = FhirServices.getFhirContextInstance();
+			FhirContext fhirContext = fhirServices.getFhirContextInstance();
 			MedicationStatement medStatement = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
 			return medStatement;
 		}
 		return null;
 	};
 
-	public static void removeMedication(Context context, int id){
+	public void removeMedication(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 		String selection = MedTableInfo._ID + " LIKE ?";
@@ -81,16 +94,22 @@ public final class MedTableOperations {
 		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
-	public static void updateMedication(Context context, int id, MedicationStatement updatedMedStatement){
+	public void updateMedication(Context context, int id, MedicationStatement updatedMedStatement){
 		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-		FhirContext fhirContext = FhirServices.getFhirContextInstance();
+		FhirContext fhirContext = fhirServices.getFhirContextInstance();
 		String updatedJsonMedString = fhirContext.newJsonParser().encodeResourceToString(updatedMedStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonMedString);
 		String selection = MedTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
 		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
+	}
+
+	public void clearMedTable(Context context){
+		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		SQLiteDatabase db = dbo.getWritableDatabase();
+		db.delete(MedTableInfo.TABLE_NAME, null, null);
 	}
 }
