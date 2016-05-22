@@ -45,27 +45,37 @@ public class MedicationListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Cursor cursor = MedTableOperations.getAllRows(getContext());
-//		SimpleCursorAdapter adapter =
-//		  new SimpleCursorAdapter(getContext(), R.layout.fragment_medication_list_item, cursor, mFromColumns, mToViews, 0);
-		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor);
 		animatedExpandableListView = (AnimatedExpandableListView) getListView();
-		animatedExpandableListView.setAdapter(listAdapter);
-		animatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
+		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor) {
 			@Override
-			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				// We call collapseGroupWithAnimation(int) and
-				// expandGroupWithAnimation(int) to animate group
-				// expansion/collapse.
-				if (animatedExpandableListView.isGroupExpanded(groupPosition)) {
-					animatedExpandableListView.collapseGroupWithAnimation(groupPosition);
+			public void OnIndicatorClick(boolean isExpanded, int position) {
+				if (isExpanded) {
+					animatedExpandableListView.collapseGroupWithAnimation(position);
 				} else {
-					animatedExpandableListView.expandGroupWithAnimation(groupPosition);
+					animatedExpandableListView.expandGroupWithAnimation(position);
 				}
-				return true;
 			}
 
-		});
+			;
+		};
+
+		animatedExpandableListView.setAdapter(listAdapter);
+//		animatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+//
+//			@Override
+//			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+//				// We call collapseGroupWithAnimation(int) and
+//				// expandGroupWithAnimation(int) to animate group
+//				// expansion/collapse.
+//				if (animatedExpandableListView.isGroupExpanded(groupPosition)) {
+//					animatedExpandableListView.collapseGroupWithAnimation(groupPosition);
+//				} else {
+//					animatedExpandableListView.expandGroupWithAnimation(groupPosition);
+//				}
+//				return true;
+//			}
+//
+//		});
 	}
 
 	@Override

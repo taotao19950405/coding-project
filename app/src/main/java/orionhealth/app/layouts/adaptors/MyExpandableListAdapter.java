@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
@@ -27,6 +28,14 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	public MyExpandableListAdapter(Context context, Cursor cursor){
 		this.context = context;
 		this.cursor = cursor;
+	}
+
+	public void OnIndicatorClick(boolean isExpanded, int position){
+
+	}
+
+	public void OnTextClick(){
+
 	}
 
 	@Override
@@ -68,7 +77,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+	public View getGroupView(int groupPosition, final boolean isExpanded, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = (LayoutInflater) this.context
 		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_item, null);
@@ -77,6 +86,19 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		String name = codeableConcept.getText();
 		TextView textView = (TextView) result.findViewById(R.id.list_display_name);
 		textView.setText(name);
+
+		ImageView indicator = (ImageView) result.findViewById(R.id.indicator);
+		indicator.setSelected(isExpanded);
+		indicator.setTag(groupPosition);
+
+		indicator.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int position = (Integer)v.getTag();
+				OnIndicatorClick(isExpanded,position);
+
+			}
+		});
 		return result;
 	}
 
