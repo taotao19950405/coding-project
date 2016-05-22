@@ -35,7 +35,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
 	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Notifications", "Calendar"};
-	private int mNumOfTabs = 5;
+	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
 	private ArrayAdapter<String> mAdapter;

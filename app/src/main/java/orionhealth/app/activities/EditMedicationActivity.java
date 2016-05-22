@@ -29,7 +29,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_edit_medication);
 
 		Intent intent = getIntent();
-		mMedicationID = (int) intent.getLongExtra(MedicationListFragment.SELECTED_MED_ID, 0);
+		mMedicationID = intent.getIntExtra(MedicationListFragment.SELECTED_MED_ID, 0);
 		mMedication = MedTableOperations.getInstance().getMedicationStatement(this, mMedicationID);
 
 		FragmentManager fragmentManager = getSupportFragmentManager();

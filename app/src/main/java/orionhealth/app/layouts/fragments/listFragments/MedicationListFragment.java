@@ -56,7 +56,13 @@ public class MedicationListFragment extends ListFragment {
 				}
 			}
 
-			;
+			@Override
+			public void OnTextClick(int medLocalId){
+				Intent intent = new Intent(getContext(), EditMedicationActivity.class);
+				intent.putExtra(SELECTED_MED_ID, medLocalId);
+				startActivity(intent);
+			}
+
 		};
 
 		animatedExpandableListView.setAdapter(listAdapter);
@@ -81,8 +87,6 @@ public class MedicationListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id){
 		super.onListItemClick(l, v, position, id);
-		Intent intent = new Intent(getContext(), EditMedicationActivity.class);
-		intent.putExtra(SELECTED_MED_ID, id);
-		startActivity(intent);
+
 	};
 }
