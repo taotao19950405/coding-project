@@ -3,15 +3,26 @@
 
 package orionhealth.app.activities;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TimePicker;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
@@ -22,6 +33,7 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;
 	private MedicationStatement mMedication;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +49,9 @@ public class EditMedicationActivity extends AppCompatActivity {
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
 		medDetailsFragment.populateFields(mMedication);
 
-
 	}
 
-	@Override
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_edit_medication, menu);
