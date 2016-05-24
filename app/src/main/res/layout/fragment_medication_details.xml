@@ -1,98 +1,127 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-							xmlns:tools="http://schemas.android.com/tools"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:orientation="vertical"
-							android:id="@+id/linear_layout_vertical_details_medication"
-							tools:context="orionhealth.app.activities.AddMedicationActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_layout_vertical_details_medication"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="orionhealth.app.activities.AddMedicationActivity">
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-								xmlns:tools="http://schemas.android.com/tools"
-								android:layout_width="match_parent"
-								android:layout_height="wrap_content"
-								android:orientation="horizontal">
-		<TextView
-			android:id="@+id/text_label_name"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/text_label_name"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-		<EditText android:id="@+id/edit_text_name"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:hint="@string/edit_text_name_hint"/>
+        <TextView
+            android:id="@+id/text_label_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_name" />
 
-	</LinearLayout>
+        <EditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_name_hint" />
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-								xmlns:tools="http://schemas.android.com/tools"
-								android:layout_width="match_parent"
-								android:layout_height="wrap_content"
-								android:orientation="horizontal">
-		<TextView
-			android:id="@+id/text_label_dosage"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/text_label_dosage"/>
+    </LinearLayout>
 
-		<EditText android:id="@+id/edit_text_dosage"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:hint="@string/edit_text_dosage_hint"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:orientation="horizontal">
 
-	</LinearLayout>
-    
-    
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/text_label_dosage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/text_label_dosage" />
+
+        <EditText
+            android:id="@+id/edit_text_dosage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:hint="@string/edit_text_dosage_hint"
+            android:inputType="number" />
 
         <Spinner
             android:id="@+id/unit_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="33dp"
+            android:layout_marginTop="50dp"
+            android:layout_gravity="clip_vertical|right"
+            android:layout_marginLeft="10dp" />
 
     </LinearLayout>
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-		<TextView
-			android:id="@+id/text_reasonForUse"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/text_label_reasonForUse"/>
+        <TextView
+            android:id="@+id/text_reasonForUse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_reasonForUse" />
 
-		<EditText android:id="@+id/edit_text_reasonForUse"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:hint="@string/edit_text_reasonForUse_hint"/>
+        <EditText
+            android:id="@+id/edit_text_reasonForUse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_reasonForUse_hint" />
 
-	</LinearLayout>
+    </LinearLayout>
 
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-		<TextView
-			android:id="@+id/text_effectiveStart"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/text_label_effectiveStart"/>
+        <TextView
+            android:id="@+id/text_effectiveStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_effectiveStart" />
 
-		<EditText android:id="@+id/edit_text_effectiveStart"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-            android:inputType="date"
-			android:hint="@string/edit_text_effectiveStart_hint"/>
+        <EditText
+            android:id="@+id/edit_text_effectiveStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_effectiveStart_hint"
+            android:inputType="date"/>
+            <!--android:onClick="showDatePickerDialog" />-->
 
-		</LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_effectiveEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_label_effectiveEnd" />
+
+        <EditText
+            android:id="@+id/edit_text_effectiveEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_effectiveEnd_hint"
+            android:inputType="date" />
+        <!--android:focusable="false"-->
+        <!--android:onClick="showDatePickerDialog"/>-->
+
+    </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -104,36 +133,37 @@
             android:id="@+id/text_instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_label_instructions"/>
+            android:text="@string/text_label_instructions" />
 
-        <EditText android:id="@+id/edit_text_instructions"
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/edit_text_instructions"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="date"
-            android:hint="@string/edit_text_instructions_hint"/>
+            android:hint="@string/edit_text_instructions_hint" />
 
     </LinearLayout>
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-		<TextView
-			android:id="@+id/text_notes"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/text_label_notes"/>
-
-		<EditText android:id="@+id/edit_text_notes"
-			android:layout_width="match_parent"
-            android:isScrollContainer="true"
+        <TextView
+            android:id="@+id/text_notes"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="120dp"
-            android:inputType="textMultiLine"
-			android:hint="@string/edit_text_notes_hint"/>
+            android:text="@string/text_label_notes" />
 
-	</LinearLayout>
+        <EditText
+            android:id="@+id/edit_text_notes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_text_notes_hint"
+            android:isScrollContainer="true" />
+        <!--android:minHeight="120dp"-->
+        <!--android:inputType="textMultiLine"-->
+
+    </LinearLayout>
 
 </LinearLayout>

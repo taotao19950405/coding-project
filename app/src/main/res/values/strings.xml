@@ -12,14 +12,15 @@
 	<string name="text_label_dosage">Dosage:</string>
 	<string name="text_label_reasonForUse">Reason For Use:</string>
 	<string name="text_label_effectiveStart">Effective From:</string>
+    <string name="text_label_effectiveEnd">Effective Till:</string>
 	<string name="text_label_notes">Notes:</string>
     <string name="text_label_instructions">Instructions:</string>
 
 	<string name="edit_text_name_hint">please enter a name</string>
 	<string name="edit_text_dosage_hint">please enter a dosage</string>
 	<string name="edit_text_reasonForUse_hint">please enter the reason for use</string>
-	<string name="edit_text_effectiveStart_hint">please enter effective start date</string>
-	<string name="edit_text_effectiveEnd_hint">please enter effective end date</string>
+	<string name="edit_text_effectiveStart_hint">please enter start date</string>
+	<string name="edit_text_effectiveEnd_hint">please enter end date</string>
 	<string name="edit_text_notes_hint">please enter notes</string>
     <string name="edit_text_instructions_hint">please enter instructions</string>
 
