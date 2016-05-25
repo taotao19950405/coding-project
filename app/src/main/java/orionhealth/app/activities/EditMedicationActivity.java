@@ -17,14 +17,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.layouts.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.layouts.fragments.listFragments.MedicationListFragment;
@@ -77,16 +83,35 @@ public class EditMedicationActivity extends AppCompatActivity {
 	}
 
 	public void updateMedicationInDatabase(View view){
-		EditText nameEditTextField = (EditText) findViewById(R.id.edit_text_name);
-		String updatedName = nameEditTextField.getText().toString();
-		EditText dosageEditTextField = (EditText) findViewById(R.id.edit_text_dosage);
-		String updatedDosage = dosageEditTextField.getText().toString();
+		EditText editText = (EditText) findViewById(R.id.edit_text_name);
+		String name = editText.getText().toString();
+		editText = (EditText) findViewById(R.id.edit_text_dosage);
+		Spinner spinner = (Spinner) findViewById(R.id.unit_spinner);
+		String spinnerValue = spinner.getSelectedItem().toString();
+		String dosage = editText.getText().toString();
+		editText = (EditText) findViewById(R.id.edit_text_reasonForUse);
+		String reasonForUse = editText.getText().toString();
+		editText = (EditText) findViewById(R.id.edit_text_instructions);
+		String instructions = editText.getText().toString();
 
-		if (!(updatedName.equals("") || updatedDosage.equals(""))){
+		if (!(name.equals("") || dosage.equals(""))){
 			try {
-//				int dosageInt = Integer.parseInt(updatedDosage);
+				Long dosageLong = Long.parseLong(dosage);
 				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
-				codeableConceptDt.setText(updatedName);
+				codeableConceptDt.setText(name);
+
+				mMedication.setReasonForUse(new CodeableConceptDt().setText(reasonForUse));
+
+				mMedication.setNote(instructions);
+
+				MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
+				SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
+				simpleQuantityDt.setUnit(spinnerValue);
+				dosageFhir.setQuantity(simpleQuantityDt);
+				List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
+				listDosage.add(dosageFhir);
+				mMedication.setDosage(listDosage);
+
 				MedTableOperations.getInstance().updateMedication(this, mMedicationID, mMedication);
 
 			} catch (NumberFormatException e) {

@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.layouts.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.layouts.fragments.listFragments.MedicationListFragment;
 
@@ -50,7 +51,7 @@ public class MyMedicationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_medication);
 
 		DatabaseInitializer.getsInstance(this);   // Update Database if needed
-
+//		MedTableOperations.getInstance().clearMedTable(this);
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 

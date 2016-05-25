@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import java.util.Calendar;
+import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 
@@ -45,8 +47,36 @@ public class MedicationDetailsFragment extends Fragment {
         EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
 		CodeableConceptDt codeableConcept = (CodeableConceptDt) medicationStatement.getMedication();
         nameEditTextField.setText(codeableConcept.getText());
+
         EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-        dosageEditTextField.setText("");
+		List<MedicationStatement.Dosage> listDosage = medicationStatement.getDosage();
+		MedicationStatement.Dosage dosage = listDosage.get(0);
+		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
+		dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger()+"");
+
+		String myString = simpleQuantityDt.getUnit();
+		Spinner spinner = (Spinner) getActivity().findViewById(R.id.unit_spinner);
+		int index = 0;
+
+		for (int i=0;i<spinner.getCount();i++){
+			if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
+				index = i;
+				break;
+			}
+		}
+
+		spinner.setSelection(index);
+
+
+		EditText reasonForUseEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
+		codeableConcept = (CodeableConceptDt) medicationStatement.getReasonForUse();
+
+		if (codeableConcept != null) {
+			reasonForUseEditTextField.setText(codeableConcept.getText());
+		}
+
+		EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_instructions);
+		instructionsEditTextField.setText(medicationStatement.getNote());
 
     }
 
