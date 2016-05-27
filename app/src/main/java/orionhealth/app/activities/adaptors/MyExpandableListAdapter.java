@@ -1,8 +1,7 @@
-package orionhealth.app.layouts.adaptors;
+package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +11,12 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
-import org.w3c.dom.Text;
 import orionhealth.app.R;
-import orionhealth.app.activities.MyMedicationActivity;
 import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.layouts.externalResources.AnimatedExpandableListView;
+import orionhealth.app.activities.externalResources.AnimatedExpandableListView;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**

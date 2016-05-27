@@ -1,4 +1,4 @@
-package orionhealth.app.layouts.fragments.listFragments;
+package orionhealth.app.activities.fragments.listFragments;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,13 +7,12 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 
 import orionhealth.app.R;
-import orionhealth.app.activities.EditMedicationActivity;
-import orionhealth.app.layouts.externalResources.AnimatedExpandableListView;
-import orionhealth.app.layouts.adaptors.MyExpandableListAdapter;
+import orionhealth.app.activities.main.EditMedicationActivity;
+import orionhealth.app.activities.externalResources.AnimatedExpandableListView;
+import orionhealth.app.activities.adaptors.MyExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
@@ -22,7 +21,7 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
  */
 public class MedicationListFragment extends ListFragment {
 
-	public final static String SELECTED_MED_ID = "orionhealth.app.layouts.fragments.listfragments.SELECTED_MED_ID";
+	public final static String SELECTED_MED_ID = "medicationListFragment.SELECTED_MED_ID";
 	private String[] mFromColumns = {DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING};
 	private int[] mToViews = {R.id.list_display_name};
 	private AnimatedExpandableListView animatedExpandableListView;
@@ -66,22 +65,6 @@ public class MedicationListFragment extends ListFragment {
 		};
 
 		animatedExpandableListView.setAdapter(listAdapter);
-//		animatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-//
-//			@Override
-//			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-//				// We call collapseGroupWithAnimation(int) and
-//				// expandGroupWithAnimation(int) to animate group
-//				// expansion/collapse.
-//				if (animatedExpandableListView.isGroupExpanded(groupPosition)) {
-//					animatedExpandableListView.collapseGroupWithAnimation(groupPosition);
-//				} else {
-//					animatedExpandableListView.expandGroupWithAnimation(groupPosition);
-//				}
-//				return true;
-//			}
-//
-//		});
 	}
 
 	@Override

@@ -1,45 +1,39 @@
 //       Description:
 //		 @author:  Bill
 
-package orionhealth.app.activities;
+package orionhealth.app.activities.main;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
+import android.widget.Toast;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
-import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
-import orionhealth.app.layouts.fragments.fragments.MedicationDetailsFragment;
-import orionhealth.app.layouts.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
+import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;
 	private MedicationStatement mMedication;
 
+	private EditText nameTextField;
+	private EditText dosageTextField;
+	private Spinner dosageUnitSelector;
+	private EditText reasonTextField;
+	private EditText notesTextField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +48,12 @@ public class EditMedicationActivity extends AppCompatActivity {
 		MedicationDetailsFragment medDetailsFragment =
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
 		medDetailsFragment.populateFields(mMedication);
+
+		nameTextField = (EditText) findViewById(R.id.edit_text_name);
+		dosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
+		dosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
+		reasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
+		notesTextField = (EditText) findViewById(R.id.edit_text_instructions);
 
 	}
 
@@ -83,43 +83,59 @@ public class EditMedicationActivity extends AppCompatActivity {
 	}
 
 	public void updateMedicationInDatabase(View view){
-		EditText editText = (EditText) findViewById(R.id.edit_text_name);
-		String name = editText.getText().toString();
-		editText = (EditText) findViewById(R.id.edit_text_dosage);
-		Spinner spinner = (Spinner) findViewById(R.id.unit_spinner);
-		String spinnerValue = spinner.getSelectedItem().toString();
-		String dosage = editText.getText().toString();
-		editText = (EditText) findViewById(R.id.edit_text_reasonForUse);
-		String reasonForUse = editText.getText().toString();
-		editText = (EditText) findViewById(R.id.edit_text_instructions);
-		String instructions = editText.getText().toString();
+		String name = nameTextField.getText().toString();
+		String dosage = dosageTextField.getText().toString();
+		String unit = dosageUnitSelector.getSelectedItem().toString();
+		String reasonForUse = reasonTextField.getText().toString();
+		String notes = notesTextField.getText().toString();
+		try {
+			updateMedStatement(name, dosage, unit, reasonForUse, notes);
+			MedTableOperations.getInstance().updateMedication(this, mMedicationID, mMedication);
+			Intent intent = new Intent(this, MyMedicationActivity.class);
+			startActivity(intent);
+		} catch (NoNameException e){
+			Toast.makeText(this, "Please enter a name", Toast.LENGTH_SHORT).show();
+		} catch (NoDosageException e){
+			Toast.makeText(this, "Please enter a dosage", Toast.LENGTH_SHORT).show();
+		} catch (NumberFormatException e){
+			Toast.makeText(this, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 
-		if (!(name.equals("") || dosage.equals(""))){
-			try {
+	private void updateMedStatement(String name, String dosage, String unit,
+									String reasonForUse, String note) throws Exception {
+		if (!name.equals("")) {
+			if (!dosage.equals("")) {
 				Long dosageLong = Long.parseLong(dosage);
 				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
 				codeableConceptDt.setText(name);
 
-				mMedication.setReasonForUse(new CodeableConceptDt().setText(reasonForUse));
-
-				mMedication.setNote(instructions);
-
+				codeableConceptDt = new CodeableConceptDt().setText(reasonForUse);
+				mMedication.setReasonForUse(codeableConceptDt);
+				mMedication.setNote(note);
 				MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
 				SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-				simpleQuantityDt.setUnit(spinnerValue);
+				simpleQuantityDt.setUnit(unit);
 				dosageFhir.setQuantity(simpleQuantityDt);
 				List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
 				listDosage.add(dosageFhir);
 				mMedication.setDosage(listDosage);
-
-				MedTableOperations.getInstance().updateMedication(this, mMedicationID, mMedication);
-
-			} catch (NumberFormatException e) {
-				Log.d("hello", "dosage not an int");
+			} else {
+				throw new NoDosageException();
 			}
+		} else {
+			throw new NoNameException();
 		}
 
-		Intent intent = new Intent(this, MyMedicationActivity.class);
-		startActivity(intent);
+	}
+
+	private class NoNameException extends Exception {
+
+	}
+
+	private class NoDosageException extends Exception {
+
 	}
 }

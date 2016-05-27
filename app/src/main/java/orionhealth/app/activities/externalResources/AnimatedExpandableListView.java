@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-package orionhealth.app.layouts.externalResources;
+package orionhealth.app.activities.externalResources;
 
 import java.util.ArrayList;
 import java.util.List;

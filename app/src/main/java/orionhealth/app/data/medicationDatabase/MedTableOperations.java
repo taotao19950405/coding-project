@@ -40,9 +40,7 @@ public final class MedTableOperations {
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-
-		FhirContext fhirContext = fhirServices.getFhirContextInstance();
-		String jsonStringMed = fhirContext.newJsonParser().encodeResourceToString(medStatement);
+		String jsonStringMed = FhirServices.getFhirServices().toJsonString(medStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
 		database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}

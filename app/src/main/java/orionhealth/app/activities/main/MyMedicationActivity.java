@@ -2,7 +2,7 @@
 //		 @author:  Bill
 // 		 @Reviewer: 
 
-package orionhealth.app.activities;
+package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -26,9 +26,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
-import orionhealth.app.data.medicationDatabase.MedTableOperations;
-import orionhealth.app.layouts.fragments.fragments.UnderConstructionFragment;
-import orionhealth.app.layouts.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
+import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 
 public class MyMedicationActivity extends AppCompatActivity {
 

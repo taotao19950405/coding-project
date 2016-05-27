@@ -4,9 +4,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IResource;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.IGenericClient;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 
 /**
  * Created by bill on 1/05/16.
@@ -28,13 +30,18 @@ public final class FhirServices {
 		}
 	}
 
-	public FhirContext getFhirContextInstance(){
+	public FhirContext getFhirContextInstance() {
 		if (fhirContext == null) {
 			fhirContext = FhirContext.forDstu2();
 			return fhirContext;
 		}else{
 			return fhirContext;
 		}
+	}
+
+	public String toJsonString(IResource resource){
+		FhirContext fhirContext = getFhirContextInstance();
+		return fhirContext.newJsonParser().encodeResourceToString(resource);
 	}
 
 	public void  sendToServer(IResource resource){

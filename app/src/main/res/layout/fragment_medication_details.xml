@@ -7,7 +7,7 @@
 		android:columnCount="2"
 		android:padding="10dp"
     android:orientation="horizontal"
-    tools:context="orionhealth.app.activities.AddMedicationActivity">
+    tools:context="orionhealth.app.activities.main.AddMedicationActivity">
 
         <TextView
             android:id="@+id/text_label_name"

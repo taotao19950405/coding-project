@@ -4,9 +4,9 @@
 							android:layout_height="match_parent"
 							android:orientation="vertical"
 							android:id="@+id/linear_layout_vertical_edit_medication"
-							tools:context="orionhealth.app.activities.EditMedicationActivity">
+							tools:context="orionhealth.app.activities.main.EditMedicationActivity">
 
-	<fragment android:name="orionhealth.app.layouts.fragments.fragments.MedicationDetailsFragment"
+	<fragment android:name="orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment"
 						android:id="@+id/fragment_medication_details"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content" />
@@ -16,7 +16,7 @@
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
 								android:orientation="horizontal"
-								tools:context="orionhealth.app.activities.EditMedicationActivity">
+								tools:context="orionhealth.app.activities.main.EditMedicationActivity">
 
 		<Button android:text="@string/button_save"
 						android:layout_weight="1"
