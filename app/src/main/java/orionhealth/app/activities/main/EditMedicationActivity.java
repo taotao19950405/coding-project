@@ -111,8 +111,11 @@ public class EditMedicationActivity extends AppCompatActivity {
 				Long dosageLong = Long.parseLong(dosage);
 				CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
 				codeableConceptDt.setText(name);
-
-				codeableConceptDt = new CodeableConceptDt().setText(reasonForUse);
+				codeableConceptDt = (CodeableConceptDt) mMedication.getReasonForUse();
+				if (codeableConceptDt == null){
+					codeableConceptDt = new CodeableConceptDt();
+				}
+				codeableConceptDt.setText(reasonForUse);
 				mMedication.setReasonForUse(codeableConceptDt);
 				mMedication.setNote(note);
 				MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
