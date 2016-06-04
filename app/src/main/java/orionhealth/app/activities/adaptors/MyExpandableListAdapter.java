@@ -1,6 +1,7 @@
 package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
@@ -34,13 +36,10 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		this.cursor = cursor;
 	}
 
-	public void OnIndicatorClick(boolean isExpanded, int position){
+	public void OnEditButtonClick(int position){
 
 	}
 
-	public void OnTextClick(int medLocalid){
-
-	}
 
 	@Override
 	public int getGroupCount() {
@@ -102,19 +101,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		textView = (TextView) result.findViewById(R.id.list_display_dosage_unit);
 		textView.setText(simpleQuantityDt.getUnitElement().toString());
 
-		LinearLayout group = (LinearLayout) result.findViewById(R.id.list_group);
-		final int medLocalId = medStatement.getLocalId();
-		group.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				OnTextClick(medLocalId);
-				Log.d("LOCAL ID OF MED", ""+medLocalId);
-			}
-		});
-
 		final RelativeLayout indicator = (RelativeLayout) result.findViewById(R.id.indicator);
-		indicator.setSelected(isExpanded);
-		indicator.setTag(groupPosition);
 		ImageView imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
 		if (isExpanded){
 			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
@@ -122,15 +109,6 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 			imageView.setImageResource(R.drawable.arrow_down_grey_11dp);
 		}
 
-		indicator.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ImageView imageView = (ImageView) v.findViewById(R.id.indicator_image);
-				int position = (Integer)v.getTag();
-				OnIndicatorClick(isExpanded,position);
-
-			}
-		});
 		return result;
 	}
 
@@ -139,8 +117,8 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		LayoutInflater inflater = (LayoutInflater) this.context
 		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_child, null);
-		MyMedicationStatement myMedicationStatement = (MyMedicationStatement) getGroup(groupPosition);
-		MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
+		final MyMedicationStatement myMedicationStatement = (MyMedicationStatement) getGroup(groupPosition);
+		final MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
 		CodeableConceptDt codeableConceptDt = (CodeableConceptDt) medicationStatement.getReasonForUse();
 
 		if (codeableConceptDt != null) {
@@ -150,6 +128,14 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 
 		TextView textView = (TextView) result.findViewById(R.id.list_Note);
 		textView.setText(medicationStatement.getNote());
+
+		Button editButton = (Button) result.findViewById(R.id.button_edit);
+		editButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				OnEditButtonClick(myMedicationStatement.getLocalId());
+			}
+		});
 
 		return result;
 	}
