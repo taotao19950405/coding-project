@@ -1,5 +1,5 @@
 //		 @author:  Bill
-package orionhealth.app.medicationDatabase;
+package orionhealth.app.data.medicationDatabase;
 
 import android.provider.BaseColumns;
 

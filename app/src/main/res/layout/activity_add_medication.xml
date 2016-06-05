@@ -4,9 +4,9 @@
 							android:layout_height="match_parent"
 							android:orientation="vertical"
 							android:id="@+id/linear_layout_vertical_add_medication"
-							tools:context="orionhealth.app.activities.AddMedicationActivity">
+							tools:context="orionhealth.app.activities.main.AddMedicationActivity">
 
-	<fragment android:name="orionhealth.app.fragments.fragments.MedicationDetailsFragment"
+	<fragment android:name="orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment"
 						android:id="@+id/fragment_medication_details"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content" />

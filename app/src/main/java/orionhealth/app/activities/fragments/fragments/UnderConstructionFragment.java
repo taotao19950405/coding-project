@@ -1,4 +1,4 @@
-package orionhealth.app.fragments.fragments;
+package orionhealth.app.activities.fragments.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
