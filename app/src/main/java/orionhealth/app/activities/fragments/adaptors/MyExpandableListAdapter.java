@@ -82,7 +82,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 							 ViewGroup parent) {
 		LayoutInflater inflater =
 		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View result = inflater.inflate(R.layout.fragment_medication_list_item, null);
+		View result = inflater.inflate(R.layout.fragment_medication_list_group, null);
 		MyMedicationStatement medStatement = (MyMedicationStatement) getGroup(groupPosition);
 		MedicationStatement medStatementFhir = medStatement.getFhirMedStatement();
 		CodeableConceptDt codeableConcept = (CodeableConceptDt)medStatementFhir.getMedication();
