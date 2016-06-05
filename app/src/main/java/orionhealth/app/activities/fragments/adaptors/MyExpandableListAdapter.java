@@ -1,23 +1,19 @@
-package orionhealth.app.activities.adaptors;
+package orionhealth.app.activities.fragments.adaptors;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.activities.externalResources.AnimatedExpandableListView;
+import orionhealth.app.activities.external.AnimatedExpandableListView;
 
 import java.util.List;
 
@@ -25,35 +21,36 @@ import java.util.List;
  * Created by bill on 4/05/16.
  */
 public class MyExpandableListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
-	private Context context;
-	private Cursor cursor;
+	private Context mContext;
+	private Cursor mCursor;
 
 	public MyExpandableListAdapter(Context context) {
-		this.context = context;
+		this.mContext = context;
 	}
 	public MyExpandableListAdapter(Context context, Cursor cursor){
-		this.context = context;
-		this.cursor = cursor;
+		this.mContext = context;
+		this.mCursor = cursor;
 	}
 
-	public void OnEditButtonClick(int position){
+	public void OnEditButtonClick(int medicationLocalId){
 
 	}
 
 
 	@Override
 	public int getGroupCount() {
-		return cursor.getCount();
+		return mCursor.getCount();
 	}
 
 
 	@Override
 	public Object getGroup(int groupPosition) {
-		if (cursor.moveToPosition(groupPosition)) {
-			String jsonMedString = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
-			long localId = cursor.getLong(cursor.getColumnIndex(DatabaseContract.MedTableInfo._ID));
-			FhirContext fhirContext = FhirServices.getFhirServices().getFhirContextInstance();
-			MedicationStatement medStatement = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
+		if (mCursor.moveToPosition(groupPosition)) {
+			long localId = mCursor.getLong(mCursor.getColumnIndex(DatabaseContract.MedTableInfo._ID));
+			String jsonMedString =
+			  		mCursor.getString(mCursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
+			MedicationStatement medStatement =
+			  		(MedicationStatement)FhirServices.getsFhirServices().toResource(jsonMedString);
 			return new MyMedicationStatement((int) localId, medStatement);
 		}else {
 			return null;
@@ -81,9 +78,10 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, final boolean isExpanded, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) this.context
-		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	public View getGroupView(int groupPosition, final boolean isExpanded, View convertView,
+							 ViewGroup parent) {
+		LayoutInflater inflater =
+		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_item, null);
 		MyMedicationStatement medStatement = (MyMedicationStatement) getGroup(groupPosition);
 		MedicationStatement medStatementFhir = medStatement.getFhirMedStatement();
@@ -103,9 +101,10 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 
 		final RelativeLayout indicator = (RelativeLayout) result.findViewById(R.id.indicator);
 		ImageView imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
-		if (isExpanded){
+
+		if (isExpanded) {
 			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
-		}else{
+		} else {
 			imageView.setImageResource(R.drawable.arrow_down_grey_11dp);
 		}
 
@@ -113,9 +112,10 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 	}
 
 	@Override
-	public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) this.context
-		  .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild,
+								 View convertView, ViewGroup parent) {
+		LayoutInflater inflater =
+		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_child, null);
 		final MyMedicationStatement myMedicationStatement = (MyMedicationStatement) getGroup(groupPosition);
 		final MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
@@ -131,6 +131,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 
 		Button editButton = (Button) result.findViewById(R.id.button_edit);
 		editButton.setOnClickListener(new View.OnClickListener() {
+
 			@Override
 			public void onClick(View v) {
 				OnEditButtonClick(myMedicationStatement.getLocalId());

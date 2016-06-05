@@ -29,11 +29,11 @@ public class EditMedicationActivity extends AppCompatActivity {
 	private int mMedicationID;
 	private MedicationStatement mMedication;
 
-	private EditText nameTextField;
-	private EditText dosageTextField;
-	private Spinner dosageUnitSelector;
-	private EditText reasonTextField;
-	private EditText notesTextField;
+	private EditText mNameTextField;
+	private EditText mDosageTextField;
+	private Spinner mDosageUnitSelector;
+	private EditText mReasonTextField;
+	private EditText mNotesTextField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +49,11 @@ public class EditMedicationActivity extends AppCompatActivity {
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
 		medDetailsFragment.populateFields(mMedication);
 
-		nameTextField = (EditText) findViewById(R.id.edit_text_name);
-		dosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
-		dosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
-		reasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
-		notesTextField = (EditText) findViewById(R.id.edit_text_instructions);
+		mNameTextField = (EditText) findViewById(R.id.edit_text_name);
+		mDosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
+		mDosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
+		mReasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
+		mNotesTextField = (EditText) findViewById(R.id.edit_text_instructions);
 
 	}
 
@@ -83,11 +83,11 @@ public class EditMedicationActivity extends AppCompatActivity {
 	}
 
 	public void updateMedicationInDatabase(View view){
-		String name = nameTextField.getText().toString();
-		String dosage = dosageTextField.getText().toString();
-		String unit = dosageUnitSelector.getSelectedItem().toString();
-		String reasonForUse = reasonTextField.getText().toString();
-		String notes = notesTextField.getText().toString();
+		String name = mNameTextField.getText().toString();
+		String dosage = mDosageTextField.getText().toString();
+		String unit = mDosageUnitSelector.getSelectedItem().toString();
+		String reasonForUse = mReasonTextField.getText().toString();
+		String notes = mNotesTextField.getText().toString();
 		try {
 			updateMedStatement(name, dosage, unit, reasonForUse, notes);
 			MedTableOperations.getInstance().updateMedication(this, mMedicationID, mMedication);

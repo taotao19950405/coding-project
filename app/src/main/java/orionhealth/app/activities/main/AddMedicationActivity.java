@@ -25,22 +25,22 @@ import java.util.List;
 
 public class AddMedicationActivity extends AppCompatActivity {
 
-	private EditText nameTextField;
-	private EditText dosageTextField;
-	private Spinner dosageUnitSelector;
-	private EditText reasonTextField;
-	private EditText instructionsTextField;
+	private EditText mNameTextField;
+	private EditText mDosageTextField;
+	private Spinner mDosageUnitSelector;
+	private EditText mReasonTextField;
+	private EditText mInstructionsTextField;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_medication);
 
-		nameTextField = (EditText) findViewById(R.id.edit_text_name);
-		dosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
-		dosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
-		reasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
-		instructionsTextField = (EditText) findViewById(R.id.edit_text_instructions);
+		mNameTextField = (EditText) findViewById(R.id.edit_text_name);
+		mDosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
+		mDosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
+		mReasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
+		mInstructionsTextField = (EditText) findViewById(R.id.edit_text_instructions);
 	}
 
 	@Override
@@ -64,17 +64,17 @@ public class AddMedicationActivity extends AppCompatActivity {
 
 	public void addMedicationToDatabase(View view) {
 		//Do something in response to clicking add button
-		String name = nameTextField.getText().toString();
-		String dosage = dosageTextField.getText().toString();
-		String spinnerValue = dosageUnitSelector.getSelectedItem().toString();
-		String reasonForUse = reasonTextField.getText().toString();
-		String instructions = instructionsTextField.getText().toString();
+		String name = mNameTextField.getText().toString();
+		String dosage = mDosageTextField.getText().toString();
+		String spinnerValue = mDosageUnitSelector.getSelectedItem().toString();
+		String reasonForUse = mReasonTextField.getText().toString();
+		String instructions = mInstructionsTextField.getText().toString();
 
 		MedicationStatement medicationStatement;
 		try {
 			medicationStatement = createMedStatement(name, dosage, spinnerValue, reasonForUse, instructions);
 			MedTableOperations.getInstance().addToMedTable(this, medicationStatement);
-			FhirServices.getFhirServices().sendToServer(medicationStatement);
+			FhirServices.getsFhirServices().sendToServer(medicationStatement);
 			Intent intent = new Intent(this, MyMedicationActivity.class);
 			startActivity(intent);
 		} catch (NoNameException e) {

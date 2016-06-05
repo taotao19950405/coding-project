@@ -19,34 +19,34 @@ import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
  * Created by bill on 11/04/16.
  */
 public final class MedTableOperations {
-	private static MedTableOperations medTableOperations;
-	private FhirServices fhirServices;
+	private static MedTableOperations sMedTableOperations;
+	private FhirServices mFhirServices;
 
 	private MedTableOperations(){
-		fhirServices = FhirServices.getFhirServices();
+		mFhirServices = FhirServices.getsFhirServices();
 	}
 
 	public static MedTableOperations getInstance(){
-		if (medTableOperations == null){
-			medTableOperations = new MedTableOperations();
-			return medTableOperations;
+		if (sMedTableOperations == null){
+			sMedTableOperations = new MedTableOperations();
+			return sMedTableOperations;
 		}else{
-			return medTableOperations;
+			return sMedTableOperations;
 		}
 	}
 
 	public void addToMedTable(Context context, MedicationStatement medStatement) {
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-		String jsonStringMed = FhirServices.getFhirServices().toJsonString(medStatement);
+		String jsonStringMed = FhirServices.getsFhirServices().toJsonString(medStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
 		database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public static Cursor getAllRows(Context context){
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -64,7 +64,7 @@ public final class MedTableOperations {
 	}
 
 	public MedicationStatement getMedicationStatement(Context context, int id){
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
@@ -77,15 +77,14 @@ public final class MedTableOperations {
 
 		if (cursor.moveToFirst()) {
 			String jsonMedString = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
-			FhirContext fhirContext = fhirServices.getFhirContextInstance();
-			MedicationStatement medStatement = (MedicationStatement) fhirContext.newJsonParser().parseResource(jsonMedString);
+			MedicationStatement medStatement = (MedicationStatement) mFhirServices.toResource(jsonMedString);
 			return medStatement;
 		}
 		return null;
 	};
 
 	public void removeMedication(Context context, int id){
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 		String selection = MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
@@ -93,12 +92,10 @@ public final class MedTableOperations {
 	}
 
 	public void updateMedication(Context context, int id, MedicationStatement updatedMedStatement){
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
-
-		FhirContext fhirContext = fhirServices.getFhirContextInstance();
-		String updatedJsonMedString = fhirContext.newJsonParser().encodeResourceToString(updatedMedStatement);
+		String updatedJsonMedString = mFhirServices.toJsonString(updatedMedStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonMedString);
 		String selection = MedTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
@@ -106,7 +103,7 @@ public final class MedTableOperations {
 	}
 
 	public void clearMedTable(Context context){
-		DatabaseInitializer dbo = DatabaseInitializer.getsInstance(context);
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		db.delete(MedTableInfo.TABLE_NAME, null, null);
 	}

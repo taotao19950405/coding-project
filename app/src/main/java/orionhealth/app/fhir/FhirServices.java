@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IResource;
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.IGenericClient;
@@ -14,34 +13,39 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
  * Created by bill on 1/05/16.
  */
 public final class FhirServices {
-	private static FhirServices fhirServices;
-	private FhirContext fhirContext;
-	private String serverBase = "http://fhirtest.uhn.ca/baseDstu2";
+	private static FhirServices sFhirServices;
+	private FhirContext mFhirContext;
+	private String mServerBase = "http://fhirtest.uhn.ca/baseDstu2";
 
 	private FhirServices(){
 	}
 
-	public static FhirServices getFhirServices() {
-		if (fhirServices == null){
-			fhirServices = new FhirServices();
-			return fhirServices;
+	public static FhirServices getsFhirServices() {
+		if (sFhirServices == null){
+			sFhirServices = new FhirServices();
+			return sFhirServices;
 		}else{
-			return fhirServices;
+			return sFhirServices;
 		}
 	}
 
-	public FhirContext getFhirContextInstance() {
-		if (fhirContext == null) {
-			fhirContext = FhirContext.forDstu2();
-			return fhirContext;
+	private FhirContext getFhirContextInstance() {
+		if (mFhirContext == null) {
+			mFhirContext = FhirContext.forDstu2();
+			return mFhirContext;
 		}else{
-			return fhirContext;
+			return mFhirContext;
 		}
 	}
 
-	public String toJsonString(IResource resource){
+	public String toJsonString(IBaseResource resource){
 		FhirContext fhirContext = getFhirContextInstance();
 		return fhirContext.newJsonParser().encodeResourceToString(resource);
+	}
+
+	public IBaseResource toResource(String jsonString){
+		FhirContext fhirContext = getFhirContextInstance();
+		return fhirContext.newJsonParser().parseResource(jsonString);
 	}
 
 	public void  sendToServer(IResource resource){
@@ -53,7 +57,7 @@ public final class FhirServices {
 
 		protected Void doInBackground(IResource... params) {
 			FhirContext fhirContext = getFhirContextInstance();
-			IGenericClient client = fhirContext.newRestfulGenericClient(serverBase);
+			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
 
 			for (int i = 0; i < params.length; i++) {
 				MethodOutcome outcome = client.create().resource(params[i]).prettyPrint().encodedJson().execute();

@@ -11,9 +11,9 @@ public class MyMedicationStatement {
 	private int mLocalId;
 	private MedicationStatement mFhirMedStatement;
 
-	public MyMedicationStatement(int mLocalId, MedicationStatement mFhirMedStatement) {
-		this.mLocalId = mLocalId;
-		this.mFhirMedStatement = mFhirMedStatement;
+	public MyMedicationStatement(int localId, MedicationStatement fhirMedStatement) {
+		this.mLocalId = localId;
+		this.mFhirMedStatement = fhirMedStatement;
 	}
 
 	@Override

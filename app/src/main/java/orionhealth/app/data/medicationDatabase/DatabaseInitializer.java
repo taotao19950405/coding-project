@@ -37,7 +37,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static synchronized DatabaseInitializer getsInstance(Context context) {
+    public static synchronized DatabaseInitializer getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new DatabaseInitializer(context.getApplicationContext());
         }

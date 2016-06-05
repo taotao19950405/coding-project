@@ -12,10 +12,8 @@ import android.widget.ListView;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.main.EditMedicationActivity;
-import orionhealth.app.activities.externalResources.AnimatedExpandableListView;
-import orionhealth.app.activities.adaptors.MyExpandableListAdapter;
-import orionhealth.app.activities.main.MyMedicationActivity;
-import orionhealth.app.data.medicationDatabase.DatabaseContract;
+import orionhealth.app.activities.external.AnimatedExpandableListView;
+import orionhealth.app.activities.fragments.adaptors.MyExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
@@ -24,9 +22,7 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
 public class MedicationListFragment extends ListFragment {
 
 	public final static String SELECTED_MED_ID = "medicationListFragment.SELECTED_MED_ID";
-	private String[] mFromColumns = {DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING};
-	private int[] mToViews = {R.id.list_display_name};
-	private AnimatedExpandableListView animatedExpandableListView;
+	private AnimatedExpandableListView mAnimatedExpandableListView;
 
 	public MedicationListFragment() {
 	}
@@ -46,32 +42,29 @@ public class MedicationListFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Cursor cursor = MedTableOperations.getAllRows(getContext());
-		animatedExpandableListView = (AnimatedExpandableListView) getListView();
-		animatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+		mAnimatedExpandableListView = (AnimatedExpandableListView) getListView();
+		mAnimatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
 			@Override
 			public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-				// We call collapseGroupWithAnimation(int) and
-				// expandGroupWithAnimation(int) to animate group
-				// expansion/collapse.
-				if (animatedExpandableListView.isGroupExpanded(groupPosition)) {
-					animatedExpandableListView.collapseGroupWithAnimation(groupPosition);
+				if (mAnimatedExpandableListView.isGroupExpanded(groupPosition)) {
+					mAnimatedExpandableListView.collapseGroupWithAnimation(groupPosition);
 				} else {
-					animatedExpandableListView.expandGroupWithAnimation(groupPosition);
+					mAnimatedExpandableListView.expandGroupWithAnimation(groupPosition);
 				}
 				return true;
 			}
 		});
 		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor){
 			@Override
-			public void OnEditButtonClick(int position){
+			public void OnEditButtonClick(int medicationLocalId){
 				Intent intent = new Intent(getContext(), EditMedicationActivity.class);
-				intent.putExtra(SELECTED_MED_ID, position);
+				intent.putExtra(SELECTED_MED_ID, medicationLocalId);
 				startActivity(intent);
 			}
 		};
 
-		animatedExpandableListView.setAdapter(listAdapter);
+		mAnimatedExpandableListView.setAdapter(listAdapter);
 	}
 
 	@Override

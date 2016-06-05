@@ -28,8 +28,8 @@ public class MedicationDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_medication_details, container, false);
 
         Spinner spinner = (Spinner) rootView.findViewById(R.id.unit_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.unit_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter =
+		  		ArrayAdapter.createFromResource(getActivity(), R.array.unit_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -62,7 +62,8 @@ public class MedicationDetailsFragment extends Fragment {
 		spinner.setSelection(index);
 
 
-		EditText reasonForUseEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
+		EditText reasonForUseEditTextField =
+		  		(EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
 		codeableConcept = (CodeableConceptDt) medicationStatement.getReasonForUse();
 
 		if (codeableConcept != null) {

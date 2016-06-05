@@ -49,7 +49,7 @@ public class MyMedicationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
 
-		DatabaseInitializer.getsInstance(this);   // Update Database if needed
+		DatabaseInitializer.getInstance(this);   // Update Database if needed
 //		MedTableOperations.getInstance().clearMedTable(this);
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
