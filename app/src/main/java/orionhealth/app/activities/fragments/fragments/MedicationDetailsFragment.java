@@ -16,20 +16,24 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.data.dataModels.Unit;
 
 /**
  * Created by bill on 25/04/16.
  */
 public class MedicationDetailsFragment extends Fragment {
     Calendar calendar;
+	private Unit[] units;
+
         @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_medication_details, container, false);
 
+		units = Unit.values();
         Spinner spinner = (Spinner) rootView.findViewById(R.id.unit_spinner);
         ArrayAdapter<CharSequence> adapter =
-		  		ArrayAdapter.createFromResource(getActivity(), R.array.unit_array, android.R.layout.simple_spinner_item);
+		  		new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -48,18 +52,22 @@ public class MedicationDetailsFragment extends Fragment {
 		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
 		dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger()+"");
 
-		String myString = simpleQuantityDt.getUnit();
+		String unitIdString = simpleQuantityDt.getCode();
 		Spinner spinner = (Spinner) getActivity().findViewById(R.id.unit_spinner);
-		int index = 0;
-
-		for (int i=0;i<spinner.getCount();i++){
-			if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)){
-				index = i;
-				break;
+		if (unitIdString == null) {
+			String myString = simpleQuantityDt.getUnit();
+			int index = 0;
+			for (int i = 0; i < spinner.getCount(); i++) {
+				if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+					index = i;
+					break;
+				}
 			}
+			spinner.setSelection(index);
+		} else {
+			int unitId = Integer.parseInt(unitIdString);
+			spinner.setSelection(unitId);
 		}
-
-		spinner.setSelection(index);
 
 
 		EditText reasonForUseEditTextField =

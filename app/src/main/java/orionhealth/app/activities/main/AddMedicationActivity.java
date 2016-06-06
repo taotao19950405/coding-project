@@ -17,6 +17,7 @@ import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
+import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
 
@@ -66,13 +67,13 @@ public class AddMedicationActivity extends AppCompatActivity {
 		//Do something in response to clicking add button
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
-		String spinnerValue = mDosageUnitSelector.getSelectedItem().toString();
+		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
 		String reasonForUse = mReasonTextField.getText().toString();
 		String instructions = mInstructionsTextField.getText().toString();
 
 		MedicationStatement medicationStatement;
 		try {
-			medicationStatement = createMedStatement(name, dosage, spinnerValue, reasonForUse, instructions);
+			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, instructions);
 			MedTableOperations.getInstance().addToMedTable(this, medicationStatement);
 			FhirServices.getsFhirServices().sendToServer(medicationStatement);
 			Intent intent = new Intent(this, MyMedicationActivity.class);
@@ -88,7 +89,7 @@ public class AddMedicationActivity extends AppCompatActivity {
 		}
 	}
 
-	private MedicationStatement createMedStatement(String name, String dosage, String unit,
+	private MedicationStatement createMedStatement(String name, String dosage, Unit unit,
 												   String reasonForUse, String note) throws Exception {
 		if (!name.equals("")) {
 			if (!dosage.equals("")) {
@@ -102,7 +103,8 @@ public class AddMedicationActivity extends AppCompatActivity {
 				medicationStatement.setNote(note);
 				MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
 				SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-				simpleQuantityDt.setUnit(unit);
+				simpleQuantityDt.setUnit(unit.toString());
+				simpleQuantityDt.setCode(unit.ordinal()+"");
 				dosageFhir.setQuantity(simpleQuantityDt);
 				List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
 				listDosage.add(dosageFhir);

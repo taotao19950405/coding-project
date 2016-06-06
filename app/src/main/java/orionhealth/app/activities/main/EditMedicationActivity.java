@@ -23,6 +23,7 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity {
@@ -85,7 +86,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 	public void updateMedicationInDatabase(View view){
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
-		String unit = mDosageUnitSelector.getSelectedItem().toString();
+		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
 		String reasonForUse = mReasonTextField.getText().toString();
 		String notes = mNotesTextField.getText().toString();
 		try {
@@ -104,7 +105,7 @@ public class EditMedicationActivity extends AppCompatActivity {
 		}
 	}
 
-	private void updateMedStatement(String name, String dosage, String unit,
+	private void updateMedStatement(String name, String dosage, Unit unit,
 									String reasonForUse, String note) throws Exception {
 		if (!name.equals("")) {
 			if (!dosage.equals("")) {
@@ -120,7 +121,8 @@ public class EditMedicationActivity extends AppCompatActivity {
 				mMedication.setNote(note);
 				MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
 				SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-				simpleQuantityDt.setUnit(unit);
+				simpleQuantityDt.setUnit(unit.name());
+				simpleQuantityDt.setCode(unit.ordinal()+"");
 				dosageFhir.setQuantity(simpleQuantityDt);
 				List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
 				listDosage.add(dosageFhir);
