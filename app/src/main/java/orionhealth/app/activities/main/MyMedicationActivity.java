@@ -107,11 +107,6 @@ public class MyMedicationActivity extends AppCompatActivity {
 		// as a parent activity is specified in AndroidManifest.xml.
 		int id = item.getItemId();
 
-		if (id == R.id.button_add) {
-			Intent intent = new Intent(this, AddMedicationActivity.class);
-			startActivity(intent);
-			return true;
-		}
 
 		// Activate the navigation drawer toggle
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
