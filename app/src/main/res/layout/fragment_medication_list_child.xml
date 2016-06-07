@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
         <LinearLayout
+					  android:id="@+id/display_reasonForUse"
             android:layout_width="match_parent"
             android:layout_height="0dp"
 						android:layout_weight="1"
@@ -29,6 +30,7 @@
         </LinearLayout>
 
         <LinearLayout
+						android:id="@+id/display_Note"
             android:layout_width="match_parent"
             android:layout_height="0dp"
 						android:layout_weight="1"
@@ -62,8 +64,15 @@
 					 android:layout_alignParentRight="true"
 					 android:textAllCaps="false"
 					 android:text="@string/button_edit"
-					 android:textColor="#4b4b4b"
-					 android:background="@drawable/button"/>
+					 android:textColor="#ffffff"
+					 android:background="@drawable/button"
+				   android:minHeight="0dp"
+					 android:minWidth="0dp"
+					 android:paddingTop="10dp"
+				   android:paddingBottom="10dp"
+					 android:paddingLeft="20dp"
+					 android:paddingRight="20dp"
+					 android:layout_marginBottom="5dp"/>
 
 				</RelativeLayout>
 

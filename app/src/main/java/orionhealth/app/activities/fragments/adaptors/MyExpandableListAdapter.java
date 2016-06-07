@@ -144,13 +144,21 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		final MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
 		CodeableConceptDt codeableConceptDt = (CodeableConceptDt) medicationStatement.getReasonForUse();
 
-		if (codeableConceptDt != null) {
+		if (codeableConceptDt == null) {
+			LinearLayout linearLayout = (LinearLayout) result.findViewById(R.id.display_reasonForUse);
+			linearLayout.setVisibility(View.GONE);
+		} else {
 			TextView textView = (TextView) result.findViewById(R.id.list_reasonForUse);
 			textView.setText(codeableConceptDt.getText());
 		}
 
-		TextView textView = (TextView) result.findViewById(R.id.list_Note);
-		textView.setText(medicationStatement.getNote());
+		if (medicationStatement.getNote() == null) {
+			LinearLayout linearLayout = (LinearLayout) result.findViewById(R.id.display_Note);
+			linearLayout.setVisibility(View.GONE);
+		} else {
+			TextView textView = (TextView) result.findViewById(R.id.list_Note);
+			textView.setText(medicationStatement.getNote());
+		}
 
 		Button editButton = (Button) result.findViewById(R.id.button_edit);
 		editButton.setOnClickListener(new View.OnClickListener() {
