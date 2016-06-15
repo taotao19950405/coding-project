@@ -5,6 +5,7 @@ package orionhealth.app.activities.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -21,12 +22,13 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
-public class EditMedicationActivity extends AppCompatActivity {
+public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener {
 	private int mMedicationID;
 	private MedicationStatement mMedication;
 
@@ -78,9 +80,8 @@ public class EditMedicationActivity extends AppCompatActivity {
 	}
 
 	public void removeMedicationFromDatabase(View view){
-		MedTableOperations.getInstance().removeMedication(this, mMedicationID);
-		Intent intent = new Intent(this, MyMedicationActivity.class);
-		startActivity(intent);
+		DialogFragment removeMedDialogue = new RemoveMedicationDialogFragment();
+		removeMedDialogue.show(getFragmentManager(), "removeMedication");
 	}
 
 	public void updateMedicationInDatabase(View view){
@@ -133,6 +134,18 @@ public class EditMedicationActivity extends AppCompatActivity {
 		} else {
 			throw new NoNameException();
 		}
+
+	}
+
+	@Override
+	public void onDialogPositiveClick(DialogFragment dialog) {
+		MedTableOperations.getInstance().removeMedication(this, mMedicationID);
+		Intent intent = new Intent(this, MyMedicationActivity.class);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onDialogNegativeClick(DialogFragment dialog) {
 
 	}
 

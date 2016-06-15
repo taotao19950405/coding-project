@@ -59,14 +59,19 @@ public final class FhirServices {
 			FhirContext fhirContext = getFhirContextInstance();
 			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
 
-			for (int i = 0; i < params.length; i++) {
-				MethodOutcome outcome = client.create().resource(params[i]).prettyPrint().encodedJson().execute();
-				IdDt id = (IdDt) outcome.getId();
-				Log.d("SENT TO SERVER", "Got Id " + id);
-				return null;
+			try {
+
+				for (int i = 0; i < params.length; i++) {
+					MethodOutcome outcome = client.create().resource(params[i]).prettyPrint().encodedJson().execute();
+					IdDt id = (IdDt) outcome.getId();
+					Log.d("SENT TO SERVER", "Got Id " + id);
+					return null;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
-
 	}
 }
