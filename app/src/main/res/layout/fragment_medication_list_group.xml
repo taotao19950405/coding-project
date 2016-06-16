@@ -38,7 +38,10 @@
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                   android:id="@+id/list_display_name"
                   android:paddingLeft="15dp"
-                  android:layout_width="wrap_content"
+									android:fontFamily="sans-serif-condensed"
+									android:textSize="16sp"
+									android:textStyle="bold"
+									android:layout_width="wrap_content"
                   android:layout_height="wrap_content"/>
 
     </LinearLayout>

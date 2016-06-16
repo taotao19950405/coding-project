@@ -1,7 +1,9 @@
 package orionhealth.app.fhir;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.api.IResource;
 import ca.uhn.fhir.model.primitive.IdDt;
@@ -48,12 +50,19 @@ public final class FhirServices {
 		return fhirContext.newJsonParser().parseResource(jsonString);
 	}
 
-	public void  sendToServer(IResource resource){
-		SendResourceToServerTask task = new SendResourceToServerTask();
+	public void  sendToServer(IResource resource, Context context){
+		SendResourceToServerTask task = new SendResourceToServerTask(context);
 		task.execute(resource);
 	}
 
 	private class SendResourceToServerTask extends AsyncTask<IResource, Integer, Void> {
+
+		private Context context;
+		private String outcomeMessage;
+
+		private SendResourceToServerTask(Context context){
+			this.context = context;
+		}
 
 		protected Void doInBackground(IResource... params) {
 			FhirContext fhirContext = getFhirContextInstance();
@@ -65,13 +74,20 @@ public final class FhirServices {
 					MethodOutcome outcome = client.create().resource(params[i]).prettyPrint().encodedJson().execute();
 					IdDt id = (IdDt) outcome.getId();
 					Log.d("SENT TO SERVER", "Got Id " + id);
+					outcomeMessage = "Sent to Server " +id;
 					return null;
 				}
 
 			} catch (Exception e) {
 				e.printStackTrace();
+				outcomeMessage = "Failed to Send to Server";
 			}
 			return null;
+		}
+
+		protected void onPostExecute(Void v) {
+			super.onPostExecute(v);
+			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
 }

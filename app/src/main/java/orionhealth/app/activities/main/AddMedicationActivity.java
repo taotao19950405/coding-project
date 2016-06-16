@@ -75,7 +75,7 @@ public class AddMedicationActivity extends AppCompatActivity {
 		try {
 			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, instructions);
 			MedTableOperations.getInstance().addToMedTable(this, medicationStatement);
-			FhirServices.getsFhirServices().sendToServer(medicationStatement);
+			FhirServices.getsFhirServices().sendToServer(medicationStatement, getApplicationContext());
 			Intent intent = new Intent(this, MyMedicationActivity.class);
 			startActivity(intent);
 		} catch (NoNameException e) {
