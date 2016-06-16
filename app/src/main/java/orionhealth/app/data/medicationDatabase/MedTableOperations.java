@@ -45,7 +45,7 @@ public final class MedTableOperations {
 		database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 
-	public static Cursor getAllRows(Context context){
+	public Cursor getAllRows(Context context){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 

@@ -56,7 +56,7 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 		mDosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
 		mDosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
 		mReasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
-		mNotesTextField = (EditText) findViewById(R.id.edit_text_instructions);
+		mNotesTextField = (EditText) findViewById(R.id.edit_text_notes);
 
 	}
 

@@ -51,7 +51,7 @@ public class MedicationListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Cursor cursor = MedTableOperations.getAllRows(getContext());
+		Cursor cursor = MedTableOperations.getInstance().getAllRows(getContext());
 		mAnimatedExpandableListView = (AnimatedExpandableListView) getListView();
 		mAnimatedExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 

@@ -78,7 +78,7 @@ public class MedicationDetailsFragment extends Fragment {
 			reasonForUseEditTextField.setText(codeableConcept.getText());
 		}
 
-		EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_instructions);
+		EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
 		instructionsEditTextField.setText(medicationStatement.getNote());
 
     }
