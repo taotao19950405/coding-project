@@ -3,10 +3,11 @@
 
 package orionhealth.app.activities.main;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,20 +23,25 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
-public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener {
+public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
+                                                                         DatePicker.DatePickerListener {
 	private int mMedicationID;
 	private MedicationStatement mMedication;
+
+	private MedicationDetailsFragment mMedDetailsFragment;
 
 	private EditText mNameTextField;
 	private EditText mDosageTextField;
 	private Spinner mDosageUnitSelector;
 	private EditText mReasonTextField;
+	private EditText mStartDateTextField;
 	private EditText mNotesTextField;
 
 	@Override
@@ -47,15 +53,16 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 		mMedicationID = intent.getIntExtra(MedicationListFragment.SELECTED_MED_ID, 0);
 		mMedication = MedTableOperations.getInstance().getMedicationStatement(this, mMedicationID);
 
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		MedicationDetailsFragment medDetailsFragment =
+		FragmentManager fragmentManager = getFragmentManager();
+		mMedDetailsFragment =
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
-		medDetailsFragment.populateFields(mMedication);
+		mMedDetailsFragment.populateFields(mMedication);
 
 		mNameTextField = (EditText) findViewById(R.id.edit_text_name);
 		mDosageTextField = (EditText) findViewById(R.id.edit_text_dosage);
 		mDosageUnitSelector = (Spinner) findViewById(R.id.unit_spinner);
 		mReasonTextField = (EditText) findViewById(R.id.edit_text_reasonForUse);
+		mStartDateTextField = (EditText) findViewById(R.id.edit_text_effectiveStart);
 		mNotesTextField = (EditText) findViewById(R.id.edit_text_notes);
 
 	}
@@ -148,6 +155,19 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 	public void onDialogNegativeClick(DialogFragment dialog) {
 
 	}
+
+	@Override
+	public void onSetStartDate(int year, int monthOfYear, int dayOfMonth) {
+		mMedDetailsFragment.onSetStartDate(year, monthOfYear, dayOfMonth);
+		mStartDateTextField.setText(year+"/"+monthOfYear+"/"+dayOfMonth);
+		mNotesTextField.requestFocus();
+	}
+
+	@Override
+	public void onCancelStartDate() {
+		mNotesTextField.requestFocus();
+	}
+
 
 	private class NoNameException extends Exception {
 

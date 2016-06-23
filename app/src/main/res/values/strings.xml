@@ -25,8 +25,7 @@
 	<string name="edit_text_reasonForUse_hint">please enter the reason for use</string>
 	<string name="edit_text_effectiveStart_hint">please enter start date</string>
 	<string name="edit_text_effectiveEnd_hint">please enter end date</string>
-	<string name="edit_text_notes_hint">please enter notes</string>
-    <string name="edit_text_instructions_hint">please enter instructions</string>
+    <string name="edit_text_notes_hint">enter any extra notes</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
