@@ -1,7 +1,9 @@
 package orionhealth.app.activities.fragments.dialogFragments;
 
 import android.app.*;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import orionhealth.app.R;
 
 import java.util.Calendar;
 
@@ -40,7 +42,17 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 		int day = c.get(Calendar.DAY_OF_MONTH);
 
 		// Create a new instance of DatePicker and return it
-		return new DatePickerDialog(getActivity(), this, year, month, day);
+		final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				if (which == DialogInterface.BUTTON_NEGATIVE) {
+					dialog.dismiss();
+					datePickerListener.onCancelStartDate();
+				}
+			}
+		});
+		datePickerDialog.setCanceledOnTouchOutside(false);
+		return datePickerDialog;
 	}
 
 	@Override
@@ -48,8 +60,4 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 		datePickerListener.onSetStartDate(year, monthOfYear, dayOfMonth);
 	}
 
-	public void onCancel(DatePickerDialog dialog){
-		super.onCancel(dialog);
-		datePickerListener.onCancelStartDate();
-	}
 }

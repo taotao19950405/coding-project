@@ -18,8 +18,8 @@ public class RemoveMedicationDialogFragment extends DialogFragment {
      * Each method passes the DialogFragment in case the host needs to query it. */
 
 	public interface RemoveMedDialogListener {
-		void onDialogPositiveClick(DialogFragment dialog);
-		void onDialogNegativeClick(DialogFragment dialog);
+		void onRemovePositiveClick(DialogFragment dialog);
+		void onRemoveNegativeClick(DialogFragment dialog);
 	}
 
 	// Use this instance of the interface to deliver action events
@@ -46,12 +46,12 @@ public class RemoveMedicationDialogFragment extends DialogFragment {
 		builder.setTitle(R.string.remove_med_dialog_title).setMessage(R.string.remove_med_dialog_message)
 		  .setPositiveButton(R.string.remove_med_dialog_positive_button, new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int id) {
-				  mListener.onDialogPositiveClick(RemoveMedicationDialogFragment.this);
+				  mListener.onRemovePositiveClick(RemoveMedicationDialogFragment.this);
 			  }
 		  })
 		  .setNegativeButton(R.string.remove_med_dialog_negative_button, new DialogInterface.OnClickListener() {
 			  public void onClick(DialogInterface dialog, int id) {
-				  mListener.onDialogNegativeClick(RemoveMedicationDialogFragment.this);
+				  mListener.onRemoveNegativeClick(RemoveMedicationDialogFragment.this);
 			  }
 		  });
 		// Create the AlertDialog object and return it
