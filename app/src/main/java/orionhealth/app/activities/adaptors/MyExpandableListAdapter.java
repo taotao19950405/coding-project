@@ -1,4 +1,4 @@
-package orionhealth.app.activities.fragments.adaptors;
+package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;

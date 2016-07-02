@@ -3,6 +3,8 @@ package orionhealth.app.activities.fragments.dialogFragments;
 import android.app.*;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import orionhealth.app.R;
 
 import java.util.Calendar;
@@ -14,6 +16,7 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 
 	public interface DatePickerListener {
 		void onSetStartDate(int year, int monthOfYear, int dayOfMonth);
+		void onSetEndDate(int year, int monthOfYear, int dayOfMonth);
 		void onCancelStartDate();
 	}
 
@@ -43,6 +46,7 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 
 		// Create a new instance of DatePicker and return it
 		final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+
 		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == DialogInterface.BUTTON_NEGATIVE) {
@@ -57,7 +61,11 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 
 	@Override
 	public void onDateSet(android.widget.DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-		datePickerListener.onSetStartDate(year, monthOfYear, dayOfMonth);
+		if (getTag().equals("start")) {
+			datePickerListener.onSetStartDate(year, monthOfYear, dayOfMonth);
+		} else if (getTag().equals("end")) {
+			datePickerListener.onSetEndDate(year, monthOfYear, dayOfMonth);
+		}
 	}
 
 }

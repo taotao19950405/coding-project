@@ -14,16 +14,21 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.widget.Toast;
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
+import ca.uhn.fhir.model.primitive.DateTimeDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
@@ -31,6 +36,7 @@ import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
+import orionhealth.app.services.DateService;
 
 /**
  * Created by bill on 25/04/16.
@@ -46,7 +52,10 @@ public class MedicationDetailsFragment extends Fragment {
 	private Spinner mDosageUnitSelector;
 	private EditText mReasonTextField;
 	private EditText mStartDateTextField;
+	private EditText mEndDateTextFeild;
 	private EditText mNotesTextField;
+
+	private DateService dateService;
 
         @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,11 +70,13 @@ public class MedicationDetailsFragment extends Fragment {
 		setUpUnitSelector();
 
 		mReasonTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_reasonForUse);
-
 		mStartDateTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_effectiveStart);
-		setUpStartDateEditText();
+		mEndDateTextFeild = (EditText) detailsFragment.findViewById(R.id.edit_text_effectiveEnd);
+		setUpDateEditTextFields();
 
 		mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
+
+		dateService = new DateService();
 
         return detailsFragment;
     }
@@ -107,6 +118,18 @@ public class MedicationDetailsFragment extends Fragment {
 				reasonForUseEditTextField.setText(codeableConcept.getText());
 			}
 
+			PeriodDt p = (PeriodDt) mMedication.getEffective();
+
+			if (p != null) {
+				Date d = p.getStart();
+				String dateString = dateService.formatToString(d);
+				mStartDateTextField.setText(dateString);
+
+				d = p.getEnd();
+				dateString = dateService.formatToString(d);
+				mEndDateTextFeild.setText(dateString);
+			}
+
 			EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
 			instructionsEditTextField.setText(mMedication.getNote());
 		}
@@ -119,11 +142,13 @@ public class MedicationDetailsFragment extends Fragment {
 		String dosage = mDosageTextField.getText().toString();
 		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
 		String reasonForUse = mReasonTextField.getText().toString();
+		String startDate = mStartDateTextField.getText().toString();
+		String endDate = mEndDateTextFeild.getText().toString();
 		String instructions = mNotesTextField.getText().toString();
 
 		MedicationStatement medicationStatement;
 		try {
-			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, instructions);
+			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
 			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
 			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
 			Intent intent = new Intent(context, MyMedicationActivity.class);
@@ -139,36 +164,17 @@ public class MedicationDetailsFragment extends Fragment {
 		}
 	}
 
-	private MedicationStatement createMedStatement(String name, String dosage, Unit unit,
-												   String reasonForUse, String note) throws Exception {
-		checkValidMedication(name, dosage);
-		Long dosageLong = Long.parseLong(dosage);
-		MedicationStatement medicationStatement = new MedicationStatement();
-		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
-		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
-		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
-		medicationStatement.setPatient(patientRef);
-		medicationStatement.setReasonForUse(new CodeableConceptDt().setText(reasonForUse));
-		medicationStatement.setNote(note);
-		MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
-		SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-		simpleQuantityDt.setUnit(unit.toString());
-		simpleQuantityDt.setCode(unit.ordinal()+"");
-		dosageFhir.setQuantity(simpleQuantityDt);
-		List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
-		listDosage.add(dosageFhir);
-		medicationStatement.setDosage(listDosage);
-		return medicationStatement;
-	}
-
 	public void updateMedicationInDatabase(Context context){
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
 		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
 		String reasonForUse = mReasonTextField.getText().toString();
+		String startDate = mStartDateTextField.getText().toString();
+		String endDate = mEndDateTextFeild.getText().toString();
 		String notes = mNotesTextField.getText().toString();
 		try {
-			updateMedStatement(name, dosage, unit, reasonForUse, notes);
+			mMedication =
+			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
 			Intent intent = new Intent(context, MyMedicationActivity.class);
 			startActivity(intent);
@@ -183,27 +189,34 @@ public class MedicationDetailsFragment extends Fragment {
 		}
 	}
 
-	private void updateMedStatement(String name, String dosage, Unit unit,
-									String reasonForUse, String note) throws Exception {
+	private MedicationStatement createMedStatement(String name, String dosage, Unit unit,
+												   String reasonForUse, String startDate,
+												   String endDate, String note) throws Exception {
 		checkValidMedication(name, dosage);
 		Long dosageLong = Long.parseLong(dosage);
-		CodeableConceptDt codeableConceptDt = (CodeableConceptDt) mMedication.getMedication();
-		codeableConceptDt.setText(name);
-		codeableConceptDt = (CodeableConceptDt) mMedication.getReasonForUse();
-		if (codeableConceptDt == null){
-			codeableConceptDt = new CodeableConceptDt();
-		}
-		codeableConceptDt.setText(reasonForUse);
-		mMedication.setReasonForUse(codeableConceptDt);
-		mMedication.setNote(note);
+		MedicationStatement medicationStatement = new MedicationStatement();
+		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
+		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
+		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
+		medicationStatement.setPatient(patientRef);
+		medicationStatement.setReasonForUse(new CodeableConceptDt().setText(reasonForUse));
+		Date d = dateService.parseDate(startDate);
+		PeriodDt period = new PeriodDt();
+		period.setStart(d, TemporalPrecisionEnum.DAY );
+		d = dateService.parseDate(endDate);
+		period.setEnd(d, TemporalPrecisionEnum.DAY);
+		medicationStatement.setEffective(period);
+
+		medicationStatement.setNote(note);
 		MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
 		SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-		simpleQuantityDt.setUnit(unit.name());
+		simpleQuantityDt.setUnit(unit.toString());
 		simpleQuantityDt.setCode(unit.ordinal()+"");
 		dosageFhir.setQuantity(simpleQuantityDt);
 		List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
 		listDosage.add(dosageFhir);
-		mMedication.setDosage(listDosage);
+		medicationStatement.setDosage(listDosage);
+		return medicationStatement;
 	}
 
 	public void removeMedication(){
@@ -218,8 +231,19 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public void onSetStartDate(int year, int monthOfYear, int dayOfMonth){
-		mStartDateTextField.setText(year+"/"+monthOfYear+"/"+dayOfMonth);
-		mNotesTextField.requestFocus();
+		Calendar c = Calendar.getInstance();
+		c.set(year, monthOfYear, dayOfMonth);
+		Date d = c.getTime();
+		String dateString = dateService.formatToString(d);
+		mStartDateTextField.setText(dateString);
+	}
+
+	public void onSetEndDate(int year, int monthOfYear, int dayOfMonth){
+		Calendar c = Calendar.getInstance();
+		c.set(year, monthOfYear, dayOfMonth);
+		Date d = c.getTime();
+		String dateString = dateService.formatToString(d);
+		mEndDateTextFeild.setText(dateString);
 	}
 
 	public void onCancelStartDate() {
@@ -240,25 +264,16 @@ public class MedicationDetailsFragment extends Fragment {
 		Long.parseLong(dosage);
 	}
 
-	private void setUpStartDateEditText() {
-		mStartDateTextField.setFocusableInTouchMode(false);
-		mStartDateTextField.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+	private void setUpDateEditTextFields() {
+		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener("start"));
+		mStartDateTextField.setOnClickListener(new showDatePickerClickListener("start"));
+		mStartDateTextField.setShowSoftInputOnFocus(false);
+		mStartDateTextField.setOnTouchListener(new hideKeyBoardTouchListener());
 
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus) {
-					DialogFragment dialogFragment = new DatePicker();
-					dialogFragment.show(getFragmentManager(), "hello");
-				}
-			}
-		});
-		mStartDateTextField.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				DialogFragment dialogFragment = new DatePicker();
-				dialogFragment.show(getFragmentManager(), "hello");
-			}
-		});
+		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener("end"));
+		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener("end"));
+		mEndDateTextFeild.setShowSoftInputOnFocus(false);
+		mEndDateTextFeild.setOnTouchListener(new hideKeyBoardTouchListener());
 	}
 
 	private void setUpUnitSelector() {
@@ -267,6 +282,58 @@ public class MedicationDetailsFragment extends Fragment {
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mDosageUnitSelector.setAdapter(adapter);
 	}
+
+
+	private void hideKeyBoard(View view) {
+		InputMethodManager imm = (InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+		if (imm != null) {
+			imm.hideSoftInputFromWindow(view.getWindowToken(), 0);  // hide the soft keyboard
+		}
+	}
+
+// ------------------------------	Listener classes   --------------------------------------------------//
+
+	private class hideKeyBoardTouchListener implements View.OnTouchListener {
+
+		@Override
+		public boolean onTouch(View v, MotionEvent event) {
+			hideKeyBoard(v);
+			return false;
+		}
+	}
+
+	private class showDatePickerFocusChangeListener implements View.OnFocusChangeListener {
+		private String tag;
+
+		public showDatePickerFocusChangeListener(String tag) {
+			this.tag = tag;
+		}
+
+		@Override
+		public void onFocusChange(View v, boolean hasFocus) {
+			if (hasFocus) {
+				DialogFragment dialogFragment = new DatePicker();
+				dialogFragment.show(getFragmentManager(), tag);
+				hideKeyBoard(v);
+			}
+		}
+	}
+
+	private class showDatePickerClickListener implements View.OnClickListener {
+		private String tag;
+
+		public showDatePickerClickListener(String tag) {
+			this.tag = tag;
+		}
+
+		@Override
+		public void onClick(View v) {
+			DialogFragment dialogFragment = new DatePicker();
+			dialogFragment.show(getFragmentManager(), tag);
+		}
+	}
+
+// --------------------------   Exception classes ---------------------------------------------- //
 
 	private class NoNameException extends Exception {
 

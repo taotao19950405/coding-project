@@ -15,7 +15,7 @@ import orionhealth.app.R;
 import orionhealth.app.activities.main.AddMedicationActivity;
 import orionhealth.app.activities.main.EditMedicationActivity;
 import orionhealth.app.activities.external.AnimatedExpandableListView;
-import orionhealth.app.activities.fragments.adaptors.MyExpandableListAdapter;
+import orionhealth.app.activities.adaptors.MyExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**

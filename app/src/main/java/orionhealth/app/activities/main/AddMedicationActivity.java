@@ -70,6 +70,11 @@ public class AddMedicationActivity extends AppCompatActivity implements DatePick
 	}
 
 	@Override
+	public void onSetEndDate(int year, int monthOfYear, int dayOfMonth) {
+		mMedDetailsFragment.onSetEndDate(year, monthOfYear, dayOfMonth);
+	}
+
+	@Override
 	public void onCancelStartDate() {
 		mMedDetailsFragment.onCancelStartDate();
 	}
