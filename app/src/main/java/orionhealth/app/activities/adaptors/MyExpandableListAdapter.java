@@ -1,4 +1,4 @@
-package orionhealth.app.activities.fragments.adaptors;
+package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -11,6 +11,7 @@ import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.data.dataModels.MyMedicationStatement;
+import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.activities.external.AnimatedExpandableListView;
@@ -82,7 +83,7 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 							 ViewGroup parent) {
 		LayoutInflater inflater =
 		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View result = inflater.inflate(R.layout.fragment_medication_list_item, null);
+		View result = inflater.inflate(R.layout.fragment_medication_list_group, null);
 		MyMedicationStatement medStatement = (MyMedicationStatement) getGroup(groupPosition);
 		MedicationStatement medStatementFhir = medStatement.getFhirMedStatement();
 		CodeableConceptDt codeableConcept = (CodeableConceptDt)medStatementFhir.getMedication();
@@ -96,11 +97,33 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
 		textView.setText(simpleQuantityDt.getValueElement().getValueAsInteger()+"");
 
+		String unitIdString = simpleQuantityDt.getCode();
 		textView = (TextView) result.findViewById(R.id.list_display_dosage_unit);
-		textView.setText(simpleQuantityDt.getUnitElement().toString());
+		ImageView imageView = (ImageView) result.findViewById(R.id.medication_icon);
+		if (unitIdString != null) {
+			int unitId = Integer.parseInt(unitIdString);
+			Unit unit = Unit.values()[unitId];
+			textView.setText(unit.getName());
+			if (unitId == Unit.MG.ordinal()) {
+				imageView.setImageResource(R.drawable.two_color_pill);
+			} else if (unitId == Unit.ML.ordinal()) {
+				imageView.setImageResource(R.drawable.medicine);
+			} else if (unitId == Unit.SPRAY.ordinal()) {
+				imageView.setImageResource(R.drawable.spray_can);
+			} else if (unitId == Unit.TABLET.ordinal()) {
+				imageView.setImageResource(R.drawable.pill);
+			} else {
+				imageView.setImageResource(R.drawable.warning);
+			}
+
+		} else {
+			textView.setText(simpleQuantityDt.getUnit());
+			imageView.setImageResource(R.drawable.warning);
+		}
+
 
 		final RelativeLayout indicator = (RelativeLayout) result.findViewById(R.id.indicator);
-		ImageView imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
+		imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
 
 		if (isExpanded) {
 			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
@@ -121,13 +144,21 @@ public class MyExpandableListAdapter extends AnimatedExpandableListView.Animated
 		final MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
 		CodeableConceptDt codeableConceptDt = (CodeableConceptDt) medicationStatement.getReasonForUse();
 
-		if (codeableConceptDt != null) {
+		if (codeableConceptDt == null) {
+			LinearLayout linearLayout = (LinearLayout) result.findViewById(R.id.display_reasonForUse);
+			linearLayout.setVisibility(View.GONE);
+		} else {
 			TextView textView = (TextView) result.findViewById(R.id.list_reasonForUse);
 			textView.setText(codeableConceptDt.getText());
 		}
 
-		TextView textView = (TextView) result.findViewById(R.id.list_Note);
-		textView.setText(medicationStatement.getNote());
+		if (medicationStatement.getNote() == null) {
+			LinearLayout linearLayout = (LinearLayout) result.findViewById(R.id.display_Note);
+			linearLayout.setVisibility(View.GONE);
+		} else {
+			TextView textView = (TextView) result.findViewById(R.id.list_Note);
+			textView.setText(medicationStatement.getNote());
+		}
 
 		Button editButton = (Button) result.findViewById(R.id.button_edit);
 		editButton.setOnClickListener(new View.OnClickListener() {

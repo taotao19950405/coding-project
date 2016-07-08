@@ -6,7 +6,7 @@
 
 	<string name="button_add">Add</string>
 	<string name="button_save">Save</string>
-	<string name="button_edit">Edit</string>
+	<string name="button_edit"><b>Edit</b></string>
 	<string name="button_remove">remove</string>
 
 	<string name="text_label_name">Name:</string>
@@ -20,17 +20,25 @@
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 
-	<string name="edit_text_name_hint">please enter a name</string>
-	<string name="edit_text_dosage_hint">please enter a dosage</string>
-	<string name="edit_text_reasonForUse_hint">please enter the reason for use</string>
-	<string name="edit_text_effectiveStart_hint">please enter start date</string>
-	<string name="edit_text_effectiveEnd_hint">please enter end date</string>
-	<string name="edit_text_notes_hint">please enter notes</string>
-    <string name="edit_text_instructions_hint">please enter instructions</string>
+	<string name="basic_information_header">Basic Information:</string>
+	<string name="schedule_header">Schedule:</string>
+	<string name="additional_header">Additional:</string>
+
+	<string name="edit_text_name_hint">Enter the name</string>
+	<string name="edit_text_dosage_hint">Enter the dosage</string>
+	<string name="edit_text_reasonForUse_hint">Enter the Use reason</string>
+	<string name="edit_text_effectiveStart_hint">Select start date</string>
+	<string name="edit_text_effectiveEnd_hint">Select end date</string>
+    <string name="edit_text_notes_hint">Enter any extra notes</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
 	<string name="title_activity_trial">TrialActivity</string>
+
+	<string name="remove_med_dialog_title">Remove Medication</string>
+	<string name="remove_med_dialog_message">Are you sure you want to remove this medication?</string>
+	<string name="remove_med_dialog_positive_button">Yes</string>
+	<string name="remove_med_dialog_negative_button">No</string>
 
 	<string name="title_section1">1</string>
 	<string name="title_section2">2</string>
@@ -38,18 +46,9 @@
 	<string name="title_section4">4</string>
 	<string name="title_section5">5</string>
 
-	<string name="hello_world">Hello world!</string>
 	<string name="construction_message">Sorry this page is currently under construction</string>
 
 	<string name="action_settings">Settings</string>
-
-    <string-array name="unit_array">
-        <item>mg</item>
-        <item>ml</item>
-        <item>spray</item>
-        <item>tablet</item>
-    </string-array>
-
 
 <!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>

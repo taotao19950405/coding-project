@@ -32,6 +32,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MyMedicationActivity" />
         </activity>
+			<receiver
+				android:name="orionhealth.app.services.AlarmReceiver"
+				android:process=":remote" />
 		</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>

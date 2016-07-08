@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+ <!--<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="0dp"
 	android:layout_height="match_parent"
 	android:layout_weight="1"
-	android:orientation="vertical" >
+	android:orientation="vertical" > -->
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/medication_list"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
 
 	<orionhealth.app.activities.external.AnimatedExpandableListView
 		android:id="@android:id/list"
@@ -15,11 +21,21 @@
 		android:indicatorRight="@dimen/activity_vertical_margin">
 	</orionhealth.app.activities.external.AnimatedExpandableListView>
 
+
 	<TextView
 		android:id="@android:id/empty"
 		android:text="No Medication Listed"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content" >
+		android:layout_height="wrap_content"
+		android:padding="10dp">
 	</TextView>
 
-</LinearLayout>
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/button_add"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		app:backgroundTint="#ff7719"
+		style="@style/MyCustomFAB"
+		/>
+
+</RelativeLayout>

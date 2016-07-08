@@ -2,16 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
+    android:padding="10dp"
     android:orientation="vertical">
 
         <LinearLayout
+					  android:id="@+id/display_reasonForUse"
             android:layout_width="match_parent"
             android:layout_height="0dp"
 						android:layout_weight="1"
-            android:paddingLeft="12dp"
+            android:paddingLeft="10dp"
 						android:paddingBottom="12dp"
-            android:paddingRight="12dp"
+            android:paddingRight="10dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -29,11 +30,12 @@
         </LinearLayout>
 
         <LinearLayout
+						android:id="@+id/display_Note"
             android:layout_width="match_parent"
             android:layout_height="0dp"
 						android:layout_weight="1"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
@@ -60,7 +62,17 @@
 					 android:layout_width="wrap_content"
 					 android:layout_height="wrap_content"
 					 android:layout_alignParentRight="true"
-					 android:text="@string/button_edit"/>
+					 android:textAllCaps="false"
+					 android:text="@string/button_edit"
+					 android:textColor="#ffffff"
+					 android:background="@drawable/button"
+				   android:minHeight="0dp"
+					 android:minWidth="0dp"
+					 android:paddingTop="10dp"
+				   android:paddingBottom="10dp"
+					 android:paddingLeft="20dp"
+					 android:paddingRight="20dp"
+					 android:layout_marginBottom="5dp"/>
 
 				</RelativeLayout>
 
