@@ -20,12 +20,16 @@
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 
-	<string name="edit_text_name_hint">please enter a name</string>
-	<string name="edit_text_dosage_hint">please enter a dosage</string>
-	<string name="edit_text_reasonForUse_hint">please enter the reason for use</string>
-	<string name="edit_text_effectiveStart_hint">please enter start date</string>
-	<string name="edit_text_effectiveEnd_hint">please enter end date</string>
-    <string name="edit_text_notes_hint">enter any extra notes</string>
+	<string name="basic_information_header">Basic Information:</string>
+	<string name="schedule_header">Schedule:</string>
+	<string name="additional_header">Additional:</string>
+
+	<string name="edit_text_name_hint">Enter the name</string>
+	<string name="edit_text_dosage_hint">Enter the dosage</string>
+	<string name="edit_text_reasonForUse_hint">Enter the Use reason</string>
+	<string name="edit_text_effectiveStart_hint">Select start date</string>
+	<string name="edit_text_effectiveEnd_hint">Select end date</string>
+    <string name="edit_text_notes_hint">Enter any extra notes</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>

@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class DateService {
 	private Format format;
-	private final String simpleFormat = "EE dd/M/yyyy";
+	private final String simpleFormat = " EEE, MMM d, yyyy";
 
 	public DateService() {
 		format = new SimpleDateFormat(simpleFormat);

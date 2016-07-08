@@ -1,10 +1,13 @@
 package orionhealth.app.activities.fragments.fragments;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +39,7 @@ import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
+import orionhealth.app.services.AlarmReceiver;
 import orionhealth.app.services.DateService;
 
 /**
@@ -151,6 +155,10 @@ public class MedicationDetailsFragment extends Fragment {
 			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
 			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
 			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
+			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			Intent intent2 = new Intent(context, AlarmReceiver.class);
+			PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent2, 0);
+			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmIntent);
 			Intent intent = new Intent(context, MyMedicationActivity.class);
 			startActivity(intent);
 		} catch (NoNameException e) {

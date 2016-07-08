@@ -22,7 +22,6 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
                                                                          DatePicker.DatePickerListener {
-	private int mMedicationID;
 	private MedicationDetailsFragment mMedDetailsFragment;
 
 	@Override
@@ -31,12 +30,12 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 		setContentView(R.layout.activity_edit_medication);
 
 		Intent intent = getIntent();
-		mMedicationID = intent.getIntExtra(MedicationListFragment.SELECTED_MED_ID, 0);
+		int medicationID = intent.getIntExtra(MedicationListFragment.SELECTED_MED_ID, 0);
 
 		FragmentManager fragmentManager = getFragmentManager();
 		mMedDetailsFragment =
 		  		(MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
-		mMedDetailsFragment.setMedication(this, mMedicationID);
+		mMedDetailsFragment.setMedication(this, medicationID);
 		mMedDetailsFragment.populateFields();
 
 	}
