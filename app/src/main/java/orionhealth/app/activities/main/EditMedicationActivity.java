@@ -18,7 +18,6 @@ import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
-import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
                                                                          DatePicker.DatePickerListener {
@@ -78,18 +77,13 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 	}
 
 	@Override
-	public void onSetStartDate(int year, int monthOfYear, int dayOfMonth) {
-		mMedDetailsFragment.onSetStartDate(year, monthOfYear, dayOfMonth);
+	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag) {
+		mMedDetailsFragment.onSetDate(year, monthOfYear, dayOfMonth, tag);
 	}
 
 	@Override
-	public void onSetEndDate(int year, int monthOfYear, int dayOfMonth) {
-		mMedDetailsFragment.onSetEndDate(year, monthOfYear, dayOfMonth);
-	}
-
-	@Override
-	public void onCancelStartDate() {
-		mMedDetailsFragment.onCancelStartDate();
+	public void onCancelDate() {
+		mMedDetailsFragment.onCancelDate();
 	}
 
 }

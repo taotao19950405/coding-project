@@ -238,23 +238,19 @@ public class MedicationDetailsFragment extends Fragment {
 		startActivity(intent);
 	}
 
-	public void onSetStartDate(int year, int monthOfYear, int dayOfMonth){
+	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag){
 		Calendar c = Calendar.getInstance();
 		c.set(year, monthOfYear, dayOfMonth);
 		Date d = c.getTime();
 		String dateString = dateService.formatToString(d);
-		mStartDateTextField.setText(dateString);
+		if (tag.equals(mStartDateTextField.getId()+"")) {
+			mStartDateTextField.setText(dateString);
+		} else {
+			mEndDateTextFeild.setText(dateString);
+		}
 	}
 
-	public void onSetEndDate(int year, int monthOfYear, int dayOfMonth){
-		Calendar c = Calendar.getInstance();
-		c.set(year, monthOfYear, dayOfMonth);
-		Date d = c.getTime();
-		String dateString = dateService.formatToString(d);
-		mEndDateTextFeild.setText(dateString);
-	}
-
-	public void onCancelStartDate() {
+	public void onCancelDate() {
 		mNotesTextField.requestFocus();
 	}
 
@@ -273,13 +269,13 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private void setUpDateEditTextFields() {
-		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener("start"));
-		mStartDateTextField.setOnClickListener(new showDatePickerClickListener("start"));
+		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mStartDateTextField.getId()+""));
+		mStartDateTextField.setOnClickListener(new showDatePickerClickListener(mStartDateTextField.getId()+""));
 		mStartDateTextField.setShowSoftInputOnFocus(false);
 		mStartDateTextField.setOnTouchListener(new hideKeyBoardTouchListener());
 
-		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener("end"));
-		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener("end"));
+		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mEndDateTextFeild.getId()+""));
+		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener(mEndDateTextFeild.getId()+""));
 		mEndDateTextFeild.setShowSoftInputOnFocus(false);
 		mEndDateTextFeild.setOnTouchListener(new hideKeyBoardTouchListener());
 	}
