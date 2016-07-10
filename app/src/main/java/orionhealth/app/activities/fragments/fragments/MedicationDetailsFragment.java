@@ -41,6 +41,7 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.AlarmReceiver;
 import orionhealth.app.services.DateService;
+import orionhealth.app.services.RingToneService;
 
 /**
  * Created by bill on 25/04/16.
@@ -159,6 +160,7 @@ public class MedicationDetailsFragment extends Fragment {
 			Intent intent2 = new Intent(context, AlarmReceiver.class);
 			PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent2, 0);
 			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmIntent);
+
 			Intent intent = new Intent(context, MyMedicationActivity.class);
 			startActivity(intent);
 		} catch (NoNameException e) {
