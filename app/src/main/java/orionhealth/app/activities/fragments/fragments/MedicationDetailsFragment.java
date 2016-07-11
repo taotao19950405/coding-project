@@ -36,6 +36,8 @@ import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.main.MyMedicationActivity;
+import orionhealth.app.data.dataModels.MyMedicationStatement;
+import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
@@ -157,9 +159,13 @@ public class MedicationDetailsFragment extends Fragment {
 			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
 			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
 			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-			Intent intent2 = new Intent(context, AlarmReceiver.class);
-			PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent2, 0);
-			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmIntent);
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			NotificationParcel parcel = new NotificationParcel(name, instructions, unit.ordinal());
+			Bundle bundle = new Bundle();
+			bundle.putParcelable("here", parcel);
+			alarmIntent.putExtra(AlarmReceiver.MEDICATION_KEY, bundle);
+			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmPendingIntent);
 
 			Intent intent = new Intent(context, MyMedicationActivity.class);
 			startActivity(intent);
