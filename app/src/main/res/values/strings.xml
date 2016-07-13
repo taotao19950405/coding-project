@@ -4,6 +4,7 @@
 	<string name="title_activity_add_medication">Add Medication</string>
 	<string name="title_activity_edit_medication">Edit Medication</string>
 	<string name="title_activity_add_symptoms">Add Symptoms</string>
+	<string name="title_activity_edit_symptoms">Edit Symptoms</string>
 
 	<string name="button_add">Add</string>
 	<string name="button_add_symptoms">Add</string>

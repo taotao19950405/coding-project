@@ -1,40 +1,47 @@
 //       Description:
-//		 @author:  Lu
+//		 @author:  Bill
+
 package orionhealth.app.activities.main;
+
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.view.LayoutInflater;
 
 import orionhealth.app.R;
-import android.content.Context;
+import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
+import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
+import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 
-public class AddSymptomsActivity extends AppCompatActivity  {
-
-//	private MedicationDetailsFragment mMedDetailsFragment;
+public class EditSymptomsActivity extends AppCompatActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add_symptoms);
+		setContentView(R.layout.activity_edit_symptoms);
 
 		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_symptoms);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View details_layout = inflater.inflate(R.layout.fragment_symptoms_details, null);
 		context.addView(details_layout, 0);
 
-//		FragmentManager fragmentManager = getFragmentManager();
-//		mMedDetailsFragment =
-//		  (MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
+		Intent intent = getIntent();
+		int medicationID = intent.getIntExtra(MedicationListFragment.SELECTED_MED_ID, 0);
+
 	}
 
-	@Override
+    @Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_add_symptoms, menu);
+		getMenuInflater().inflate(R.menu.menu_edit_symptoms, menu);
 		return true;
 	}
 
@@ -50,22 +57,13 @@ public class AddSymptomsActivity extends AppCompatActivity  {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void addSymptomsToDatabase(View view) {
-//		Intent intent = new Intent(this, MyMedicationActivity.class);
-//		EditText editText = (EditText) findViewById(R.id.edit_text_name);
-//		String name = editText.getText().toString();
-//		editText = (EditText) findViewById(R.id.edit_text_dosage);
-//		String dosage = editText.getText().toString();
-//		if (!(name.equals("") || dosage.equals(""))){
-//			try {
-//				int dosageInt = Integer.parseInt(dosage);
-//				Medication med = new Medication(name, dosageInt);
-//				MedTableOperations.addToMedTable(this, med);
-//			} catch (NumberFormatException e) {
-//				Log.d("hello", "dosage not an int");
-//			}
-//		}
-//		startActivity(intent);
+	public void removeMedication(View view){
+//		mMedDetailsFragment.removeMedication();
 	}
 
+	public void updateMedicationInDatabase(View view){
+//		mMedDetailsFragment.updateMedicationInDatabase(this);
+	}
+
+	public void saveMedication(View view){}
 }

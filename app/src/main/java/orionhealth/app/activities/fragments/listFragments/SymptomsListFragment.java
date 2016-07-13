@@ -2,23 +2,22 @@ package orionhealth.app.activities.fragments.listFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-
+import android.widget.ListView;
 import orionhealth.app.R;
-import orionhealth.app.activities.main.AddMedicationActivity;
 import orionhealth.app.activities.main.AddSymptomsActivity;
+import orionhealth.app.activities.main.EditSymptomsActivity;
 
 /**
  * Created by Lu on 13/07/16.
  */
 public class SymptomsListFragment extends ListFragment {
+
 
 	private String[] values = new String[] { "Android List View",
 			"Adapter implementation",
@@ -60,4 +59,11 @@ public class SymptomsListFragment extends ListFragment {
 
 	}
 
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id){
+		super.onListItemClick(l, v, position, id);
+		Intent intent = new Intent(getContext(), EditSymptomsActivity.class);
+//		intent.putExtra(SELECTED_MED_ID, id);
+		startActivity(intent);
+	};
 }

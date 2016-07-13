@@ -15,4 +15,9 @@ public final class DatabaseContract {
 		public static final String TABLE_NAME = "medication";
 		public static final String COLUMN_NAME_JSON_STRING = "json_string";
 	}
+
+	public static  abstract class SymTableInfo implements BaseColumns {
+		public static final String TABLE_NAME = "Symptoms";
+		public static final String COLUMN_NAME_JSON_STRING = "json_string";
+	}
 }
