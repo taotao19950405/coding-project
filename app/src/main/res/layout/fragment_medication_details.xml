@@ -23,78 +23,78 @@
 		android:background="@android:color/darker_gray"/>
 
 	<GridLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:rowCount="3"
+		android:columnCount="2"
+		android:padding="10dp"
+		android:orientation="horizontal">
+
+		<TextView
+			android:id="@+id/text_label_name"
+			android:layout_row="0"
+			android:layout_column="0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_name" />
+
+		<EditText
+			android:id="@+id/edit_text_name"
+			android:layout_row="0"
+			android:layout_column="1"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:rowCount="3"
-			android:columnCount="2"
-			android:padding="10dp"
+			android:hint="@string/edit_text_name_hint" />
+
+
+		<TextView
+			android:id="@+id/text_label_dosage"
+			android:layout_row="1"
+			android:layout_column="0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="15dp"
+			android:text="@string/text_label_dosage" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_row="1"
+			android:layout_column="1"
 			android:orientation="horizontal">
 
-					<TextView
-							android:id="@+id/text_label_name"
-							android:layout_row="0"
-							android:layout_column="0"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/text_label_name" />
+			<EditText
+				android:id="@+id/edit_text_dosage"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="3"
+				android:hint="@string/edit_text_dosage_hint"
+				android:inputType="number" />
 
-					<EditText
-							android:id="@+id/edit_text_name"
-							android:layout_row="0"
-							android:layout_column="1"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:hint="@string/edit_text_name_hint" />
+			<Spinner
+				android:id="@+id/unit_spinner"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				/>
 
+		</LinearLayout>
 
-					<TextView
-							android:id="@+id/text_label_dosage"
-							android:layout_row="1"
-							android:layout_column="0"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_marginTop="15dp"
-							android:text="@string/text_label_dosage" />
+		<TextView
+			android:id="@+id/text_reasonForUse"
+			android:layout_row="2"
+			android:layout_column="0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_reasonForUse" />
 
-					<LinearLayout
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:layout_row="1"
-							android:layout_column="1"
-							android:orientation="horizontal">
-
-						<EditText
-							android:id="@+id/edit_text_dosage"
-							android:layout_width="0dp"
-							android:layout_height="wrap_content"
-							android:layout_weight="3"
-							android:hint="@string/edit_text_dosage_hint"
-							android:inputType="number" />
-
-						<Spinner
-							android:id="@+id/unit_spinner"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:layout_weight="1"
-						/>
-
-					</LinearLayout>
-
-					<TextView
-						android:id="@+id/text_reasonForUse"
-						android:layout_row="2"
-						android:layout_column="0"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="@string/text_label_reasonForUse" />
-
-					<EditText
-						android:id="@+id/edit_text_reasonForUse"
-						android:layout_row="2"
-						android:layout_column="1"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:hint="@string/edit_text_reasonForUse_hint" />
+		<EditText
+			android:id="@+id/edit_text_reasonForUse"
+			android:layout_row="2"
+			android:layout_column="1"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_reasonForUse_hint" />
 
 	</GridLayout>
 
@@ -121,40 +121,40 @@
 		android:padding="10dp"
 		android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_effectiveStart"
-						android:layout_row="0"
-						android:layout_column="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_label_effectiveStart" />
+		<TextView
+			android:id="@+id/text_effectiveStart"
+			android:layout_row="0"
+			android:layout_column="0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_effectiveStart" />
 
-        <EditText
-            android:id="@+id/edit_text_effectiveStart"
-						android:layout_row="0"
-						android:layout_column="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_effectiveStart_hint"
-            android:inputType="date"/>
-            <!--android:onClick="showDatePickerDialog" />-->
+		<EditText
+			android:id="@+id/edit_text_effectiveStart"
+			android:layout_row="0"
+			android:layout_column="1"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_effectiveStart_hint"
+			android:inputType="date"/>
+		<!--android:onClick="showDatePickerDialog" />-->
 
-        <TextView
-            android:id="@+id/text_effectiveEnd"
-						android:layout_row="1"
-						android:layout_column="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_label_effectiveEnd" />
+		<TextView
+			android:id="@+id/text_effectiveEnd"
+			android:layout_row="1"
+			android:layout_column="0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/text_label_effectiveEnd" />
 
-        <EditText
-            android:id="@+id/edit_text_effectiveEnd"
-						android:layout_row="1"
-						android:layout_column="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_effectiveEnd_hint"
-            android:inputType="date" />
+		<EditText
+			android:id="@+id/edit_text_effectiveEnd"
+			android:layout_row="1"
+			android:layout_column="1"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_effectiveEnd_hint"
+			android:inputType="date" />
 
 	</GridLayout>
 
@@ -174,15 +174,15 @@
 		android:background="@android:color/darker_gray"/>
 
 
-        <EditText
-            android:id="@+id/edit_text_notes"
-						android:layout_row="1"
-						android:layout_column="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_notes_hint"
-						android:inputType="textMultiLine|textCapSentences"
-						android:minLines="3"/>
-	
+	<EditText
+		android:id="@+id/edit_text_notes"
+		android:layout_row="1"
+		android:layout_column="0"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/edit_text_notes_hint"
+		android:inputType="textMultiLine|textCapSentences"
+		android:minLines="3"/>
+
 
 </LinearLayout>

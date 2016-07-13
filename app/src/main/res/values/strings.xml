@@ -3,8 +3,10 @@
 	<string name="title_activity_my_medication">My Medication</string>
 	<string name="title_activity_add_medication">Add Medication</string>
 	<string name="title_activity_edit_medication">Edit Medication</string>
+	<string name="title_activity_add_symptoms">Add Symptoms</string>
 
 	<string name="button_add">Add</string>
+	<string name="button_add_symptoms">Add</string>
 	<string name="button_save">Save</string>
 	<string name="button_edit"><b>Edit</b></string>
 	<string name="button_remove">remove</string>
@@ -15,8 +17,10 @@
     <string name="text_label_effectiveEnd">Effective Till:</string>
 	<string name="text_label_notes">Notes:</string>
     <string name="text_label_instructions">Instructions:</string>
-
 	<string name="text_label_reasonForUse">Reason for use:</string>
+	<string name="text_label_Symptoms">Symptoms:</string>
+
+	<string name="text_hardcoded_Symptoms">Fever</string>
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 
@@ -30,6 +34,7 @@
 	<string name="edit_text_effectiveStart_hint">Select start date</string>
 	<string name="edit_text_effectiveEnd_hint">Select end date</string>
     <string name="edit_text_notes_hint">Enter any extra notes</string>
+	<string name="edit_text_symptoms_hint">Enter any symptom</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>

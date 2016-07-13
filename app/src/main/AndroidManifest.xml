@@ -32,6 +32,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MyMedicationActivity" />
         </activity>
+        <activity
+            android:name=".activities.main.AddSymptomsActivity"
+            android:label="@string/title_activity_add_symptoms"
+            android:parentActivityName=".activities.main.AddSymptomsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.AddSymptomsActivity" />
+        </activity>
 			<receiver
 				android:name="orionhealth.app.services.AlarmReceiver"
 				android:process=":remote" />
