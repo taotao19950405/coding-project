@@ -25,9 +25,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.fragments.SymptomsFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MyMedicationActivity extends AppCompatActivity {
 
@@ -195,6 +197,8 @@ public class MyMedicationActivity extends AppCompatActivity {
 		public Fragment getItem(int position) {
 			if (position == 0){
 				return MedicationListFragment.newInstance();
+			} else if (position == 2) {
+				return SymptomsFragment.newInstance();
 			}
 			return UnderConstructionFragment.newInstance();
 		}
