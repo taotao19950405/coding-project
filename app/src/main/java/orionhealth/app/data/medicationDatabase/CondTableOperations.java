@@ -18,17 +18,17 @@ import orionhealth.app.fhir.FhirServices;
 /**
  * Created by bill on 11/04/16.
  */
-public final class SympTableOperations {
-	private static SympTableOperations ssympTableOperations;
+public final class CondTableOperations {
+	private static CondTableOperations ssympTableOperations;
 	private FhirServices mFhirServices;
 
-	private SympTableOperations(){
+	private CondTableOperations(){
 		mFhirServices = FhirServices.getsFhirServices();
 	}
 
-	public static SympTableOperations getInstance(){
+	public static CondTableOperations getInstance(){
 		if (ssympTableOperations == null){
-			ssympTableOperations = new SympTableOperations();
+			ssympTableOperations = new CondTableOperations();
 			return ssympTableOperations;
 		}else{
 			return ssympTableOperations;

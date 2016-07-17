@@ -7,10 +7,16 @@
 							android:paddingLeft="15dp"
 							android:paddingRight="15dp"
 							android:paddingTop="5dp"
-							android:id="@+id/linear_layout_vertical_add_symptoms"
-							tools:context="orionhealth.app.activities.main.AddSymptomsActivity">
-	<Button android:text="@string/button_add"
-					android:id="@+id/button_add"
+							android:id="@+id/linear_layout_vertical_add_condition"
+							tools:context=".activities.main.AddConditionActivity">
+
+	<fragment android:name="orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment"
+		android:id="@+id/fragment_condition_details"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content" />
+
+	<Button android:text="@string/button_add_condition"
+					android:id="@+id/button_add_condition"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
 					android:onClick="addSymptomsToDatabase"

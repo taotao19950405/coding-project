@@ -1,6 +1,7 @@
 //       Description:
 //		 @author:  Lu
 package orionhealth.app.activities.main;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -10,31 +11,31 @@ import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
+import orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment;
+
+
 import android.content.Context;
+import android.widget.RadioButton;
 
-public class AddSymptomsActivity extends AppCompatActivity  {
+public class AddConditionActivity extends AppCompatActivity  implements DatePicker.DatePickerListener{
 
-//	private MedicationDetailsFragment mMedDetailsFragment;
+	private ConditionDetailsFragment mCondDetailsFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_add_symptoms);
+		setContentView(R.layout.activity_add_condition);
 
-		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_symptoms);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View details_layout = inflater.inflate(R.layout.fragment_symptoms_details, null);
-		context.addView(details_layout, 0);
-
-//		FragmentManager fragmentManager = getFragmentManager();
-//		mMedDetailsFragment =
-//		  (MedicationDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_medication_details);
+		FragmentManager fragmentManager = getFragmentManager();
+		mCondDetailsFragment =
+		  (ConditionDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_condition_details);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_add_symptoms, menu);
+		getMenuInflater().inflate(R.menu.menu_add_condition, menu);
 		return true;
 	}
 
@@ -68,4 +69,13 @@ public class AddSymptomsActivity extends AppCompatActivity  {
 //		startActivity(intent);
 	}
 
+	@Override
+	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag) {
+		mCondDetailsFragment.onSetDate(year, monthOfYear, dayOfMonth, tag);
+	}
+
+	@Override
+	public void onCancelDate() {
+		mCondDetailsFragment.onCancelDate();
+	}
 }

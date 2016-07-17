@@ -7,11 +7,11 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 /**
  * Created by Lu on 14/07/16.
  */
-public class MySymptoms {
+public class MyCondition {
 	private int mLocalId;
 	private MedicationStatement mFhirMedStatement;
 
-	public MySymptoms(int localId, MedicationStatement fhirMedStatement) {
+	public MyCondition(int localId, MedicationStatement fhirMedStatement) {
 		this.mLocalId = localId;
 		this.mFhirMedStatement = fhirMedStatement;
 	}

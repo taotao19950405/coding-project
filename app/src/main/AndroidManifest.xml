@@ -33,20 +33,20 @@
                 android:value=".activities.main.MyMedicationActivity" />
         </activity>
         <activity
-            android:name=".activities.main.AddSymptomsActivity"
-            android:label="@string/title_activity_add_symptoms"
-            android:parentActivityName=".activities.main.AddSymptomsActivity" >
+            android:name=".activities.main.AddConditionActivity"
+            android:label="@string/title_activity_add_condition"
+            android:parentActivityName=".activities.main.AddConditionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.main.AddSymptomsActivity" />
+                android:value=".activities.main.AddConditionActivity" />
         </activity>
         <activity
-            android:name=".activities.main.EditSymptomsActivity"
-            android:label="@string/title_activity_edit_symptoms"
-            android:parentActivityName=".activities.main.EditSymptomsActivity" >
+            android:name=".activities.main.EditConditionActivity"
+            android:label="@string/title_activity_edit_condition"
+            android:parentActivityName=".activities.main.EditConditionActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.main.EditSymptomsActivity" />
+                android:value=".activities.main.EditConditionActivity" />
         </activity>
 			<receiver
 				android:name="orionhealth.app.services.AlarmReceiver"

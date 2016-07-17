@@ -3,14 +3,24 @@
 	<string name="title_activity_my_medication">My Medication</string>
 	<string name="title_activity_add_medication">Add Medication</string>
 	<string name="title_activity_edit_medication">Edit Medication</string>
-	<string name="title_activity_add_symptoms">Add Symptoms</string>
-	<string name="title_activity_edit_symptoms">Edit Symptoms</string>
+	<string name="title_activity_add_condition">Add Condition</string>
+	<string name="title_activity_edit_condition">Edit Condition</string>
 
 	<string name="button_add">Add</string>
-	<string name="button_add_symptoms">Add</string>
+	<string name="button_add_condition">Add</string>
 	<string name="button_save">Save</string>
 	<string name="button_edit"><b>Edit</b></string>
 	<string name="button_remove">remove</string>
+
+
+	<string name="radio_button_complaint">Complaint</string>
+	<string name="radio_button_symptom">Symptom</string>
+	<string name="radio_button_finding">Finding</string>
+	<string name="radio_button_diagnosis">Diagnosis</string>
+	<string name="radio_button_minor">Minor</string>
+	<string name="radio_button_moderate">Moderate</string>
+	<string name="radio_button_major">Major</string>
+	<string name="radio_button_extreme">Extreme</string>
 
 	<string name="text_label_name">Name:</string>
 	<string name="text_label_dosage">Dosage:</string>
@@ -19,7 +29,12 @@
 	<string name="text_label_notes">Notes:</string>
     <string name="text_label_instructions">Instructions:</string>
 	<string name="text_label_reasonForUse">Reason for use:</string>
-	<string name="text_label_Symptoms">Symptoms:</string>
+	<string name="text_label_condition">Conditon:</string>
+	<string name="text_label_category">Category:</string>
+	<string name="text_label_dateRecorded">Recorded date:</string>
+	<string name="text_label_severity">Severity:</string>
+	<string name="text_label_evidence">Evidence:</string>
+	<string name="text_label_verificationStatus">Verfication:</string>
 
 	<string name="text_hardcoded_Symptoms">Fever</string>
 	<string name="text_hardcoded_reasonForUse">Pain</string>
@@ -28,6 +43,7 @@
 	<string name="basic_information_header">Basic Information:</string>
 	<string name="schedule_header">Schedule:</string>
 	<string name="additional_header">Additional:</string>
+	<string name="details_header">Details:</string>
 
 	<string name="edit_text_name_hint">Enter the name</string>
 	<string name="edit_text_dosage_hint">Enter the dosage</string>
@@ -35,7 +51,10 @@
 	<string name="edit_text_effectiveStart_hint">Select start date</string>
 	<string name="edit_text_effectiveEnd_hint">Select end date</string>
     <string name="edit_text_notes_hint">Enter any extra notes</string>
-	<string name="edit_text_symptoms_hint">Enter any symptom</string>
+	<string name="edit_text_condition_hint">Enter any condition/problem/\ndiagnosis</string>
+	<string name="edit_text_daterecorded_hint">Select recorded date</string>
+	<string name="edit_text_evidence_hint">\u0020\u0020\u0020\u0020\u0020Enter symptom details\u0020\u0020\u0020\u0020\u0020</string>
+	<string name="edit_text_verification_hint">Select to support or decline the \nclinical status of the condition\n or diagnosis.</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
