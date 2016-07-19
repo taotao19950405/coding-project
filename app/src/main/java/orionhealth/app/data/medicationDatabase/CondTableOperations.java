@@ -11,15 +11,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
-import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
+import ca.uhn.fhir.model.dstu2.resource.Condition;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.CondTableInfo;
 import orionhealth.app.fhir.FhirServices;
 
 /**
  * Created by bill on 11/04/16.
  */
 public final class CondTableOperations {
-	private static CondTableOperations ssympTableOperations;
+	private static CondTableOperations scondTableOperations;
 	private FhirServices mFhirServices;
 
 	private CondTableOperations(){
@@ -27,22 +27,22 @@ public final class CondTableOperations {
 	}
 
 	public static CondTableOperations getInstance(){
-		if (ssympTableOperations == null){
-			ssympTableOperations = new CondTableOperations();
-			return ssympTableOperations;
+		if (scondTableOperations == null){
+			scondTableOperations = new CondTableOperations();
+			return scondTableOperations;
 		}else{
-			return ssympTableOperations;
+			return scondTableOperations;
 		}
 	}
 
-	public void addToSymTable(Context context, MedicationStatement medStatement) {
+	public void addToCondTable(Context context, Condition condition) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-		String jsonStringMed = FhirServices.getsFhirServices().toJsonString(medStatement);
-		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
-		database.insert(MedTableInfo.TABLE_NAME, null, cv);
+		String jsonStringCond = FhirServices.getsFhirServices().toJsonString(condition);
+		cv.put(CondTableInfo.COLUMN_NAME_JSON_STRING, jsonStringCond);
+		database.insert(CondTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public Cursor getAllRows(Context context){
@@ -50,61 +50,61 @@ public final class CondTableOperations {
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  MedTableInfo._ID,
-		  MedTableInfo.COLUMN_NAME_JSON_STRING
+		  CondTableInfo._ID,
+		  CondTableInfo.COLUMN_NAME_JSON_STRING
 		};
 
 		String sortOrder =
-		  MedTableInfo._ID + " ASC";
+			CondTableInfo._ID + " ASC";
 
 		Cursor cursor = db.query(
-		  MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
+				CondTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
 		);
 		return cursor;
 	}
 
-	public MedicationStatement getMedicationStatement(Context context, int id){
+	public Condition getCondition(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  MedTableInfo.COLUMN_NAME_JSON_STRING
+		  CondTableInfo.COLUMN_NAME_JSON_STRING
 		};
 
 		Cursor cursor = db.query(
-		  MedTableInfo.TABLE_NAME, projection, MedTableInfo._ID+" = "+id, null, null, null, null
+				CondTableInfo.TABLE_NAME, projection, CondTableInfo._ID+" = "+id, null, null, null, null
 		);
 
 		if (cursor.moveToFirst()) {
-			String jsonMedString = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
-			MedicationStatement medStatement = (MedicationStatement) mFhirServices.toResource(jsonMedString);
-			return medStatement;
+			String jsonCondString = cursor.getString(cursor.getColumnIndex(CondTableInfo.COLUMN_NAME_JSON_STRING));
+			Condition condition = (Condition) mFhirServices.toResource(jsonCondString);
+			return condition;
 		}
 		return null;
 	};
 
-	public void removeMedication(Context context, int id){
+	public void removeCondition(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
-		String selection = MedTableInfo._ID + " LIKE ?";
+		String selection = CondTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
-		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
+		db.delete(CondTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
-	public void updateMedication(Context context, int id, MedicationStatement updatedMedStatement){
+	public void updateCondition(Context context, int id, Condition updatedCondition){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		String updatedJsonMedString = mFhirServices.toJsonString(updatedMedStatement);
-		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonMedString);
-		String selection = MedTableInfo._ID + " = ?";
+		String updatedJsonCondString = mFhirServices.toJsonString(updatedCondition);
+		cv.put(CondTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonCondString);
+		String selection = CondTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
-		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
+		db.update(CondTableInfo.TABLE_NAME, cv, selection, selectionArgs);
 	}
 
-	public void clearMedTable(Context context){
+	public void clearCondTable(Context context){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
-		db.delete(MedTableInfo.TABLE_NAME, null, null);
+		db.delete(CondTableInfo.TABLE_NAME, null, null);
 	}
 }

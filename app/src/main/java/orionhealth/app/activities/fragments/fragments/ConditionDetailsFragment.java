@@ -3,6 +3,7 @@ package orionhealth.app.activities.fragments.fragments;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -12,16 +13,29 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
+import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
-import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
+import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
+import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.Category;
 import orionhealth.app.data.dataModels.Severity;
 import orionhealth.app.data.dataModels.VerificationStatus;
+import orionhealth.app.data.medicationDatabase.CondTableOperations;
+import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.DateService;
 
 /**
@@ -34,9 +48,9 @@ public class ConditionDetailsFragment extends Fragment {
     private Severity[] severities;
 
     private int mConditionID;
-//	private MedicationStatement mMedication;
+    private Condition mCondition;
 
-    private EditText mConditonTextField;
+    private EditText mConditionTextField;
     private EditText mRecordedDateTextField;
     private EditText mEvidenceTextField;
     private EditText mNotesTextField;
@@ -52,7 +66,7 @@ public class ConditionDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_condition_details, container, false);
 
-        mConditonTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_condition);
+        mConditionTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_condition);
         mEvidenceTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_evidence);
         mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
 
@@ -78,157 +92,155 @@ public class ConditionDetailsFragment extends Fragment {
         return detailsFragment;
     }
 
-
     public void populateFields() {
-//		if (mMedication != null) {
-//			EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-//			CodeableConceptDt codeableConcept = (CodeableConceptDt) mMedication.getMedication();
-//			nameEditTextField.setText(codeableConcept.getText());
-//
-//			EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-//			List<MedicationStatement.Dosage> listDosage = mMedication.getDosage();
-//			MedicationStatement.Dosage dosage = listDosage.get(0);
-//			SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
-//			dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger() + "");
-//
-//			String unitIdString = simpleQuantityDt.getCode();
-//			Spinner spinner = (Spinner) getActivity().findViewById(R.id.unit_spinner);
-//			if (unitIdString == null) {
-//				String myString = simpleQuantityDt.getUnit();
-//				int index = 0;
-//				for (int i = 0; i < spinner.getCount(); i++) {
-//					if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
-//						index = i;
-//						break;
-//					}
-//				}
-//				spinner.setSelection(index);
-//			} else {
-//				int unitId = Integer.parseInt(unitIdString);
-//				spinner.setSelection(unitId);
-//			}
-//			EditText reasonForUseEditTextField =
-//			  (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
-//			codeableConcept = (CodeableConceptDt) mMedication.getReasonForUse();
-//
-//			if (codeableConcept != null) {
-//				reasonForUseEditTextField.setText(codeableConcept.getText());
-//			}
-//
-//			PeriodDt p = (PeriodDt) mMedication.getEffective();
-//
-//			if (p != null) {
-//				Date d = p.getStart();
-//				String dateString = dateService.formatToString(d);
-//				mStartDateTextField.setText(dateString);
-//
-//				d = p.getEnd();
-//				dateString = dateService.formatToString(d);
-//				mEndDateTextFeild.setText(dateString);
-//			}
-//
-//			EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
-//			instructionsEditTextField.setText(mMedication.getNote());
-//		}
+        if (mCondition != null) {
+            EditText conditionEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_condition);
+            CodeableConceptDt conditionCodeableConcept = mCondition.getCode();
+            conditionEditTextField.setText(conditionCodeableConcept.getText());
 
+            EditText evidenceEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_evidence);
+            List<Condition.Evidence> listEvidence = mCondition.getEvidence();
+            if (!listEvidence.isEmpty()) {
+                Condition.Evidence evidence = listEvidence.get(0);
+                CodeableConceptDt evidenceCodableConcept = evidence.getCode();
+                evidenceEditTextField.setText(evidenceCodableConcept.getText());
+            }
+
+            EditText notesEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
+            String notesString = mCondition.getNotes();
+            if (notesString.length() > 0) {
+                notesEditTextField.setText(notesString);
+            }
+
+            CodeableConceptDt categoryCodeableConcept = mCondition.getCategory();
+            selectSpinner(categoryCodeableConcept, (Spinner) getActivity().findViewById(R.id.category_spinner));
+
+            CodeableConceptDt severityCodeableConcept = mCondition.getSeverity();
+            selectSpinner(severityCodeableConcept, (Spinner) getActivity().findViewById(R.id.severity_spinner));
+
+            String verificationStatus = mCondition.getVerificationStatus();
+            selectSpinner(verificationStatus, (Spinner) getActivity().findViewById(R.id.verification_spinner));
+
+            Date p = mCondition.getDateRecorded();
+
+            if (p != null) {
+                String dateString = dateService.formatToString(p);
+                mRecordedDateTextField.setText(dateString);
+            }
+
+
+        }
+
+    }
+
+    private void selectSpinner(Object o, Spinner spinner) {
+        if (o == null) {
+            String myString = o.toString();
+            int index = 0;
+            for (int i = 0; i < spinner.getCount(); i++) {
+                if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                    index = i;
+                    break;
+                }
+            }
+            spinner.setSelection(index);
+        } else {
+            int unitId = Integer.parseInt(o.toString());
+            spinner.setSelection(unitId);
+        }
     }
 
     public void addConditionToDatabase(Context context) {
         //Do something in response to clicking add button
-//		String name = mNameTextField.getText().toString();
-//		String dosage = mDosageTextField.getText().toString();
-//		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
-//		String reasonForUse = mReasonTextField.getText().toString();
-//		String startDate = mStartDateTextField.getText().toString();
-//		String endDate = mEndDateTextFeild.getText().toString();
-//		String instructions = mNotesTextField.getText().toString();
-//
-//		MedicationStatement medicationStatement;
-//		try {
-//			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
-//			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
-//			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
-//			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//			Intent intent2 = new Intent(context, AlarmReceiver.class);
-//			PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent2, 0);
-//			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmIntent);
-//			Intent intent = new Intent(context, MyMedicationActivity.class);
-//			startActivity(intent);
-//		} catch (NoNameException e) {
-//			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
-//		} catch (NoDosageException e) {
-//			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
-//		} catch (NumberFormatException e) {
-//			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
-//		} catch (Exception e){
-//			e.printStackTrace();
-//		}
+        String conditionCode = mConditionTextField.getText().toString();
+        String recordedDate = mRecordedDateTextField.getText().toString();
+        String evidence = mEvidenceTextField.getText().toString();
+        String notes = mNotesTextField.getText().toString();
+
+        Category category = (Category) mCategorySelector.getSelectedItem();
+        Severity severity = (Severity) mSeveritySelector.getSelectedItem();
+        VerificationStatus verificationStatus = (VerificationStatus) mVerificationStatusSelector.getSelectedItem();
+
+        Condition condition;
+        try {
+            condition = createCondition(conditionCode, recordedDate, evidence, notes,
+                    category.toString(), severity.toString(), verificationStatus.toString());
+            CondTableOperations.getInstance().addToCondTable(context, condition);
+            FhirServices.getsFhirServices().sendToServer(condition, context);
+            Intent intent = new Intent(context, ConditionListFragment.class);
+            startActivity(intent);
+        } catch (NoNameException e) {
+            Toast.makeText(context, "Please enter a condition", Toast.LENGTH_SHORT).show();
+        } catch (NoVerificationStatusException e) {
+            Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateConditionInDatabase(Context context) {
-//		String name = mNameTextField.getText().toString();
-//		String dosage = mDosageTextField.getText().toString();
-//		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
-//		String reasonForUse = mReasonTextField.getText().toString();
-//		String startDate = mStartDateTextField.getText().toString();
-//		String endDate = mEndDateTextFeild.getText().toString();
-//		String notes = mNotesTextField.getText().toString();
-//		try {
-//			mMedication =
-//			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
-//			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
-//			Intent intent = new Intent(context, MyMedicationActivity.class);
-//			startActivity(intent);
-//		} catch (NoNameException e){
-//			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
-//		} catch (NoDosageException e){
-//			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
-//		} catch (NumberFormatException e){
-//			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
-//		} catch (Exception e){
-//			e.printStackTrace();
-//		}
+        String conditionCode = mConditionTextField.getText().toString();
+        String recordedDate = mRecordedDateTextField.getText().toString();
+        String evidence = mEvidenceTextField.getText().toString();
+        String notes = mNotesTextField.getText().toString();
+
+        Category category = (Category) mCategorySelector.getSelectedItem();
+        Severity severity = (Severity) mSeveritySelector.getSelectedItem();
+        VerificationStatus verificationStatus = (VerificationStatus) mVerificationStatusSelector.getSelectedItem();
+        try {
+            mCondition =
+                    createCondition(conditionCode, recordedDate, evidence, notes,
+                            category.toString(), severity.toString(), verificationStatus.toString());
+            CondTableOperations.getInstance().updateCondition(context, mConditionID, mCondition);
+            Intent intent = new Intent(context, ConditionListFragment.class);
+            startActivity(intent);
+        } catch (NoNameException e) {
+            Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+        } catch (NoVerificationStatusException e) {
+            Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-//	private MedicationStatement createMedStatement(String name, String dosage, Unit unit,
-//												   String reasonForUse, String startDate,
-//												   String endDate, String note) throws Exception {
-//		checkValidMedication(name, dosage);
-//		Long dosageLong = Long.parseLong(dosage);
-//		MedicationStatement medicationStatement = new MedicationStatement();
-//		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
-//		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
-//		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
-//		medicationStatement.setPatient(patientRef);
-//		medicationStatement.setReasonForUse(new CodeableConceptDt().setText(reasonForUse));
-//		Date d = dateService.parseDate(startDate);
-//		PeriodDt period = new PeriodDt();
-//		period.setStart(d, TemporalPrecisionEnum.DAY );
-//		d = dateService.parseDate(endDate);
-//		period.setEnd(d, TemporalPrecisionEnum.DAY);
-//		medicationStatement.setEffective(period);
-//
-//		medicationStatement.setNote(note);
-//		MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
-//		SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-//		simpleQuantityDt.setUnit(unit.toString());
-//		simpleQuantityDt.setCode(unit.ordinal()+"");
-//		dosageFhir.setQuantity(simpleQuantityDt);
-//		List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
-//		listDosage.add(dosageFhir);
-//		medicationStatement.setDosage(listDosage);
-//		return medicationStatement;
-//	}
+    private Condition createCondition(String conditionCode, String recordedDate,
+                                      String evidence, String notes,
+                                      String category, String severity, String verificationStatus) throws Exception {
+		checkValidCondition(conditionCode, verificationStatus);
+
+        Condition condition = new Condition();
+        condition.setCode(new CodeableConceptDt().setText(conditionCode));
+        ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
+        condition.setPatient(patientRef);
+
+        condition.setNotes(notes);
+
+        Date d = dateService.parseDate(recordedDate);
+        condition.setDateRecorded(d, TemporalPrecisionEnum.DAY);
+
+//        what if the code is enum??
+        condition.setCategory(ConditionCategoryCodesEnum.forCode(category.toUpperCase()));
+        condition.setSeverity(new CodeableConceptDt().setText(severity));
+        condition.setVerificationStatus(ConditionVerificationStatusEnum.forCode(verificationStatus.toUpperCase()));
+
+//        evidence is a list?
+        Condition.Evidence evidenceFhir = new Condition.Evidence();
+        evidenceFhir.setCode(new CodeableConceptDt().setText(evidence));
+        List<Condition.Evidence> listEvidence = new LinkedList<Condition.Evidence>();
+        listEvidence.add(evidenceFhir);
+        condition.setEvidence(listEvidence);
+        return null;
+    }
 
     public void removeCondition() {
-//        DialogFragment removeMedDialogue = new RemoveMedicationDialogFragment();
-//        removeMedDialogue.show(getFragmentManager(), "removeMedication");
+        DialogFragment removeCondDialogue = new RemoveConditionDialogFragment();
+        removeCondDialogue.show(getFragmentManager(), "removeCondition");
     }
 
     public void onRemovePositiveClick(Context context) {
-//		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
-//		Intent intent = new Intent(context, MyMedicationActivity.class);
-//		startActivity(intent);
+        CondTableOperations.getInstance().removeCondition(context, mConditionID);
+        Intent intent = new Intent(context, ConditionListFragment.class);
+        startActivity(intent);
     }
 
     public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag) {
@@ -245,19 +257,18 @@ public class ConditionDetailsFragment extends Fragment {
         mNotesTextField.requestFocus();
     }
 
-//    public void setMedication(Context context, int medLocalId) {
-//		mMedicationID = medLocalId;
-//		mMedication = MedTableOperations.getInstance().getMedicationStatement(context, medLocalId);
-//    }
+    public void setCondition(Context context, int condLocalId) {
+        mConditionID = condLocalId;
+        mCondition = CondTableOperations.getInstance().getCondition(context, condLocalId);
+    }
 
-//    private void checkValidMedication(String name, String dosage) throws Exception {
-//        if (name.equals("")) {
-//            throw new NoNameException();
-//        } else if (dosage.equals("")) {
-//            throw new NoDosageException();
-//        }
-//        Long.parseLong(dosage);
-//    }
+    private void checkValidCondition(String name, String verificationStatus) throws Exception {
+        if (name.equals("")) {
+            throw new NoNameException();
+        } else if (verificationStatus.equals("")) {
+            throw new NoVerificationStatusException();
+        }
+    }
 
     private void setUpDateEditTextFields() {
         mRecordedDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mRecordedDateTextField.getId() + ""));
@@ -328,7 +339,7 @@ public class ConditionDetailsFragment extends Fragment {
 
     }
 
-    private class NoDosageException extends Exception {
+    private class NoVerificationStatusException extends Exception {
 
     }
 

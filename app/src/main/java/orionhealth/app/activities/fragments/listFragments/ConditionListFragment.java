@@ -1,6 +1,7 @@
 package orionhealth.app.activities.fragments.listFragments;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import orionhealth.app.R;
+import orionhealth.app.activities.adaptors.MySimpleListAdapter;
 import orionhealth.app.activities.main.AddConditionActivity;
 import orionhealth.app.activities.main.EditConditionActivity;
+import orionhealth.app.data.medicationDatabase.CondTableOperations;
 
 /**
  * Created by Lu on 13/07/16.
@@ -19,13 +22,8 @@ import orionhealth.app.activities.main.EditConditionActivity;
 public class ConditionListFragment extends ListFragment {
 
 
-	public final static String SELECTED_MED_ID = "conditionListFragment.SELECTED_COND_ID";
-	private String[] values = new String[] { "Android List View",
-			"Adapter implementation",
-			"Simple List View In Android",
-			"Create List View Android",
-	};
-	private int mToViews = R.id.hardcoded_display_symptoms;
+	public final static String SELECTED_COND_ID = "conditionListFragment.SELECTED_COND_ID";
+	private ListView mSimpleListView;
 
 	public ConditionListFragment() {
 	}
@@ -39,7 +37,7 @@ public class ConditionListFragment extends ListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_condition_list, container, false);
-		FloatingActionButton addButton =  (FloatingActionButton) view.findViewById(R.id.button_add_symptoms);
+		FloatingActionButton addButton =  (FloatingActionButton) view.findViewById(R.id.button_add_condition);
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -53,10 +51,11 @@ public class ConditionListFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		Cursor cursor = CondTableOperations.getInstance().getAllRows(getContext());
 
-		ArrayAdapter<String> adapter =
-				new ArrayAdapter<String>(getContext(), R.layout.fragment_condition_list_items, mToViews, values);
-		setListAdapter(adapter);
+		mSimpleListView = getListView();
+		MySimpleListAdapter listAdapter = new MySimpleListAdapter(getContext(), cursor, 0);
+		mSimpleListView.setAdapter(listAdapter);
 
 	}
 
@@ -64,7 +63,7 @@ public class ConditionListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id){
 		super.onListItemClick(l, v, position, id);
 		Intent intent = new Intent(getContext(), EditConditionActivity.class);
-//		intent.putExtra(SELECTED_MED_ID, id);
+		intent.putExtra(SELECTED_COND_ID, id);
 		startActivity(intent);
 	};
 }

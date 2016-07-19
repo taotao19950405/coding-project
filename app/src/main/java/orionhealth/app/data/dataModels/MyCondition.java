@@ -2,18 +2,18 @@
 //		 @author:  Bill
 package orionhealth.app.data.dataModels;
 
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.resource.Condition;
 
 /**
  * Created by Lu on 14/07/16.
  */
 public class MyCondition {
 	private int mLocalId;
-	private MedicationStatement mFhirMedStatement;
+	private Condition mFhirCondition;
 
-	public MyCondition(int localId, MedicationStatement fhirMedStatement) {
+	public MyCondition(int localId, Condition fhirCondition) {
 		this.mLocalId = localId;
-		this.mFhirMedStatement = fhirMedStatement;
+		this.mFhirCondition = fhirCondition;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class MyCondition {
 		return mLocalId;
 	}
 
-	public MedicationStatement getFhirMedStatement() {
-		return mFhirMedStatement;
+	public Condition getFhirCondition() {
+		return mFhirCondition;
 	}
 }

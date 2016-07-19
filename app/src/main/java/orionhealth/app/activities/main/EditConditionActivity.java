@@ -1,79 +1,87 @@
 //       Description:
-//		 @author:  Bill
+//		 @author:  Lu
 
 package orionhealth.app.activities.main;
 
-import android.content.Context;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
-import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 
-public class EditConditionActivity extends AppCompatActivity implements DatePicker.DatePickerListener {
+public class EditConditionActivity extends AppCompatActivity implements DatePicker.DatePickerListener, RemoveMedicationDialogFragment.RemoveMedDialogListener {
 
-	private ConditionDetailsFragment mCondDetailsFragment;
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_condition);
-
-		LinearLayout context = (LinearLayout) findViewById(R.id.linear_layout_vertical_add_condition);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View details_layout = inflater.inflate(R.layout.fragment_condition_details, null);
-		context.addView(details_layout, 0);
-
-		Intent intent = getIntent();
-		int conditionID = intent.getIntExtra(ConditionListFragment.SELECTED_MED_ID, 0);
-
-	}
+    private ConditionDetailsFragment mCondDetailsFragment;
 
     @Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_edit_condition, menu);
-		return true;
-	}
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_condition);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
+        Intent intent = getIntent();
+        int medicationID = intent.getIntExtra(ConditionListFragment.SELECTED_COND_ID, 0);
 
-		//noinspection SimplifiableIfStatement
+        FragmentManager fragmentManager = getFragmentManager();
+        mCondDetailsFragment =
+                (ConditionDetailsFragment) fragmentManager.findFragmentById(R.id.fragment_condition_details);
+        mCondDetailsFragment.setCondition(this, medicationID);
+        mCondDetailsFragment.populateFields();
 
-		return super.onOptionsItemSelected(item);
-	}
+    }
 
-	public void removeMedication(View view){
-//		mMedDetailsFragment.removeMedication();
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_edit_condition, menu);
+        return true;
+    }
 
-	public void updateMedicationInDatabase(View view){
-//		mMedDetailsFragment.updateMedicationInDatabase(this);
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-	public void saveMedication(View view){}
+        //noinspection SimplifiableIfStatement
 
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag) {
-		mCondDetailsFragment.onSetDate(year, monthOfYear, dayOfMonth, tag);
-	}
+    public void removeCondition(View view) {
+        mCondDetailsFragment.removeCondition();
+    }
 
-	@Override
-	public void onCancelDate() {
-		mCondDetailsFragment.onCancelDate();
-	}
+    public void updateConditionInDatabase(View view) {
+        mCondDetailsFragment.updateConditionInDatabase(this);
+    }
+
+    @Override
+    public void onRemovePositiveClick(DialogFragment dialog) {
+        mCondDetailsFragment.onRemovePositiveClick(this);
+    }
+
+    @Override
+    public void onRemoveNegativeClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag) {
+        mCondDetailsFragment.onSetDate(year, monthOfYear, dayOfMonth, tag);
+    }
+
+    @Override
+    public void onCancelDate() {
+        mCondDetailsFragment.onCancelDate();
+    }
 }

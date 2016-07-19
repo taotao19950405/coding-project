@@ -2,11 +2,13 @@
 //		 @author:  Lu
 package orionhealth.app.activities.main;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.view.LayoutInflater;
 
@@ -51,22 +53,8 @@ public class AddConditionActivity extends AppCompatActivity  implements DatePick
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void addSymptomsToDatabase(View view) {
-//		Intent intent = new Intent(this, MyMedicationActivity.class);
-//		EditText editText = (EditText) findViewById(R.id.edit_text_name);
-//		String name = editText.getText().toString();
-//		editText = (EditText) findViewById(R.id.edit_text_dosage);
-//		String dosage = editText.getText().toString();
-//		if (!(name.equals("") || dosage.equals(""))){
-//			try {
-//				int dosageInt = Integer.parseInt(dosage);
-//				Medication med = new Medication(name, dosageInt);
-//				MedTableOperations.addToMedTable(this, med);
-//			} catch (NumberFormatException e) {
-//				Log.d("hello", "dosage not an int");
-//			}
-//		}
-//		startActivity(intent);
+	public void addConditionToDatabase(View view) {
+		mCondDetailsFragment.addConditionToDatabase(this);
 	}
 
 	@Override

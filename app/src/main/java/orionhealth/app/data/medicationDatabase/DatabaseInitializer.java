@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.CondTableInfo;
 
 /**
  * Created by bill on 8/04/16.
@@ -24,11 +25,20 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     MedTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
 
+    private static final String SQL_CREATE_ENTRIES_COND =
+            "CREATE TABLE " + CondTableInfo.TABLE_NAME + " (" +
+                    CondTableInfo._ID + " INTEGER PRIMARY KEY," +
+                    CondTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
+                    " )";
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
+    private static final String SQL_DELETE_ENTRIES_COND =
+            "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
+
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -49,6 +59,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_ENTRIES_COND);
     }
 
     @Override
@@ -56,6 +67,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_ENTRIES_COND);
         onCreate(db);
     }
 

@@ -12,16 +12,6 @@
 	<string name="button_edit"><b>Edit</b></string>
 	<string name="button_remove">remove</string>
 
-
-	<string name="radio_button_complaint">Complaint</string>
-	<string name="radio_button_symptom">Symptom</string>
-	<string name="radio_button_finding">Finding</string>
-	<string name="radio_button_diagnosis">Diagnosis</string>
-	<string name="radio_button_minor">Minor</string>
-	<string name="radio_button_moderate">Moderate</string>
-	<string name="radio_button_major">Major</string>
-	<string name="radio_button_extreme">Extreme</string>
-
 	<string name="text_label_name">Name:</string>
 	<string name="text_label_dosage">Dosage:</string>
 	<string name="text_label_effectiveStart">Effective From:</string>
@@ -61,7 +51,9 @@
 	<string name="title_activity_trial">TrialActivity</string>
 
 	<string name="remove_med_dialog_title">Remove Medication</string>
+	<string name="remove_cond_dialog_title">Remove Condition</string>
 	<string name="remove_med_dialog_message">Are you sure you want to remove this medication?</string>
+	<string name="remove_cond_dialog_message">Are you sure you want to remove this condition?</string>
 	<string name="remove_med_dialog_positive_button">Yes</string>
 	<string name="remove_med_dialog_negative_button">No</string>
 
