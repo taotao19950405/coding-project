@@ -10,6 +10,8 @@ import java.util.Calendar;
  * Created by bill on 22/06/16.
  */
 public class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+	private String mTitle = "Set Date";
+	private String mTitle2 = "Set End Date";
 
 	public interface DatePickerListener {
 		void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag);
@@ -41,9 +43,9 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 		int day = c.get(Calendar.DAY_OF_MONTH);
 
 		// Create a new instance of DatePicker and return it
-		final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+		final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);
 
-		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "cancel", new DialogInterface.OnClickListener() {
+		datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				if (which == DialogInterface.BUTTON_NEGATIVE) {
 					dialog.dismiss();
@@ -52,6 +54,10 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 			}
 		});
 		datePickerDialog.setCanceledOnTouchOutside(false);
+		datePickerDialog.getDatePicker().setCalendarViewShown(false);
+		datePickerDialog.getDatePicker().setSpinnersShown(true);
+
+		datePickerDialog.setTitle(mTitle);
 		return datePickerDialog;
 	}
 

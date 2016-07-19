@@ -13,14 +13,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/basic_information_header"
-		android:padding="10dp"
-		android:textSize="9pt"/>
+		style="@style/Header"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="0.7dp"
-		android:padding="10dp"
-		android:background="@android:color/darker_gray"/>
+		android:layout_height="1dp"
+		style="@style/HorizontalDivider"/>
 
 	<GridLayout
 			android:layout_width="match_parent"
@@ -65,9 +63,8 @@
 
 						<EditText
 							android:id="@+id/edit_text_dosage"
-							android:layout_width="0dp"
+							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_weight="3"
 							android:hint="@string/edit_text_dosage_hint"
 							android:inputType="number" />
 
@@ -75,7 +72,6 @@
 							android:id="@+id/unit_spinner"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_weight="1"
 						/>
 
 					</LinearLayout>
@@ -102,16 +98,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/schedule_header"
-		android:paddingLeft="10dp"
-		android:paddingBottom="10dp"
-		android:paddingTop="20dp"
-		android:textSize="9pt"/>
+		style="@style/Header"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="0.7dp"
-		android:padding="10dp"
-		android:background="@android:color/darker_gray"/>
+		android:layout_height="1dp"
+		style="@style/HorizontalDivider"/>
 
 	<GridLayout
 		android:layout_width="match_parent"
@@ -158,20 +150,22 @@
 
 	</GridLayout>
 
+	<TimePicker
+		android:id="@+id/time_picker"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:timePickerMode="spinner"/>
+
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/additional_header"
-		android:paddingLeft="10dp"
-		android:paddingBottom="10dp"
-		android:paddingTop="20dp"
-		android:textSize="9pt"/>
+		style="@style/Header"/>
 
 	<View
 		android:layout_width="match_parent"
-		android:layout_height="0.7dp"
-		android:padding="10dp"
-		android:background="@android:color/darker_gray"/>
+		android:layout_height="1dp"
+		style="@style/HorizontalDivider"/>
 
 
         <EditText

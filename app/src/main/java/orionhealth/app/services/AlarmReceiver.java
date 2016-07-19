@@ -52,7 +52,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		Log.d("after send", notificationParcel.getTitle());
 
 		Notification notification = new NotificationCompat.Builder(context)
-		  .setContentTitle(notificationParcel.getTitle())
+		  .setContentTitle("Reminder: Take "+notificationParcel.getTitle())
 		  .setContentText("Random text")
 		  .setSmallIcon(drawable)
 		  .setPriority(Notification.PRIORITY_MAX)
@@ -64,6 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 //		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MyMedicationActivity.class), 0))
 		  .build();
 
+		WakeLockService.acquire(context);
 		notificationManager.notify(AlarmReceiver.NOTIFICATION_ID, notification);
 
 	}

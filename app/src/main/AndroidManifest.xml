@@ -27,7 +27,8 @@
         <activity
             android:name=".activities.main.EditMedicationActivity"
             android:label="@string/title_activity_edit_medication"
-            android:parentActivityName=".activities.main.MyMedicationActivity" >
+            android:parentActivityName=".activities.main.MyMedicationActivity"
+						android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MyMedicationActivity" />
@@ -42,5 +43,5 @@
 		</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>
-
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 </manifest>

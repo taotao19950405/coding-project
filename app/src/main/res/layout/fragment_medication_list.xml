@@ -24,7 +24,7 @@
 
 	<TextView
 		android:id="@android:id/empty"
-		android:text="No Medication Listed"
+		android:text="@string/empty_med_list_message"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:padding="10dp">
@@ -34,7 +34,7 @@
 		android:id="@+id/button_add"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
-		app:backgroundTint="#ff7719"
+		app:backgroundTint="#ff8900"
 		style="@style/MyCustomFAB"
 		/>
 

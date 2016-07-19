@@ -32,5 +32,6 @@ public class MedResponseService extends IntentService {
 		notificationManager.cancel(notificationId);
 		Intent service = new Intent(getApplicationContext(), RingToneService.class);
 		getApplicationContext().stopService(service);
+		WakeLockService.release();
 	}
 }

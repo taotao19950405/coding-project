@@ -46,6 +46,8 @@
 	<string name="title_section4">4</string>
 	<string name="title_section5">5</string>
 
+	<string name="empty_med_list_message">No Medication Currently Listed</string>
+
 	<string name="construction_message">Sorry this page is currently under construction</string>
 
 	<string name="action_settings">Settings</string>

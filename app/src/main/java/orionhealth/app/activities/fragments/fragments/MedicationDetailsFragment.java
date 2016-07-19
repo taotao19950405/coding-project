@@ -1,29 +1,18 @@
 package orionhealth.app.activities.fragments.fragments;
 
 import android.app.AlarmManager;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import android.widget.Toast;
+import android.widget.*;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
@@ -31,19 +20,21 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.main.MyMedicationActivity;
-import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.AlarmReceiver;
 import orionhealth.app.services.DateService;
-import orionhealth.app.services.RingToneService;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by bill on 25/04/16.
@@ -61,10 +52,11 @@ public class MedicationDetailsFragment extends Fragment {
 	private EditText mStartDateTextField;
 	private EditText mEndDateTextFeild;
 	private EditText mNotesTextField;
+	private TimePicker mTimePicker;
 
 	private DateService dateService;
 
-        @Override
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_medication_details, container, false);
@@ -82,6 +74,7 @@ public class MedicationDetailsFragment extends Fragment {
 		setUpDateEditTextFields();
 
 		mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
+		mTimePicker = (TimePicker) detailsFragment.findViewById(R.id.time_picker);
 
 		dateService = new DateService();
 
@@ -160,12 +153,16 @@ public class MedicationDetailsFragment extends Fragment {
 			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
 			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-			NotificationParcel parcel = new NotificationParcel(name, instructions, unit.ordinal());
+			NotificationParcel parcel =
+			  		new NotificationParcel(Character.toUpperCase(name.charAt(0)) + name.substring(1), instructions, unit.ordinal());
 			Bundle bundle = new Bundle();
 			bundle.putParcelable("here", parcel);
 			alarmIntent.putExtra(AlarmReceiver.MEDICATION_KEY, bundle);
 			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmPendingIntent);
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+			  			 mTimePicker.getHour(), mTimePicker.getMinute(), 2);
+			alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
 
 			Intent intent = new Intent(context, MyMedicationActivity.class);
 			startActivity(intent);
@@ -209,6 +206,7 @@ public class MedicationDetailsFragment extends Fragment {
 												   String reasonForUse, String startDate,
 												   String endDate, String note) throws Exception {
 		checkValidMedication(name, dosage);
+		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
 		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
@@ -354,35 +352,6 @@ public class MedicationDetailsFragment extends Fragment {
 	private class NoDosageException extends Exception {
 
 	}
-
-//    public static class DatePickerFragment extends DialogFragment
-//            implements DatePicker.OnDateSetListener {
-//
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the current date as the default date in the picker
-//            final Calendar c = Calendar.getInstance();
-//            int year = c.get(Calendar.YEAR);
-//            int month = c.get(Calendar.MONTH);
-//            int day = c.get(Calendar.DAY_OF_MONTH);
-//
-//            // Create a new instance of DatePicker and return it
-//            return new DatePicker(getActivity(), this, year, month, day);
-//        }
-//
-//        public void onDateSet(DatePicker view, int year, int month, int day) {
-//           EditText dateEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_effectiveStart);
-//            dateEditTextField.setText(day + "/" + month + "/" + year);
-//        }
-//
-//
-//        public void showDatePickerDialog(View v) {
-//            DialogFragment newFragment = new DatePickerFragment();
-//            newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-//        }
-//
-//    }
-
 
 }
 
