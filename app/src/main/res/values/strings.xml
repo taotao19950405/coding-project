@@ -20,6 +20,10 @@
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 
+
+	<string name="text_label_allergy_details">Details:</string>
+    <string name="text_label_allergy_reaction">Reaction</string>
+
 	<string name="basic_information_header">Basic Information:</string>
 	<string name="schedule_header">Schedule:</string>
 	<string name="additional_header">Additional:</string>
@@ -30,6 +34,7 @@
 	<string name="edit_text_effectiveStart_hint">Select start date</string>
 	<string name="edit_text_effectiveEnd_hint">Select end date</string>
     <string name="edit_text_notes_hint">Enter any extra notes</string>
+    <string name="edit_text_allergy_hint">Enter reaction type</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>

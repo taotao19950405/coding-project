@@ -13,11 +13,13 @@
 	<fragment android:name="orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment"
 						android:id="@+id/fragment_medication_details"
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content" />
+						android:layout_height="wrap_content"
+		tools:layout="@layout/fragment_medication_details" />
 
 	<Button android:text="@string/button_add"
 					android:id="@+id/button_add"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:onClick="addMedicationToDatabase" android:layout_gravity="center_vertical"/>
+					android:onClick="addMedicationToDatabase"
+					android:layout_gravity="center_vertical"/>
 </LinearLayout>

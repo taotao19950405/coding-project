@@ -5,7 +5,6 @@
 package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
@@ -196,6 +196,9 @@ public class MyMedicationActivity extends AppCompatActivity {
 			if (position == 0){
 				return MedicationListFragment.newInstance();
 			}
+            else if (position == 2){
+                return AllergyListFragment.newInstance();
+            }
 			return UnderConstructionFragment.newInstance();
 		}
 
