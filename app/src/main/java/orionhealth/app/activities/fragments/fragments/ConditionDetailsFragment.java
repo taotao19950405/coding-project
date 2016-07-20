@@ -26,6 +26,7 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
+import ca.uhn.fhir.model.dstu2.valueset.SystemRestfulInteractionEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
@@ -40,6 +41,8 @@ import orionhealth.app.services.DateService;
 /**
  * Created by Lu on 16/07/16.
  */
+
+//Issue: date pasring issue unsolved
 public class ConditionDetailsFragment extends Fragment {
 
     private VerificationStatus[] verificationStatuses;
@@ -126,6 +129,7 @@ public class ConditionDetailsFragment extends Fragment {
                 String dateString = dateService.formatToString(p);
                 mRecordedDateTextField.setText(dateString);
             }
+            System.out.println("Hello");
         }
 
     }
