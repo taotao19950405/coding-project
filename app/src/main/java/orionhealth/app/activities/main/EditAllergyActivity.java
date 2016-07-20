@@ -14,10 +14,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 
-public class EditAllergyActivity extends AppCompatActivity {
+public class EditAllergyActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener {
     private AllergyDetailsFragment aAllergyDetailsFragment;
 
     @Override

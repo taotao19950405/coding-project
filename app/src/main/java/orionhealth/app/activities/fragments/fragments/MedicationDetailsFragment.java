@@ -201,7 +201,7 @@ public class MedicationDetailsFragment extends Fragment {
 		checkValidMedication(name, dosage);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
-		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
+		 medicationStatement.setMedication(new CodeableConceptDt().setText(name));
 		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
 		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
 		medicationStatement.setPatient(patientRef);

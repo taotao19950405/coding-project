@@ -2,28 +2,75 @@ package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
+import orionhealth.app.R;
+import orionhealth.app.data.dataModels.MyAllergyIntolerance;
+import orionhealth.app.data.medicationDatabase.DatabaseContract;
+import orionhealth.app.fhir.FhirServices;
 
 /**
  * Created by archanakhanal on 18/7/2016.
  */
-public class MySimpleListAdapter {
+public class MySimpleListAdapter extends BaseAdapter {
     private Context aContext;
     private Cursor aCursor;
 
-    public MySimpleListAdapter(Context context){
+    public MySimpleListAdapter(Context context, Cursor cursor){
+
         this.aContext = context;
+        this.aCursor = cursor;
     }
 
-    public void OnEditButtonClicked(int allergyLocalId){
-    }
-
-    public int getGroupCount() {
+    @Override
+    public int getCount() {
         return aCursor.getCount();
     }
 
+    @Override
+    public Object getItem(int position) {
+       if (aCursor.moveToPosition(position)) {
+           long localID = aCursor.getLong(aCursor.getColumnIndex(DatabaseContract.AllergyTableInfo._ID));
+           String jsonAllergyString = aCursor.getString(aCursor.getColumnIndex(DatabaseContract.AllergyTableInfo.COLUMN_NAME_JSON_STRING));
+
+           AllergyIntolerance allergyIntolerance = (AllergyIntolerance) FhirServices.getsFhirServices().toResource(jsonAllergyString);
+           return new MyAllergyIntolerance((int) localID, allergyIntolerance);
+       }
+        else {
+           return null;
+       }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater =
+                (LayoutInflater) this.aContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.fragment_allergy_list_item, null);
+
+        TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_name_allergy);
+        TextView displayAllergyDetails = (TextView) view.findViewById(R.id.list_display_details_allergy);
+        TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);
+
+        MyAllergyIntolerance aAllergyIntolerance = (MyAllergyIntolerance) getItem(position);
+        AllergyIntolerance allergyIntoleranceFhir = aAllergyIntolerance.getFhirAllergyIntolerance();
+        CodeableConceptDt codeableConcept = allergyIntoleranceFhir.getReaction();
+        String allergyNameString = codeableConcept.getText();
 
 
-
+    }
 }
 
