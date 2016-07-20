@@ -20,6 +20,7 @@ public class MyAllergyIntolerance {
     }
 
     public int getLocalId() {
+
         return aLocalId;
     }
 

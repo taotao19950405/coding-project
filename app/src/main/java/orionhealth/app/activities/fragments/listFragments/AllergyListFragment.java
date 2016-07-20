@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.MySimpleListAdapter;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
 import orionhealth.app.activities.main.AddAllergyActivity;
 import orionhealth.app.activities.main.EditAllergyActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
@@ -62,7 +64,8 @@ public class AllergyListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id){
         super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(getContext(), EditAllergyActivity.class);
-        intent.putExtra(SELECTED_ALLERGY_ID, id);
+        Log.d("BILLBILL", ""+id);
+        intent.putExtra(SELECTED_ALLERGY_ID, (int) id);
         startActivity(intent);
     }
 }

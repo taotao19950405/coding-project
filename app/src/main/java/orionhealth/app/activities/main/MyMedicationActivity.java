@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
+import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
@@ -48,7 +49,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
-
+		// AllergyTableOperations.getInstance().clearAllergyTable(this);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
 //		MedTableOperations.getInstance().clearMedTable(this);
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);

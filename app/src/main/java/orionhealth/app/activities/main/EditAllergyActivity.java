@@ -18,7 +18,7 @@ import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDial
 import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 
-public class EditAllergyActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener {
+public class EditAllergyActivity extends AppCompatActivity {
     private AllergyDetailsFragment aAllergyDetailsFragment;
 
     @Override
@@ -64,14 +64,5 @@ public class EditAllergyActivity extends AppCompatActivity implements RemoveMedi
         aAllergyDetailsFragment.updateAllergyInDatabase(this);
     }
 
-    @Override
-    public void onRemovePositiveClick(DialogFragment dialog) {
-        aAllergyDetailsFragment.onRemovePositiveClick(this);
-    }
-
-    @Override
-    public void onRemoveNegativeClick(DialogFragment dialog) {
-
-    }
 
 }

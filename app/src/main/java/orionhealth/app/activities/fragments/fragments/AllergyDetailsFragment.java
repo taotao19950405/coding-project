@@ -3,12 +3,14 @@ package orionhealth.app.activities.fragments.fragments;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.os.Bundle;
 
 import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
@@ -21,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
-import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
 import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
@@ -38,6 +39,7 @@ public class AllergyDetailsFragment extends Fragment {
     private EditText aNameTextField;
     private EditText aDetailsTextField;
     private EditText aReactionTextField;
+
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -68,6 +70,8 @@ public class AllergyDetailsFragment extends Fragment {
                 CodeableConceptDt reactionCodeableConcept = reaction.getManifestation().get(0);
                 reactionEditTextFieldAllergy.setText(reactionCodeableConcept.getText());
             }
+        } else {
+            Log.d("HERE", "populateFields: ");
         }
     }
 
@@ -146,8 +150,9 @@ public class AllergyDetailsFragment extends Fragment {
 
 
     public void removeAllergy(){
-        DialogFragment removeAllergyDialogue = new RemoveAllergyDialogFragment();
-        removeAllergyDialogue.show(getFragmentManager(), "removeAllergy");
+        AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
+        Intent intent = new Intent(getActivity(), MyMedicationActivity.class);
+        startActivity(intent);
     }
 
     public void onRemovePositiveClick(Context context) {

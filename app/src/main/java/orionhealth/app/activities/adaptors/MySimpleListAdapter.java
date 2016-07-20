@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
@@ -74,7 +75,7 @@ public class MySimpleListAdapter extends BaseAdapter {
         TextView displayAllergyDetails = (TextView) view.findViewById(R.id.list_display_details_allergy);
         displayAllergyDetails.setText(detailsText);
 
-        LinkedList<AllergyIntolerance.Reaction> listReaction = (LinkedList<AllergyIntolerance.Reaction>) allergyIntoleranceFhir.getReaction();
+        ArrayList<AllergyIntolerance.Reaction> listReaction = (ArrayList<AllergyIntolerance.Reaction>) allergyIntoleranceFhir.getReaction();
         CodeableConceptDt manifestationCodeableConcept = listReaction.get(0).getManifestation().get(0);
         String reaction = manifestationCodeableConcept.getText();
         TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);

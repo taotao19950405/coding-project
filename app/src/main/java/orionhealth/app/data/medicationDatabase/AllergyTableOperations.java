@@ -90,7 +90,8 @@ public final class AllergyTableOperations {
         DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
         SQLiteDatabase db = dbo.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        String updatedJsonAllergyStrong = aFhirServices.toJsonString(updatedAllergyIntolerance);
+        String updatedJsonAllergyString = aFhirServices.toJsonString(updatedAllergyIntolerance);
+        cv.put(AllergyTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonAllergyString);
         String selection = AllergyTableInfo._ID + " = ?";
         String[] selectionArgs = new String[]{String.valueOf(id)};
         db.update(AllergyTableInfo.TABLE_NAME, cv, selection, selectionArgs);
