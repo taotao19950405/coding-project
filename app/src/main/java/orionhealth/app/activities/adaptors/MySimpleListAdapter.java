@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.LinkedList;
+
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.R;
@@ -43,7 +45,7 @@ public class MySimpleListAdapter extends BaseAdapter {
            String jsonAllergyString = aCursor.getString(aCursor.getColumnIndex(DatabaseContract.AllergyTableInfo.COLUMN_NAME_JSON_STRING));
 
            AllergyIntolerance allergyIntolerance = (AllergyIntolerance) FhirServices.getsFhirServices().toResource(jsonAllergyString);
-           return new MyAllergyIntolerance((int) localID, allergyIntolerance);
+           return new MyAllergyIntolerance( (int) localID, allergyIntolerance);
        }
         else {
            return null;
@@ -60,16 +62,25 @@ public class MySimpleListAdapter extends BaseAdapter {
         LayoutInflater inflater =
                 (LayoutInflater) this.aContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_allergy_list_item, null);
-
-        TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_name_allergy);
-        TextView displayAllergyDetails = (TextView) view.findViewById(R.id.list_display_details_allergy);
-        TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);
-
         MyAllergyIntolerance aAllergyIntolerance = (MyAllergyIntolerance) getItem(position);
         AllergyIntolerance allergyIntoleranceFhir = aAllergyIntolerance.getFhirAllergyIntolerance();
-        CodeableConceptDt codeableConcept = allergyIntoleranceFhir.getReaction();
-        String allergyNameString = codeableConcept.getText();
 
+        CodeableConceptDt codeableConceptSubstance = (CodeableConceptDt)  allergyIntoleranceFhir.getSubstance();
+        String substanceText = codeableConceptSubstance.getText();
+        TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_name_allergy);
+        displayAllergyName.setText(substanceText);
+
+        String detailsText = allergyIntoleranceFhir.getNote().getText();
+        TextView displayAllergyDetails = (TextView) view.findViewById(R.id.list_display_details_allergy);
+        displayAllergyDetails.setText(detailsText);
+
+        LinkedList<AllergyIntolerance.Reaction> listReaction = (LinkedList<AllergyIntolerance.Reaction>) allergyIntoleranceFhir.getReaction();
+        CodeableConceptDt manifestationCodeableConcept = listReaction.get(0).getManifestation().get(0);
+        String reaction = manifestationCodeableConcept.getText();
+        TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);
+        displayAllergyReaction.setText(reaction);
+
+        return view;
 
     }
 }

@@ -3,6 +3,8 @@
 	<string name="title_activity_my_medication">My Medication</string>
 	<string name="title_activity_add_medication">Add Medication</string>
 	<string name="title_activity_edit_medication">Edit Medication</string>
+	<string name="title_activity_add_allergy">Add Allergy</string>
+    <string name="title_activity_edit_allergy">Edit Allergy</string>
 
 	<string name="button_add">Add</string>
 	<string name="button_save">Save</string>

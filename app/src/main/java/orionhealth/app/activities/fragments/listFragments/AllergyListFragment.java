@@ -1,19 +1,20 @@
 package orionhealth.app.activities.fragments.listFragments;
 
-import android.support.v4.app.ListFragment;
 import android.content.Intent;
-import android.database.Cursor;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.app.ListFragment;
+import android.database.Cursor;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import orionhealth.app.R;
+import orionhealth.app.activities.adaptors.MySimpleListAdapter;
 import orionhealth.app.activities.main.AddAllergyActivity;
+import orionhealth.app.activities.main.EditAllergyActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 
 /**
@@ -21,7 +22,7 @@ import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
  */
 public class AllergyListFragment extends ListFragment {
     public final static String SELECTED_ALLERGY_ID = "allergyListFragment.SELECTED_ALLERGY_ID";
-    private ListView allergyList;
+    private ListView aAllergyList;
 
 
     public AllergyListFragment() {
@@ -35,7 +36,15 @@ public class AllergyListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_allergies_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_allergy_list, container, false);
+        FloatingActionButton addButtonAllergy = (FloatingActionButton) view.findViewById(R.id.button_add_allergy_list);
+        addButtonAllergy.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AddAllergyActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     };
 
@@ -44,10 +53,16 @@ public class AllergyListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         Cursor cursor = AllergyTableOperations.getInstance().getAllRows(getContext());
 
+        aAllergyList = getListView();
+        MySimpleListAdapter allergylistAdapter = new MySimpleListAdapter(getContext(), cursor);
+        aAllergyList.setAdapter(allergylistAdapter);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         super.onListItemClick(l, v, position, id);
+        Intent intent = new Intent(getContext(), EditAllergyActivity.class);
+        intent.putExtra(SELECTED_ALLERGY_ID, id);
+        startActivity(intent);
     }
 }

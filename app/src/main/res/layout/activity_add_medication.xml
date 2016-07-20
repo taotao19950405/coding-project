@@ -13,8 +13,7 @@
 	<fragment android:name="orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment"
 						android:id="@+id/fragment_medication_details"
 						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-		tools:layout="@layout/fragment_medication_details" />
+						android:layout_height="wrap_content" />
 
 	<Button android:text="@string/button_add"
 					android:id="@+id/button_add"

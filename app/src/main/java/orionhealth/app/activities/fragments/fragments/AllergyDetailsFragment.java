@@ -23,8 +23,6 @@ import java.util.List;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
-import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
-import orionhealth.app.activities.main.AddAllergyActivity;
 import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.fhir.FhirServices;
@@ -41,7 +39,8 @@ public class AllergyDetailsFragment extends Fragment {
     private EditText aDetailsTextField;
     private EditText aReactionTextField;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_allergy_details, container, false);
 
@@ -137,6 +136,10 @@ public class AllergyDetailsFragment extends Fragment {
         List<CodeableConceptDt> listManifestation = new LinkedList<CodeableConceptDt>();
         listManifestation.add(codeableConceptManifestation);
         reactionFhir.setManifestation(listManifestation);
+
+        List<AllergyIntolerance.Reaction> listReaction = new LinkedList<AllergyIntolerance.Reaction>();
+        listReaction.add(reactionFhir);
+        allergyIntolerance.setReaction(listReaction);
 
         return allergyIntolerance;
     }
