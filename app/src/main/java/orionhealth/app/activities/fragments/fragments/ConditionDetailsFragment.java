@@ -126,8 +126,6 @@ public class ConditionDetailsFragment extends Fragment {
                 String dateString = dateService.formatToString(p);
                 mRecordedDateTextField.setText(dateString);
             }
-
-
         }
 
     }
@@ -223,7 +221,6 @@ public class ConditionDetailsFragment extends Fragment {
         condition.setCategory(ConditionCategoryCodesEnum.forCode(category.toUpperCase()));
         condition.setSeverity(new CodeableConceptDt().setText(severity));
         condition.setVerificationStatus(ConditionVerificationStatusEnum.forCode(verificationStatus.toUpperCase()));
-
 //        evidence is a list?
         Condition.Evidence evidenceFhir = new Condition.Evidence();
         evidenceFhir.setCode(new CodeableConceptDt().setText(evidence));

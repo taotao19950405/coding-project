@@ -1,9 +1,3 @@
-//       Description:
-// 			Store data in table
-// 			Fetch data from readable table in the format of Sqlite database instance
-//			Query the datababse
-//		 @author:  Bill
-//			@Reviewer: 19 Apr 2016
 package orionhealth.app.data.medicationDatabase;
 
 import android.content.ContentValues;
@@ -16,7 +10,7 @@ import orionhealth.app.data.medicationDatabase.DatabaseContract.CondTableInfo;
 import orionhealth.app.fhir.FhirServices;
 
 /**
- * Created by bill on 11/04/16.
+ * Created by lu on 17/07/16.
  */
 public final class CondTableOperations {
 	private static CondTableOperations scondTableOperations;
