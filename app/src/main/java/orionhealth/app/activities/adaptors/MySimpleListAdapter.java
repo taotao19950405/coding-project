@@ -55,7 +55,12 @@ public class MySimpleListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        if (aCursor.moveToPosition(position)) {
+            long localID = aCursor.getLong(aCursor.getColumnIndex(DatabaseContract.AllergyTableInfo._ID));
+            return localID;
+        } else {
+            return -1;
+        }
     }
 
     @Override
