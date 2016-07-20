@@ -54,7 +54,7 @@ public class ConditionListFragment extends ListFragment {
 		Cursor cursor = CondTableOperations.getInstance().getAllRows(getContext());
 
 		mSimpleListView = getListView();
-		MySimpleListAdapter listAdapter = new MySimpleListAdapter(getContext(), cursor, 0);
+		MySimpleListAdapter listAdapter = new MySimpleListAdapter(getContext(), cursor);
 		mSimpleListView.setAdapter(listAdapter);
 
 	}

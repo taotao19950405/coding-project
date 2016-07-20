@@ -29,7 +29,6 @@ import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
-import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.dataModels.Category;
 import orionhealth.app.data.dataModels.Severity;
@@ -167,7 +166,7 @@ public class ConditionDetailsFragment extends Fragment {
                     category.toString(), severity.toString(), verificationStatus.toString());
             CondTableOperations.getInstance().addToCondTable(context, condition);
             FhirServices.getsFhirServices().sendToServer(condition, context);
-            Intent intent = new Intent(context, ConditionListFragment.class);
+            Intent intent = new Intent(context, MyMedicationActivity.class);
             startActivity(intent);
         } catch (NoNameException e) {
             Toast.makeText(context, "Please enter a condition", Toast.LENGTH_SHORT).show();
@@ -192,13 +191,15 @@ public class ConditionDetailsFragment extends Fragment {
                     createCondition(conditionCode, recordedDate, evidence, notes,
                             category.toString(), severity.toString(), verificationStatus.toString());
             CondTableOperations.getInstance().updateCondition(context, mConditionID, mCondition);
-            Intent intent = new Intent(context, ConditionListFragment.class);
+            Intent intent = new Intent(context, MyMedicationActivity.class);
             startActivity(intent);
         } catch (NoNameException e) {
             Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
         } catch (NoVerificationStatusException e) {
             Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
+        } catch (NoDateRecordedException e) {
+            Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
+        }  catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -206,8 +207,8 @@ public class ConditionDetailsFragment extends Fragment {
     private Condition createCondition(String conditionCode, String recordedDate,
                                       String evidence, String notes,
                                       String category, String severity, String verificationStatus) throws Exception {
-		checkValidCondition(conditionCode, verificationStatus);
 
+        checkValidCondition(conditionCode, verificationStatus,recordedDate);
         Condition condition = new Condition();
         condition.setCode(new CodeableConceptDt().setText(conditionCode));
         ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
@@ -229,7 +230,7 @@ public class ConditionDetailsFragment extends Fragment {
         List<Condition.Evidence> listEvidence = new LinkedList<Condition.Evidence>();
         listEvidence.add(evidenceFhir);
         condition.setEvidence(listEvidence);
-        return null;
+        return condition;
     }
 
     public void removeCondition() {
@@ -239,7 +240,7 @@ public class ConditionDetailsFragment extends Fragment {
 
     public void onRemovePositiveClick(Context context) {
         CondTableOperations.getInstance().removeCondition(context, mConditionID);
-        Intent intent = new Intent(context, ConditionListFragment.class);
+        Intent intent = new Intent(context, MyMedicationActivity.class);
         startActivity(intent);
     }
 
@@ -262,10 +263,12 @@ public class ConditionDetailsFragment extends Fragment {
         mCondition = CondTableOperations.getInstance().getCondition(context, condLocalId);
     }
 
-    private void checkValidCondition(String name, String verificationStatus) throws Exception {
+    private void checkValidCondition(String name, String verificationStatus, String recordedDate) throws Exception {
         if (name.equals("")) {
             throw new NoNameException();
         } else if (verificationStatus.equals("")) {
+            throw new NoVerificationStatusException();
+        } else if (recordedDate.equals("")) {
             throw new NoVerificationStatusException();
         }
     }
@@ -340,6 +343,9 @@ public class ConditionDetailsFragment extends Fragment {
     }
 
     private class NoVerificationStatusException extends Exception {
+
+    }
+    private class NoDateRecordedException extends Exception {
 
     }
 

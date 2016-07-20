@@ -26,7 +26,7 @@
 	<string name="text_label_evidence">Evidence:</string>
 	<string name="text_label_verificationStatus">Verfication:</string>
 
-	<string name="text_hardcoded_Symptoms">Fever</string>
+	<string name="text_hardcoded_Date">1.1</string>
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 

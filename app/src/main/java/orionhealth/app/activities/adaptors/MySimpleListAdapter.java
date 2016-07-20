@@ -24,7 +24,7 @@ public class MySimpleListAdapter extends BaseAdapter {
     private Context mContext;
     private Cursor mCursor;
 
-    public MySimpleListAdapter(Context context, Cursor cursor, int flags) {
+    public MySimpleListAdapter(Context context, Cursor cursor) {
         this.mContext = context;
         this.mCursor = cursor;
     }
@@ -76,6 +76,6 @@ public class MySimpleListAdapter extends BaseAdapter {
         display_condition.setText(condition_string);
         display_date.setText(date_string);
 
-        return null;
+        return view;
     }
 }

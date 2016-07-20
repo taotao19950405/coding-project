@@ -5,6 +5,7 @@
 package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
+import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
@@ -34,7 +36,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
-	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Notifications", "Calendar"};
+	private String[] mTabsTitles = {"My Medication", "My Condition", "My Allergies", "Notifications", "Calendar"};
 	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
@@ -51,6 +53,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
 //		MedTableOperations.getInstance().clearMedTable(this);
+//		CondTableOperations.getInstance().clearCondTable(this);
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
