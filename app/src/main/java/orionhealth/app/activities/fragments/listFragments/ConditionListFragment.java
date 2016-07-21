@@ -8,8 +8,8 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.MySimpleListAdapter;
 import orionhealth.app.activities.main.AddConditionActivity;
@@ -63,7 +63,7 @@ public class ConditionListFragment extends ListFragment {
 	public void onListItemClick(ListView l, View v, int position, long id){
 		super.onListItemClick(l, v, position, id);
 		Intent intent = new Intent(getContext(), EditConditionActivity.class);
-		intent.putExtra(SELECTED_COND_ID, id);
+		intent.putExtra(SELECTED_COND_ID, (int) id);
 		startActivity(intent);
 	};
 }

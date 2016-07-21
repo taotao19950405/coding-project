@@ -27,6 +27,7 @@ import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.dstu2.valueset.SystemRestfulInteractionEnum;
+import ca.uhn.fhir.model.primitive.DateDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
@@ -110,45 +111,59 @@ public class ConditionDetailsFragment extends Fragment {
 
             EditText notesEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
             String notesString = mCondition.getNotes();
-            if (notesString.length() > 0) {
-                notesEditTextField.setText(notesString);
-            }
+            notesEditTextField.setText(notesString);
 
             CodeableConceptDt categoryCodeableConcept = mCondition.getCategory();
-            selectSpinner(categoryCodeableConcept, (Spinner) getActivity().findViewById(R.id.category_spinner));
+            Spinner spinner = (Spinner) getActivity().findViewById(R.id.category_spinner);
+            if (!categoryCodeableConcept.isEmpty()) {
+                String myString = categoryCodeableConcept.getText();
+                int index = 0;
+                for (int i = 0; i < spinner.getCount(); i++) {
+                    if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                        index = i;
+                        break;
+                    }
+                }
+                spinner.setSelection(index);
+            }
 
             CodeableConceptDt severityCodeableConcept = mCondition.getSeverity();
-            selectSpinner(severityCodeableConcept, (Spinner) getActivity().findViewById(R.id.severity_spinner));
+            spinner = (Spinner) getActivity().findViewById(R.id.severity_spinner);
+            if (!severityCodeableConcept.isEmpty()) {
+                String myString = severityCodeableConcept.getText();
+                int index = 0;
+                for (int i = 0; i < spinner.getCount(); i++) {
+                    if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
+                        index = i;
+                        break;
+                    }
+                }
+                spinner.setSelection(index);
+            }
 
             String verificationStatus = mCondition.getVerificationStatus();
-            selectSpinner(verificationStatus, (Spinner) getActivity().findViewById(R.id.verification_spinner));
+            spinner = (Spinner) getActivity().findViewById(R.id.verification_spinner);
+            if (verificationStatus.length() > 0) {
+                int index = 0;
+                for (int i = 0; i < spinner.getCount(); i++) {
+                    if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(verificationStatus)) {
+                        index = i;
+                        break;
+                    }
+                }
+                spinner.setSelection(index);
+            }
 
-            Date p = mCondition.getDateRecorded();
+
+            DateDt p = mCondition.getDateRecordedElement();
 
             if (p != null) {
-                String dateString = dateService.formatToString(p);
+                String dateString = dateService.formatToString(p.getValue());
                 mRecordedDateTextField.setText(dateString);
             }
             System.out.println("Hello");
         }
 
-    }
-
-    private void selectSpinner(Object o, Spinner spinner) {
-        if (o == null) {
-            String myString = o.toString();
-            int index = 0;
-            for (int i = 0; i < spinner.getCount(); i++) {
-                if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
-                    index = i;
-                    break;
-                }
-            }
-            spinner.setSelection(index);
-        } else {
-            int unitId = Integer.parseInt(o.toString());
-            spinner.setSelection(unitId);
-        }
     }
 
     public void addConditionToDatabase(Context context) {
@@ -201,7 +216,7 @@ public class ConditionDetailsFragment extends Fragment {
             Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
         } catch (NoDateRecordedException e) {
             Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
-        }  catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -210,7 +225,7 @@ public class ConditionDetailsFragment extends Fragment {
                                       String evidence, String notes,
                                       String category, String severity, String verificationStatus) throws Exception {
 
-        checkValidCondition(conditionCode, verificationStatus,recordedDate);
+        checkValidCondition(conditionCode, verificationStatus, recordedDate);
         Condition condition = new Condition();
         condition.setCode(new CodeableConceptDt().setText(conditionCode));
         ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
@@ -219,13 +234,16 @@ public class ConditionDetailsFragment extends Fragment {
         condition.setNotes(notes);
 
         Date d = dateService.parseDate(recordedDate);
-        condition.setDateRecorded(d, TemporalPrecisionEnum.DAY);
+        DateDt date = new DateDt();
+        date.setPrecision(TemporalPrecisionEnum.DAY);
+        date.setValue(d);
+        condition.setDateRecorded(date);
 
-//        what if the code is enum??
-        condition.setCategory(ConditionCategoryCodesEnum.forCode(category.toUpperCase()));
+//      Enum fixed
+        condition.setCategory(ConditionCategoryCodesEnum.forCode(category.toLowerCase()));
         condition.setSeverity(new CodeableConceptDt().setText(severity));
-        condition.setVerificationStatus(ConditionVerificationStatusEnum.forCode(verificationStatus.toUpperCase()));
-//        evidence is a list?
+        condition.setVerificationStatus(ConditionVerificationStatusEnum.forCode(verificationStatus.toLowerCase()));
+
         Condition.Evidence evidenceFhir = new Condition.Evidence();
         evidenceFhir.setCode(new CodeableConceptDt().setText(evidence));
         List<Condition.Evidence> listEvidence = new LinkedList<Condition.Evidence>();
@@ -346,6 +364,7 @@ public class ConditionDetailsFragment extends Fragment {
     private class NoVerificationStatusException extends Exception {
 
     }
+
     private class NoDateRecordedException extends Exception {
 
     }

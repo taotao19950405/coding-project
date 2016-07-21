@@ -10,12 +10,15 @@ import android.widget.TextView;
 
 import java.util.Date;
 
+import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.primitive.DateDt;
 import orionhealth.app.R;
 import orionhealth.app.data.dataModels.MyCondition;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
+import orionhealth.app.services.DateService;
 
 /**
  * Created by Lu on 19/07/16.
@@ -23,6 +26,7 @@ import orionhealth.app.fhir.FhirServices;
 public class MySimpleListAdapter extends BaseAdapter {
     private Context mContext;
     private Cursor mCursor;
+    private DateService dateService = new DateService();
 
     public MySimpleListAdapter(Context context, Cursor cursor) {
         this.mContext = context;
@@ -66,8 +70,8 @@ public class MySimpleListAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.fragment_condition_list_items, null);
 
         // Extract properties from cursor
-        MyCondition mCondtion = (MyCondition) getItem(position);
-        Condition conditionFhir = mCondtion.getFhirCondition();
+        MyCondition mCondition = (MyCondition) getItem(position);
+        Condition conditionFhir = mCondition.getFhirCondition();
         // Find fields to populate in inflated template
         TextView display_condition = (TextView) view.findViewById(R.id.list_display_condition);
         TextView display_date = (TextView) view.findViewById(R.id.list_display_date);
@@ -75,12 +79,15 @@ public class MySimpleListAdapter extends BaseAdapter {
         CodeableConceptDt codeableConcept = conditionFhir.getCode();
         String condition_string = codeableConcept.getText();
 
-        Date dateinfo = conditionFhir.getDateRecorded();
-        String date_string = String.valueOf(dateinfo.getTime());
+//        Date dateinfo = conditionFhir.getDateRecorded();
+//        String date_string = String.valueOf(dateinfo.getTime());
+        DateDt p = conditionFhir.getDateRecordedElement();
+        Date d = p.getValue();
+        String dateString = dateService.formatToString(d);
 
         // Populate fields with extracted properties
         display_condition.setText(condition_string);
-        display_date.setText(date_string);
+        display_date.setText(dateString);
 
         return view;
     }

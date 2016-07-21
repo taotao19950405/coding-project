@@ -14,11 +14,12 @@ import android.view.View;
 
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 
-public class EditConditionActivity extends AppCompatActivity implements DatePicker.DatePickerListener, RemoveMedicationDialogFragment.RemoveMedDialogListener {
+public class EditConditionActivity extends AppCompatActivity implements DatePicker.DatePickerListener, RemoveConditionDialogFragment.RemoveCondDialogListener {
 
     private ConditionDetailsFragment mCondDetailsFragment;
 

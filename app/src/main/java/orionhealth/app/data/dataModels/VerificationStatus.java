@@ -4,11 +4,12 @@ package orionhealth.app.data.dataModels;
  * Created by luchen on 16/07/2016.
  */
 public enum VerificationStatus {
-    PROVISIONAL("provisional"),
-    CONFIRMED("confirmed"),
-    REFUTED("refuted"),
-    ENTERED_IN_ERROR("entered-in-error"),
-    UNKNOWN("unknown");
+    PROVISIONAL("Provisional"),
+    DIFFERENTIAL("Differential"),
+    CONFIRMED("Confirmed"),
+    REFUTED("Refuted"),
+    ENTERED_IN_ERROR("Entered-in-error"),
+    UNKNOWN("Unknown");
 
     private final String name;
 
