@@ -16,6 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.main.AddMedicationActivity"
             android:label="@string/title_activity_add_medication"
@@ -24,6 +25,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MyMedicationActivity" />
         </activity>
+
         <activity
             android:name=".activities.main.EditMedicationActivity"
             android:label="@string/title_activity_edit_medication"
@@ -33,15 +35,40 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MyMedicationActivity" />
         </activity>
+
+        <activity
+            android:name=".activities.main.AddAllergyActivity"
+            android:label="@string/title_activity_add_allergy"
+            android:parentActivityName=".activities.main.MyMedicationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.MyMedicationActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.main.EditAllergyActivity"
+            android:label="@string/title_activity_edit_allergy"
+            android:parentActivityName=".activities.main.MyMedicationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.MyMedicationActivity" />
+        </activity>
+
+        <receiver
+            android:name="orionhealth.app.services.AlarmReceiver"
+            android:process=":remote" />
 			<receiver
 				android:name="orionhealth.app.services.AlarmReceiver"
 				android:process=":remote" />
+
 			<receiver android:name=".services.AlarmReceiver$OnCancelReceiver"
 								android:process=":remote"/>
+
 			<service android:name=".services.RingToneService"/>
 			<service android:name=".services.MedResponseService"/>
 		</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+
 </manifest>

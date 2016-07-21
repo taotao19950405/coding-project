@@ -24,7 +24,8 @@
 					android:id="@+id/button_add"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content"
-					android:onClick="addMedicationToDatabase" android:layout_gravity="center_vertical"/>
+					android:onClick="addMedicationToDatabase"
+					android:layout_gravity="center_vertical"/>
 </LinearLayout>
 
 </ScrollView>
