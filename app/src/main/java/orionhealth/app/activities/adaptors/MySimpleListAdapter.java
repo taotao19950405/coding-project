@@ -6,13 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
@@ -73,7 +69,7 @@ public class MySimpleListAdapter extends BaseAdapter {
 
         CodeableConceptDt codeableConceptSubstance = (CodeableConceptDt)  allergyIntoleranceFhir.getSubstance();
         String substanceText = codeableConceptSubstance.getText();
-        TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_name_allergy);
+        TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_substance_allergy);
         displayAllergyName.setText(substanceText);
 
         String detailsText = allergyIntoleranceFhir.getNote().getText();

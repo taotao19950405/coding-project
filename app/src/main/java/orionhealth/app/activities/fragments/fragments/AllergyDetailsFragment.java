@@ -1,6 +1,5 @@
 package orionhealth.app.activities.fragments.fragments;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.util.Log;
@@ -23,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
-import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
 import orionhealth.app.activities.main.MyMedicationActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.fhir.FhirServices;
@@ -46,7 +44,7 @@ public class AllergyDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_allergy_details, container, false);
 
-        aNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_name_allergy);
+        aNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_substance_allergy);
         aDetailsTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_details_allergy);
         aReactionTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_reaction_allergy);
 
@@ -55,7 +53,7 @@ public class AllergyDetailsFragment extends Fragment {
 
     public void populateFields() {
         if (aAllergy != null) {
-            EditText nameEditTextFieldAllergy = (EditText) getActivity().findViewById(R.id.edit_text_name_allergy);
+            EditText nameEditTextFieldAllergy = (EditText) getActivity().findViewById(R.id.edit_text_substance_allergy);
             CodeableConceptDt codeableConceptAllergy = (CodeableConceptDt) aAllergy.getSubstance();
             nameEditTextFieldAllergy.setText(codeableConceptAllergy.getText());
 
@@ -88,12 +86,12 @@ public class AllergyDetailsFragment extends Fragment {
             FhirServices.getsFhirServices().sendToServer(allergyIntolerance, context);
             Intent intentAllergy = new Intent(context, MyMedicationActivity.class);
             startActivity(intentAllergy);
-        } catch (NoNameException e) {
-                Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+        } catch (NoSubstanceException e) {
+                Toast.makeText(context, "Please enter a substance", Toast.LENGTH_SHORT).show();
+        } catch (NoReactionException e) {
+            Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
         } catch (NoDetailsException e){
                 Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
-        } catch (NoReactionException e) {
-                Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
         } catch (Exception e){
              e.printStackTrace();
         }
@@ -110,11 +108,11 @@ public class AllergyDetailsFragment extends Fragment {
             AllergyTableOperations.getInstance().updateAllergy(context, aAllergyId, aAllergy);
             Intent intentAllergy = new Intent(context, MyMedicationActivity.class);
             startActivity(intentAllergy);
-        } catch (NoNameException e){
-            Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
-        } catch (NoDetailsException e){
-            Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+        } catch (NoSubstanceException e){
+            Toast.makeText(context, "Please enter a substance", Toast.LENGTH_SHORT).show();
         } catch (NoReactionException e) {
+            Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
+        }  catch (NoDetailsException e){
             Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,7 +167,7 @@ public class AllergyDetailsFragment extends Fragment {
 
     private void checkValidAllergy(String name, String reaction) throws Exception {
         if (name.equals("")){
-            throw new NoNameException();
+            throw new NoSubstanceException();
         } else if (reaction.isEmpty()){
             throw  new NoReactionException();
         }
@@ -193,7 +191,7 @@ public class AllergyDetailsFragment extends Fragment {
     }
 
 
-    private class NoNameException extends Exception {
+    private class NoSubstanceException extends Exception {
 
     }
 

@@ -1,5 +1,4 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linear_layout_vertical_details_allergy"
     android:layout_width="match_parent"
@@ -12,91 +11,119 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/basic_information_header"
         android:padding="10dp"
-        android:textSize="9pt"/>
+        android:text="@string/basic_information_header"
+        android:textSize="9pt" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
-        android:padding="10dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray"
+        android:padding="10dp" />
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:rowCount="3"
         android:columnCount="2"
+        android:orientation="horizontal"
         android:padding="10dp"
-        android:orientation="horizontal">
+        android:rowCount="3">
 
         <TextView
-            android:id="@+id/text_label_name_allergy"
-            android:layout_row="0"
-            android:layout_column="0"
+            android:id="@+id/text_label_substance_allergy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_label_name" />
+            android:layout_column="0"
+            android:layout_row="0"
+            android:text="@string/text_label_substance" />
 
         <EditText
-            android:id="@+id/edit_text_name_allergy"
-            android:layout_row="0"
-            android:layout_column="1"
+            android:id="@+id/edit_text_substance_allergy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/edit_text_name_hint" />
+            android:layout_column="1"
+            android:layout_row="0"
+            android:hint="@string/edit_text_substance_hint" />
 
     </GridLayout>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:rowCount="3"
         android:columnCount="2"
+        android:orientation="horizontal"
         android:padding="10dp"
-        android:orientation="horizontal">
+        android:rowCount="3">
 
         <TextView
             android:id="@+id/text_label_reaction_allergy"
-            android:layout_row="0"
-            android:layout_column="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
             android:text="@string/text_label_allergy_reaction" />
 
-    <EditText
-        android:id="@+id/edit_text_reaction_allergy"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/edit_text_allergy_hint" />
-
+        <EditText
+            android:id="@+id/edit_text_reaction_allergy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:hint="@string/edit_text_allergy_hint" />
     </GridLayout>
+
+
+    <!-- Temporarily commenting out Severity Spinner -->
+    <!--<GridLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:columnCount="2"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="10dp"-->
+        <!--android:rowCount="3">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/text_label_severity_allergy"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_column="0"-->
+            <!--android:layout_row="0"-->
+            <!--android:text="@string/text_label_allergy_severity" />-->
+
+
+        <!--<Spinner-->
+            <!--android:id="@+id/severity_spinner"-->
+            <!--android:layout_width="300dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--/>-->
+
+
+    <!--</GridLayout>-->
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/additional_header"
-        android:paddingLeft="10dp"
         android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
         android:paddingTop="20dp"
-        android:textSize="9pt"/>
+        android:text="@string/additional_header"
+        android:textSize="9pt" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
-        android:padding="10dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray"
+        android:padding="10dp" />
 
     <EditText
-            android:id="@+id/edit_text_details_allergy"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_notes_hint"
-            android:inputType="textMultiLine|textCapSentences"
-            android:minLines="3"/>
+        android:id="@+id/edit_text_details_allergy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:hint="@string/edit_text_notes_hint"
+        android:inputType="textMultiLine|textCapSentences"
+        android:minLines="3" />
 
 </LinearLayout>
