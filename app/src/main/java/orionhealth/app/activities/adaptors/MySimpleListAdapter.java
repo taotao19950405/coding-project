@@ -51,7 +51,12 @@ public class MySimpleListAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        if (mCursor.moveToPosition(position)) {
+            long localID = mCursor.getLong(mCursor.getColumnIndex(DatabaseContract.CondTableInfo._ID));
+            return localID;
+        } else {
+            return -1;
+        }
     }
 
     @Override
@@ -59,13 +64,14 @@ public class MySimpleListAdapter extends BaseAdapter {
         LayoutInflater inflater =
                 (LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.fragment_condition_list_items, null);
-        // Find fields to populate in inflated template
-        TextView display_condition = (TextView) view.findViewById(R.id.list_display_condition);
-        TextView display_date = (TextView) view.findViewById(R.id.list_display_date);
 
         // Extract properties from cursor
         MyCondition mCondtion = (MyCondition) getItem(position);
         Condition conditionFhir = mCondtion.getFhirCondition();
+        // Find fields to populate in inflated template
+        TextView display_condition = (TextView) view.findViewById(R.id.list_display_condition);
+        TextView display_date = (TextView) view.findViewById(R.id.list_display_date);
+
         CodeableConceptDt codeableConcept = conditionFhir.getCode();
         String condition_string = codeableConcept.getText();
 

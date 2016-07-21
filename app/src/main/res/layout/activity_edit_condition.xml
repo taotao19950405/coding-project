@@ -14,18 +14,19 @@
         android:paddingTop="5dp"
         tools:context=".activities.main.EditConditionActivity">
 
+
+        <fragment
+            android:id="@+id/fragment_condition_details"
+            android:name="orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             tools:context=".activities.main.EditConditionActivity">
-
-            <fragment
-                android:id="@+id/fragment_condition_details"
-                android:name="orionhealth.app.activities.fragments.fragments.ConditionDetailsFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <Button
                 android:layout_width="0dp"
