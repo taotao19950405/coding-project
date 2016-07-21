@@ -25,12 +25,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
-import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 
-public class MyMedicationActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
@@ -130,7 +129,7 @@ public class MyMedicationActivity extends AppCompatActivity {
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MyMedicationActivity.this, "Item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Item", Toast.LENGTH_SHORT).show();
             }
         });
 	}
