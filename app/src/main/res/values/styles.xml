@@ -8,8 +8,8 @@
 	</style>
 
 	<style name="AllergyTheme" parent="AppTheme">
-		<item name="colorAccent">#0fc70f</item>
-		<item name="colorControlNormal">#35ff46</item>
+		<item name="colorAccent">#36a4ff</item>
+		<item name="colorControlNormal">#14b1ba</item>
 	</style>
 
 	<style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">

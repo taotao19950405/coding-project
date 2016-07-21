@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.AllergyTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.CondTableInfo;
 
 /**
  * Created by bill on 8/04/16.
@@ -31,14 +32,23 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     AllergyTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
 
+    private static final String SQL_CREATE_ENTRIES_COND =
+            "CREATE TABLE " + CondTableInfo.TABLE_NAME + " (" +
+                    CondTableInfo._ID + " INTEGER PRIMARY KEY," +
+                    CondTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
+                    " )";
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
     private static final String SQL_DELETE_ENTRIES2 =
             "DROP TABLE IF EXISTS " + AllergyTableInfo.TABLE_NAME;
 
+    private static final String SQL_DELETE_ENTRIES_COND =
+            "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
+
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -60,6 +70,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES2);
+        db.execSQL(SQL_CREATE_ENTRIES_COND);
     }
 
     @Override
@@ -67,6 +78,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         switch (oldVersion) {
 			case 2: db.execSQL(SQL_CREATE_ENTRIES);
 			case 3: db.execSQL(SQL_CREATE_ENTRIES2);
+			case 4: db.execSQL(SQL_CREATE_ENTRIES_COND);
 		}
     }
 

@@ -50,15 +50,32 @@
             android:name=".activities.main.EditAllergyActivity"
             android:label="@string/title_activity_edit_allergy"
 						android:theme="@style/AllergyTheme"
-            android:parentActivityName=".activities.main.MainActivity">
+            android:parentActivityName=".activities.main.MainActivity"
+						android:windowSoftInputMode="stateHidden">>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MainActivity" />
         </activity>
 
-        <receiver
-            android:name="orionhealth.app.services.AlarmReceiver"
-            android:process=":remote" />
+        <activity
+            android:name=".activities.main.AddConditionActivity"
+            android:label="@string/title_activity_add_condition"
+            android:parentActivityName=".activities.main.AddConditionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.AddConditionActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.main.EditConditionActivity"
+            android:label="@string/title_activity_edit_condition"
+            android:parentActivityName=".activities.main.EditConditionActivity"
+						android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.EditConditionActivity" />
+        </activity>
+
 			<receiver
 				android:name="orionhealth.app.services.AlarmReceiver"
 				android:process=":remote" />
