@@ -9,12 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import orionhealth.app.R;
-import orionhealth.app.activities.adaptors.MySimpleListAdapter;
-import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
+import orionhealth.app.activities.adaptors.AllergyListAdapter;
 import orionhealth.app.activities.main.AddAllergyActivity;
 import orionhealth.app.activities.main.EditAllergyActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
@@ -56,7 +54,7 @@ public class AllergyListFragment extends ListFragment {
         Cursor cursor = AllergyTableOperations.getInstance().getAllRows(getContext());
 
         aAllergyList = getListView();
-        MySimpleListAdapter allergylistAdapter = new MySimpleListAdapter(getContext(), cursor);
+        AllergyListAdapter allergylistAdapter = new AllergyListAdapter(getContext(), cursor);
         aAllergyList.setAdapter(allergylistAdapter);
     }
 

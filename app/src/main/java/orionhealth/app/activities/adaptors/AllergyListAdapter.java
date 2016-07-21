@@ -20,11 +20,11 @@ import orionhealth.app.fhir.FhirServices;
 /**
  * Created by archanakhanal on 18/7/2016.
  */
-public class MySimpleListAdapter extends BaseAdapter {
+public class AllergyListAdapter extends BaseAdapter {
     private Context aContext;
     private Cursor aCursor;
 
-    public MySimpleListAdapter(Context context, Cursor cursor){
+    public AllergyListAdapter(Context context, Cursor cursor){
 
         this.aContext = context;
         this.aCursor = cursor;
