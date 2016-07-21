@@ -44,7 +44,7 @@ public class AllergyDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_allergy_details, container, false);
 
-        aNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_name_allergy);
+        aNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_substance_allergy);
         aDetailsTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_details_allergy);
         aReactionTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_reaction_allergy);
 
@@ -53,7 +53,7 @@ public class AllergyDetailsFragment extends Fragment {
 
     public void populateFields() {
         if (aAllergy != null) {
-            EditText nameEditTextFieldAllergy = (EditText) getActivity().findViewById(R.id.edit_text_name_allergy);
+            EditText nameEditTextFieldAllergy = (EditText) getActivity().findViewById(R.id.edit_text_substance_allergy);
             CodeableConceptDt codeableConceptAllergy = (CodeableConceptDt) aAllergy.getSubstance();
             nameEditTextFieldAllergy.setText(codeableConceptAllergy.getText());
 
@@ -84,14 +84,14 @@ public class AllergyDetailsFragment extends Fragment {
             allergyIntolerance = createAllergyIntolerance(name, details, reaction);
             AllergyTableOperations.getInstance().addToAllergyTable(context, allergyIntolerance);
             FhirServices.getsFhirServices().sendToServer(allergyIntolerance, context);
-        } catch (NoNameException e) {
+        } catch (NoSubstanceException e) {
                 Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 				throw e;
-        } catch (NoDetailsException e){
-                Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+		} catch (NoReactionException e) {
+			Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
 				throw e;
-        } catch (NoReactionException e) {
-                Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
+		} catch (NoDetailsException e){
+			Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
 			    throw e;
         } catch (Exception e){
              e.printStackTrace();
@@ -110,14 +110,14 @@ public class AllergyDetailsFragment extends Fragment {
             AllergyTableOperations.getInstance().updateAllergy(context, aAllergyId, aAllergy);
             Intent intentAllergy = new Intent(context, MainActivity.class);
             startActivity(intentAllergy);
-        } catch (NoNameException e){
-            Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+        } catch (NoSubstanceException e){
+            Toast.makeText(context, "Please enter a substance", Toast.LENGTH_SHORT).show();
 			throw e;
-        } catch (NoDetailsException e){
-            Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+		} catch (NoReactionException e) {
+			Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
 			throw e;
-        } catch (NoReactionException e) {
-            Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+		}  catch (NoDetailsException e){
+			Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
 			throw e;
         } catch (Exception e) {
             e.printStackTrace();
@@ -155,8 +155,6 @@ public class AllergyDetailsFragment extends Fragment {
 
     public void removeAllergy(){
         AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
-        Intent intent = new Intent(getActivity(), MainActivity.class);
-        startActivity(intent);
     }
 
     public void onRemovePositiveClick(Context context) {
@@ -173,7 +171,7 @@ public class AllergyDetailsFragment extends Fragment {
 
     private void checkValidAllergy(String name, String reaction) throws Exception {
         if (name.equals("")){
-            throw new NoNameException();
+            throw new NoSubstanceException();
         } else if (reaction.isEmpty()){
             throw  new NoReactionException();
         }
@@ -197,7 +195,7 @@ public class AllergyDetailsFragment extends Fragment {
     }
 
 
-    private class NoNameException extends Exception {
+    private class NoSubstanceException extends Exception {
 
     }
 

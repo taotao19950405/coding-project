@@ -37,16 +37,29 @@ public class AddAllergyActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
         return super.onOptionsItemSelected(item);
     }
+
+	@Override
+	public void onBackPressed() {
+		returnToMainActivity();
+		return;
+	}
+
+	public void returnToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("ACTIVITY", ActivityKey);
+		startActivity(intent);
+	}
 
     public void addAllergyToDatabase(View view) {
 		try {
 			aAllergyDetailsFragment.addAllergyToDatabase(this);
-			Intent intentAllergy = new Intent(this, MainActivity.class);
-			intentAllergy.putExtra("ACTIVITY", ActivityKey);
-			startActivity(intentAllergy);
+			returnToMainActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

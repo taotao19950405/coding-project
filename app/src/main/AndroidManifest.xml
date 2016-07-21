@@ -39,6 +39,7 @@
         <activity
             android:name=".activities.main.AddAllergyActivity"
             android:label="@string/title_activity_add_allergy"
+						android:theme="@style/AllergyTheme"
             android:parentActivityName=".activities.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -48,6 +49,7 @@
         <activity
             android:name=".activities.main.EditAllergyActivity"
             android:label="@string/title_activity_edit_allergy"
+						android:theme="@style/AllergyTheme"
             android:parentActivityName=".activities.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

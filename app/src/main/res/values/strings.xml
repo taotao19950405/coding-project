@@ -19,13 +19,15 @@
 	<string name="text_label_notes">Notes:</string>
     <string name="text_label_instructions">Instructions:</string>
 
+
 	<string name="text_label_reasonForUse">Reason for use:</string>
 	<string name="text_hardcoded_reasonForUse">Pain</string>
 	<string name="text_hardcoded_Note">Taken with water, after meal.</string>
 
-
+    <string name="text_label_substance">Substance:</string>
 	<string name="text_label_allergy_details">Details:</string>
-    <string name="text_label_allergy_reaction">Reaction</string>
+    <string name="text_label_allergy_reaction">Reaction:</string>
+    <string name="text_label_allergy_severity">Severity:</string>
 
 	<string name="basic_information_header">Basic Information:</string>
 	<string name="schedule_header">Schedule:</string>
@@ -38,6 +40,7 @@
 	<string name="edit_text_effectiveEnd_hint">Select end date</string>
     <string name="edit_text_notes_hint">Enter any extra notes</string>
     <string name="edit_text_allergy_hint">Enter reaction type</string>
+    <string name="edit_text_substance_hint">Enter a substance</string>
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>

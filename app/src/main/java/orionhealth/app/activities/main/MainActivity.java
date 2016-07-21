@@ -72,21 +72,23 @@ public class MainActivity extends AppCompatActivity {
 
 		String activity = getIntent().getStringExtra("ACTIVITY");
 
+		int startSlideIndex = 0;
 		if (activity != null) {
 			switch (activity) {
-				case (EditMedicationActivity.ActivityKey):
-					mViewPager.setCurrentItem(0);
+				case (MedicationActivity.ActivityKey):
+					startSlideIndex = 0;
 					break;
 				case (EditAllergyActivity.ActivityKey):
-					mViewPager.setCurrentItem(2);
+					startSlideIndex = 2;
 					break;
 				default:
-					mViewPager.setCurrentItem(0);
+					startSlideIndex = 0;
 					break;
 			}
-		} else {
-			mViewPager.setCurrentItem(0);
 		}
+		mViewPager.setCurrentItem(startSlideIndex);
+		getSupportActionBar().setTitle(mTabsTitles[startSlideIndex]);
+
 		mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		mTabLayout.setupWithViewPager(mViewPager);
 

@@ -34,6 +34,6 @@
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
 		app:backgroundTint="#ff8900"
-		style="@style/MyCustomFAB"/>
+		style="@style/MedicationFABStyle"/>
 
 </RelativeLayout>

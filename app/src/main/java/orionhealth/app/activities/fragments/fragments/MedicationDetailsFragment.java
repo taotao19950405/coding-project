@@ -245,8 +245,6 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void onRemovePositiveClick(Context context) {
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
-		Intent intent = new Intent(context, MainActivity.class);
-		startActivity(intent);
 	}
 
 	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag){

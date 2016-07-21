@@ -23,7 +23,7 @@
     android:id="@+id/button_add_allergy_list"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
-    app:backgroundTint="#ff7719"
-    style="@style/MyCustomFAB"/>
+    app:backgroundTint="#35ff46"
+    style="@style/MedicationFABStyle"/>
 
 </RelativeLayout>

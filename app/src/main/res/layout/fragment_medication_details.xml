@@ -13,12 +13,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/basic_information_header"
-		style="@style/Header"/>
+		style="@style/LightBlueHeader"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		style="@style/HorizontalDivider"/>
+		style="@style/LightBlueHorizontalDivider"/>
 
 	<GridLayout
 			android:layout_width="match_parent"
@@ -98,12 +98,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/schedule_header"
-		style="@style/Header"/>
+		style="@style/LightBlueHeader"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		style="@style/HorizontalDivider"/>
+		style="@style/LightBlueHorizontalDivider"/>
 
 	<GridLayout
 		android:layout_width="match_parent"
@@ -160,12 +160,12 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/additional_header"
-		style="@style/Header"/>
+		style="@style/LightBlueHeader"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		style="@style/HorizontalDivider"/>
+		style="@style/LightBlueHorizontalDivider"/>
 
 
         <EditText

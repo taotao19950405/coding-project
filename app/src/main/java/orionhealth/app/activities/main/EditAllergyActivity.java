@@ -52,23 +52,35 @@ public class EditAllergyActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
 
         return super.onOptionsItemSelected(item);
     }
 
+	@Override
+	public void onBackPressed() {
+		returnToMainActivity();
+		return;
+	}
+
+	public void returnToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("ACTIVITY", ActivityKey);
+		startActivity(intent);
+	}
+
     public void removeAllergy(View view){
         aAllergyDetailsFragment.removeAllergy();
+		returnToMainActivity();
     }
 
     public void updateAllergyInDatabase(View view){
 		try {
 			aAllergyDetailsFragment.updateAllergyInDatabase(this);
-			Intent intentAllergy = new Intent(this, MainActivity.class);
-			intentAllergy.putExtra("ACTIVITY", ActivityKey);
-			startActivity(intentAllergy);
+			returnToMainActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

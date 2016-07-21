@@ -40,22 +40,33 @@ public class AddMedicationActivity extends AppCompatActivity implements DatePick
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		returnToMainActivity();
+		return;
 	}
 
 	public void addMedicationToDatabase(View view) {
 		try {
 			mMedDetailsFragment.addMedicationToDatabase(this);
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.putExtra("AVTIVITY", ActivityKey);
-			startActivity(intent);
+			returnToMainActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void returnToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("ACTIVITY", ActivityKey);
+		startActivity(intent);
 	}
 
 	@Override

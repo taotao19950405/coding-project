@@ -14,16 +14,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 
-public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
+public class EditMedicationActivity extends MedicationActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
                                                                          DatePicker.DatePickerListener {
 	private MedicationDetailsFragment mMedDetailsFragment;
-	public static final String ActivityKey = "Medication";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +53,10 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -67,17 +68,28 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 	public void updateMedicationInDatabase(View view){
 		try {
 			mMedDetailsFragment.updateMedicationInDatabase(this);
-			Intent intent = new Intent(this, MainActivity.class);
-			intent.putExtra("ACTIVITY", ActivityKey);
-			startActivity(intent);
+			returnToMainActivity();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public void returnToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("ACTIVITY", ActivityKey);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onBackPressed() {
+		returnToMainActivity();
+		return;
+	}
+
 	@Override
 	public void onRemovePositiveClick(DialogFragment dialog) {
 		mMedDetailsFragment.onRemovePositiveClick(this);
+		returnToMainActivity();
 	}
 
 	@Override
