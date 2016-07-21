@@ -14,13 +14,12 @@
 
 <TextView
     android:id="@android:id/empty"
-    android:text="No Allergies Listed"
+    android:text="@string/empty_allergy_list_message"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+		android:padding="10dp"/>
 
-</TextView>
-
-    <android.support.design.widget.FloatingActionButton
+ 	<android.support.design.widget.FloatingActionButton
     android:id="@+id/button_add_allergy_list"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"

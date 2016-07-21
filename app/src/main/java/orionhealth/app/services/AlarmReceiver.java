@@ -61,7 +61,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
 		  .setDeleteIntent(pendingIntentCancel)
 		  .setFullScreenIntent(pendingIntentCancel, true)
-//		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MyMedicationActivity.class), 0))
+//		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
 		  .build();
 
 		WakeLockService.acquire(context);

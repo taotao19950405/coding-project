@@ -19,6 +19,9 @@ import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 
 public class EditAllergyActivity extends AppCompatActivity {
+
+	public static final String ActivityKey = "Allergy";
+
     private AllergyDetailsFragment aAllergyDetailsFragment;
 
     @Override
@@ -61,8 +64,15 @@ public class EditAllergyActivity extends AppCompatActivity {
     }
 
     public void updateAllergyInDatabase(View view){
-        aAllergyDetailsFragment.updateAllergyInDatabase(this);
-    }
+		try {
+			aAllergyDetailsFragment.updateAllergyInDatabase(this);
+			Intent intentAllergy = new Intent(this, MainActivity.class);
+			intentAllergy.putExtra("ACTIVITY", ActivityKey);
+			startActivity(intentAllergy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 
 }

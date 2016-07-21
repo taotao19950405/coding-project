@@ -3,6 +3,7 @@
 package orionhealth.app.activities.main;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 public class AddMedicationActivity extends AppCompatActivity implements DatePicker.DatePickerListener {
 
 	private MedicationDetailsFragment mMedDetailsFragment;
+	public static final String ActivityKey = "Medication";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,14 @@ public class AddMedicationActivity extends AppCompatActivity implements DatePick
 	}
 
 	public void addMedicationToDatabase(View view) {
-		mMedDetailsFragment.addMedicationToDatabase(this);
+		try {
+			mMedDetailsFragment.addMedicationToDatabase(this);
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.putExtra("AVTIVITY", ActivityKey);
+			startActivity(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

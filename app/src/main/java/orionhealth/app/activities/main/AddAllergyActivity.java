@@ -1,6 +1,7 @@
 package orionhealth.app.activities.main;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -15,6 +16,7 @@ import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
  */
 public class AddAllergyActivity extends AppCompatActivity {
 
+	public static final String ActivityKey = "Allergy";
     private AllergyDetailsFragment aAllergyDetailsFragment;
 
     @Override
@@ -40,6 +42,13 @@ public class AddAllergyActivity extends AppCompatActivity {
     }
 
     public void addAllergyToDatabase(View view) {
-        aAllergyDetailsFragment.addAllergyToDatabase(this);
-    }
+		try {
+			aAllergyDetailsFragment.addAllergyToDatabase(this);
+			Intent intentAllergy = new Intent(this, MainActivity.class);
+			intentAllergy.putExtra("ACTIVITY", ActivityKey);
+			startActivity(intentAllergy);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

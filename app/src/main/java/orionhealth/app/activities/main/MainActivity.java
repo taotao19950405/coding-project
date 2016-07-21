@@ -5,6 +5,7 @@
 package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,23 @@ public class MainActivity extends AppCompatActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mTabbedPagerAdapter);
 
+		String activity = getIntent().getStringExtra("ACTIVITY");
+
+		if (activity != null) {
+			switch (activity) {
+				case (EditMedicationActivity.ActivityKey):
+					mViewPager.setCurrentItem(0);
+					break;
+				case (EditAllergyActivity.ActivityKey):
+					mViewPager.setCurrentItem(2);
+					break;
+				default:
+					mViewPager.setCurrentItem(0);
+					break;
+			}
+		} else {
+			mViewPager.setCurrentItem(0);
+		}
 		mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		mTabLayout.setupWithViewPager(mViewPager);
 

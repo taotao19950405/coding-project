@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.DialogFragment;
 
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import orionhealth.app.activities.fragments.listFragments.MedicationListFragment
 public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
                                                                          DatePicker.DatePickerListener {
 	private MedicationDetailsFragment mMedDetailsFragment;
+	public static final String ActivityKey = "Medication";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,14 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 	}
 
 	public void updateMedicationInDatabase(View view){
-		mMedDetailsFragment.updateMedicationInDatabase(this);
+		try {
+			mMedDetailsFragment.updateMedicationInDatabase(this);
+			Intent intent = new Intent(this, MainActivity.class);
+			intent.putExtra("ACTIVITY", ActivityKey);
+			startActivity(intent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

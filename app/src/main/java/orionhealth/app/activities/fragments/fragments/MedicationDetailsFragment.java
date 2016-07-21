@@ -30,18 +30,13 @@ import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
-import orionhealth.app.activities.main.MyMedicationActivity;
+import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.AlarmReceiver;
 import orionhealth.app.services.DateService;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by bill on 25/04/16.
@@ -143,7 +138,7 @@ public class MedicationDetailsFragment extends Fragment {
 
     }
 
-	public void addMedicationToDatabase(Context context) {
+	public void addMedicationToDatabase(Context context) throws Exception {
 		//Do something in response to clicking add button
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
@@ -170,21 +165,22 @@ public class MedicationDetailsFragment extends Fragment {
 			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
 			  			 mTimePicker.getHour(), mTimePicker.getMinute(), 2);
 			alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmPendingIntent);
-
-			Intent intent = new Intent(context, MyMedicationActivity.class);
-			startActivity(intent);
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NoDosageException e) {
 			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NumberFormatException e) {
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (Exception e){
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
-	public void updateMedicationInDatabase(Context context){
+	public void updateMedicationInDatabase(Context context) throws Exception{
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
 		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
@@ -196,16 +192,18 @@ public class MedicationDetailsFragment extends Fragment {
 			mMedication =
 			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
-			Intent intent = new Intent(context, MyMedicationActivity.class);
-			startActivity(intent);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NoDosageException e){
 			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NumberFormatException e){
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (Exception e){
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -247,7 +245,7 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void onRemovePositiveClick(Context context) {
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
-		Intent intent = new Intent(context, MyMedicationActivity.class);
+		Intent intent = new Intent(context, MainActivity.class);
 		startActivity(intent);
 	}
 

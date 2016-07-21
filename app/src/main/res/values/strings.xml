@@ -61,6 +61,7 @@
 	<string name="title_section5">5</string>
 
 	<string name="empty_med_list_message">No Medication Currently Listed</string>
+	<string name="empty_allergy_list_message">No Allergy Currently Listed</string>
 
 	<string name="construction_message">Sorry this page is currently under construction</string>
 

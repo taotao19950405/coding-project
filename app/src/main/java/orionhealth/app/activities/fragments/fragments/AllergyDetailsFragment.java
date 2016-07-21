@@ -1,6 +1,5 @@
 package orionhealth.app.activities.fragments.fragments;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.util.Log;
@@ -23,8 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
-import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
-import orionhealth.app.activities.main.MyMedicationActivity;
+import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.fhir.FhirServices;
 
@@ -76,7 +74,7 @@ public class AllergyDetailsFragment extends Fragment {
     }
 
 
-    public void addAllergyToDatabase(Context context){
+    public void addAllergyToDatabase(Context context) throws Exception{
         String name = aNameTextField.getText().toString();
         String details = aDetailsTextField.getText().toString();
         String reaction = aReactionTextField.getText().toString();
@@ -86,21 +84,23 @@ public class AllergyDetailsFragment extends Fragment {
             allergyIntolerance = createAllergyIntolerance(name, details, reaction);
             AllergyTableOperations.getInstance().addToAllergyTable(context, allergyIntolerance);
             FhirServices.getsFhirServices().sendToServer(allergyIntolerance, context);
-            Intent intentAllergy = new Intent(context, MyMedicationActivity.class);
-            startActivity(intentAllergy);
         } catch (NoNameException e) {
                 Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+				throw e;
         } catch (NoDetailsException e){
                 Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+				throw e;
         } catch (NoReactionException e) {
                 Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
+			    throw e;
         } catch (Exception e){
              e.printStackTrace();
+			 throw e;
         }
     }
 
 
-    public void updateAllergyInDatabase(Context context){
+    public void updateAllergyInDatabase(Context context) throws Exception{
         String name = aNameTextField.getText().toString();
         String details = aDetailsTextField.getText().toString();
         String reaction = aReactionTextField.getText().toString();
@@ -108,16 +108,20 @@ public class AllergyDetailsFragment extends Fragment {
             aAllergy =
                     createAllergyIntolerance(name, details, reaction);
             AllergyTableOperations.getInstance().updateAllergy(context, aAllergyId, aAllergy);
-            Intent intentAllergy = new Intent(context, MyMedicationActivity.class);
+            Intent intentAllergy = new Intent(context, MainActivity.class);
             startActivity(intentAllergy);
         } catch (NoNameException e){
             Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+			throw e;
         } catch (NoDetailsException e){
             Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+			throw e;
         } catch (NoReactionException e) {
             Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
+			throw e;
         } catch (Exception e) {
             e.printStackTrace();
+			throw e;
         }
     }
 
@@ -151,13 +155,13 @@ public class AllergyDetailsFragment extends Fragment {
 
     public void removeAllergy(){
         AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
-        Intent intent = new Intent(getActivity(), MyMedicationActivity.class);
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
     }
 
     public void onRemovePositiveClick(Context context) {
         AllergyTableOperations.getInstance().removeAllergy(context, aAllergyId);
-        Intent intent = new Intent(context, MyMedicationActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         startActivity(intent);
     }
 

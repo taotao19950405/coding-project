@@ -2,7 +2,6 @@ package orionhealth.app.services;
 
 import android.content.Context;
 import android.os.PowerManager;
-import orionhealth.app.activities.main.MyMedicationActivity;
 
 /**
  * Created by bill on 20/07/16.
