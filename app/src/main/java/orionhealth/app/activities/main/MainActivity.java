@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 	private String[] mHamburgerTitles = {"Profile", "Notifications", "Settings"};
+	public static String POSITION = "POSITION";
+
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -241,4 +243,15 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(POSITION, mTabLayout.getSelectedTabPosition());
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mViewPager.setCurrentItem(savedInstanceState.getInt(POSITION));
+	}
 }

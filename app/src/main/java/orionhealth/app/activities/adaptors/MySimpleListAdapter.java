@@ -87,7 +87,7 @@ public class MySimpleListAdapter extends BaseAdapter {
 
         // Populate fields with extracted properties
         display_condition.setText(condition_string);
-        display_date.setText(dateString);
+        display_date.setText(dateString.trim());
 
         return view;
     }
