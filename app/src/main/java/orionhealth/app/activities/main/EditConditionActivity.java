@@ -22,7 +22,6 @@ import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 public class EditConditionActivity extends AppCompatActivity implements DatePicker.DatePickerListener, RemoveConditionDialogFragment.RemoveCondDialogListener {
 
     private ConditionDetailsFragment mCondDetailsFragment;
-	public static final String ActivityKey = "Condition";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +60,7 @@ public class EditConditionActivity extends AppCompatActivity implements DatePick
 
 	public void returnToMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("ACTIVITY", ActivityKey);
 		startActivity(intent);
-	}
-
-	@Override
-	public void onBackPressed() {
-		returnToMainActivity();
-		return;
 	}
 
     public void removeCondition(View view) {

@@ -22,7 +22,6 @@ import android.widget.RadioButton;
 
 public class AddConditionActivity extends AppCompatActivity  implements DatePicker.DatePickerListener{
 
-	public static final String ActivityKey = "Condition";
 	private ConditionDetailsFragment mCondDetailsFragment;
 
 	@Override
@@ -55,15 +54,8 @@ public class AddConditionActivity extends AppCompatActivity  implements DatePick
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override
-	public void onBackPressed() {
-		returnToMainActivity();
-		return;
-	}
-
 	public void returnToMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("ACTIVITY", ActivityKey);
 		startActivity(intent);
 	}
 

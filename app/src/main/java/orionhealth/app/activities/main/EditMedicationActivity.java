@@ -21,7 +21,7 @@ import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDial
 import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 
-public class EditMedicationActivity extends MedicationActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
+public class EditMedicationActivity extends AppCompatActivity implements RemoveMedicationDialogFragment.RemoveMedDialogListener,
                                                                          DatePicker.DatePickerListener {
 	private MedicationDetailsFragment mMedDetailsFragment;
 
@@ -76,7 +76,6 @@ public class EditMedicationActivity extends MedicationActivity implements Remove
 
 	public void returnToMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("ACTIVITY", ActivityKey);
 		startActivity(intent);
 	}
 

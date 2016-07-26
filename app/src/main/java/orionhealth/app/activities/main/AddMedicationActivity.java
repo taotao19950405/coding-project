@@ -16,7 +16,6 @@ import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 public class AddMedicationActivity extends AppCompatActivity implements DatePicker.DatePickerListener {
 
 	private MedicationDetailsFragment mMedDetailsFragment;
-	public static final String ActivityKey = "Medication";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +64,6 @@ public class AddMedicationActivity extends AppCompatActivity implements DatePick
 
 	public void returnToMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("ACTIVITY", ActivityKey);
 		startActivity(intent);
 	}
 

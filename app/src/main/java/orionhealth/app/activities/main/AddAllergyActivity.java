@@ -16,7 +16,6 @@ import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
  */
 public class AddAllergyActivity extends AppCompatActivity {
 
-	public static final String ActivityKey = "Allergy";
     private AllergyDetailsFragment aAllergyDetailsFragment;
 
     @Override
@@ -44,15 +43,8 @@ public class AddAllergyActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-	@Override
-	public void onBackPressed() {
-		returnToMainActivity();
-		return;
-	}
-
 	public void returnToMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("ACTIVITY", ActivityKey);
 		startActivity(intent);
 	}
 
