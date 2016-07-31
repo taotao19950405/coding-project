@@ -11,14 +11,29 @@ import java.util.Calendar;
  */
 public class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 	private String mTitle = "Set Date";
-	private String mTitle2 = "Set End Date";
+	private int year;
+	private int month;
+	private int day;
+
+	DatePickerListener datePickerListener;
 
 	public interface DatePickerListener {
 		void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag);
 		void onCancelDate();
 	}
 
-	DatePickerListener datePickerListener;
+	public void setDate() {
+		final Calendar c = Calendar.getInstance();
+		year = c.get(Calendar.YEAR);
+		month = c.get(Calendar.MONTH);
+		day = c.get(Calendar.DAY_OF_MONTH);
+	}
+
+	public void setDate(int year, int month, int day) {
+		this.year = year;
+		this.month = month;
+		this.day = day;
+	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -36,11 +51,6 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		// Use the current date as the default date in the picker
-		final Calendar c = Calendar.getInstance();
-		int year = c.get(Calendar.YEAR);
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DAY_OF_MONTH);
 
 		// Create a new instance of DatePicker and return it
 		final DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),android.R.style.Theme_Holo_Light_Dialog, this, year, month, day);

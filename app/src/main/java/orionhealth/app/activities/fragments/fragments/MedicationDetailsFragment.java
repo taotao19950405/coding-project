@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -278,13 +279,13 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private void setUpDateEditTextFields() {
-		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mStartDateTextField.getId()+""));
-		mStartDateTextField.setOnClickListener(new showDatePickerClickListener(mStartDateTextField.getId()+""));
+		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener());
+		mStartDateTextField.setOnClickListener(new showDatePickerClickListener());
 		mStartDateTextField.setShowSoftInputOnFocus(false);
 		mStartDateTextField.setOnTouchListener(new hideKeyBoardTouchListener());
 
-		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mEndDateTextFeild.getId()+""));
-		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener(mEndDateTextFeild.getId()+""));
+		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener());
+		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener());
 		mEndDateTextFeild.setShowSoftInputOnFocus(false);
 		mEndDateTextFeild.setOnTouchListener(new hideKeyBoardTouchListener());
 	}
@@ -316,33 +317,46 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private class showDatePickerFocusChangeListener implements View.OnFocusChangeListener {
-		private String tag;
 
-		public showDatePickerFocusChangeListener(String tag) {
-			this.tag = tag;
+		public showDatePickerFocusChangeListener() {
 		}
 
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
 			if (hasFocus) {
-				DialogFragment dialogFragment = new DatePicker();
-				dialogFragment.show(getFragmentManager(), tag);
-				hideKeyBoard(v);
+				DatePicker datePicker = new DatePicker();
+				EditText editText = (EditText) v;
+				Date date = dateService.parseDate(editText.getText().toString());
+				if (date != null) {
+					final Calendar calendar = Calendar.getInstance();
+					calendar.setTime(date);
+					datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+				} else {
+					datePicker.setDate();
+				}
+				datePicker.show(getFragmentManager(), v.getId()+"");
 			}
 		}
 	}
 
 	private class showDatePickerClickListener implements View.OnClickListener {
-		private String tag;
 
-		public showDatePickerClickListener(String tag) {
-			this.tag = tag;
+		public showDatePickerClickListener() {
 		}
 
 		@Override
 		public void onClick(View v) {
-			DialogFragment dialogFragment = new DatePicker();
-			dialogFragment.show(getFragmentManager(), tag);
+			DatePicker datePicker = new DatePicker();
+			EditText editText = (EditText) v;
+			Date date = dateService.parseDate(editText.getText().toString());
+			if (date != null) {
+				final Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			} else {
+				datePicker.setDate();
+			}
+			datePicker.show(getFragmentManager(), v.getId()+"");
 		}
 	}
 

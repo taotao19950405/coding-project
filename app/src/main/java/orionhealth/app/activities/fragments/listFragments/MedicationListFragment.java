@@ -15,7 +15,7 @@ import orionhealth.app.R;
 import orionhealth.app.activities.main.AddMedicationActivity;
 import orionhealth.app.activities.main.EditMedicationActivity;
 import orionhealth.app.activities.external.AnimatedExpandableListView;
-import orionhealth.app.activities.adaptors.MyExpandableListAdapter;
+import orionhealth.app.activities.adaptors.MedicationExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
@@ -65,7 +65,7 @@ public class MedicationListFragment extends ListFragment {
 				return true;
 			}
 		});
-		MyExpandableListAdapter listAdapter = new MyExpandableListAdapter(getContext(), cursor){
+		MedicationExpandableListAdapter listAdapter = new MedicationExpandableListAdapter(getContext(), cursor){
 			@Override
 			public void OnEditButtonClick(int medicationLocalId){
 				Intent intent = new Intent(getContext(), EditMedicationActivity.class);

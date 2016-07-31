@@ -23,12 +23,12 @@ import orionhealth.app.services.DateService;
 /**
  * Created by Lu on 19/07/16.
  */
-public class MySimpleListAdapter extends BaseAdapter {
+public class ConditionListAdapter extends BaseAdapter {
     private Context mContext;
     private Cursor mCursor;
     private DateService dateService = new DateService();
 
-    public MySimpleListAdapter(Context context, Cursor cursor) {
+    public ConditionListAdapter(Context context, Cursor cursor) {
         this.mContext = context;
         this.mCursor = cursor;
     }

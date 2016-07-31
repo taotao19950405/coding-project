@@ -1,5 +1,7 @@
 package orionhealth.app.services;
 
+import android.util.Log;
+
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +30,7 @@ public class DateService {
 			return (Date) format.parseObject(dateString);
 		} catch (ParseException e) {
 			e.printStackTrace();
+			Log.d("ASDF", "error");
 		}
 		return null;
 	}

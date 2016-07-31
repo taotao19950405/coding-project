@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import orionhealth.app.R;
-import orionhealth.app.activities.adaptors.MySimpleListAdapter;
+import orionhealth.app.activities.adaptors.ConditionListAdapter;
 import orionhealth.app.activities.main.AddConditionActivity;
 import orionhealth.app.activities.main.EditConditionActivity;
 import orionhealth.app.data.medicationDatabase.CondTableOperations;
@@ -54,7 +54,7 @@ public class ConditionListFragment extends ListFragment {
 		Cursor cursor = CondTableOperations.getInstance().getAllRows(getContext());
 
 		mSimpleListView = getListView();
-		MySimpleListAdapter listAdapter = new MySimpleListAdapter(getContext(), cursor);
+		ConditionListAdapter listAdapter = new ConditionListAdapter(getContext(), cursor);
 		mSimpleListView.setAdapter(listAdapter);
 
 	}
