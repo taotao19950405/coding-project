@@ -3,7 +3,7 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:2.0.0'
+		classpath 'com.android.tools.build:gradle:2.1.2'
 	}
 }
 apply plugin: 'com.android.application'
@@ -22,7 +22,7 @@ android {
 
 	defaultConfig {
 		applicationId "orionhealth.app"
-		minSdkVersion 20
+		minSdkVersion 21
 		targetSdkVersion 23
 		versionCode 1
 		versionName "1.0"

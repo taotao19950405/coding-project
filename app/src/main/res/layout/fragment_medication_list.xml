@@ -2,7 +2,7 @@
  <!--<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="0dp"
-	android:layout_height="match_parent"
+	android:layout_height="match_parent"c
 	android:layout_weight="1"
 	android:orientation="vertical" > -->
 <RelativeLayout
@@ -24,18 +24,16 @@
 
 	<TextView
 		android:id="@android:id/empty"
-		android:text="No Medication Listed"
+		android:text="@string/empty_med_list_message"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="10dp">
-	</TextView>
+		android:padding="10dp"/>
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/button_add"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
-		app:backgroundTint="#ff7719"
-		style="@style/MyCustomFAB"
-		/>
+		app:backgroundTint="#ff8900"
+		style="@style/MedicationFABStyle"/>
 
 </RelativeLayout>

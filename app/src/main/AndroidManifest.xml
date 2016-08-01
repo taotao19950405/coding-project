@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activities.main.MyMedicationActivity"
+            android:name=".activities.main.MainActivity"
             android:label="@string/title_activity_my_medication" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,27 +16,78 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.main.AddMedicationActivity"
             android:label="@string/title_activity_add_medication"
-            android:parentActivityName=".activities.main.MyMedicationActivity" >
+            android:parentActivityName=".activities.main.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.main.MyMedicationActivity" />
+                android:value=".activities.main.MainActivity" />
         </activity>
+
         <activity
             android:name=".activities.main.EditMedicationActivity"
             android:label="@string/title_activity_edit_medication"
-            android:parentActivityName=".activities.main.MyMedicationActivity" >
+            android:parentActivityName=".activities.main.MainActivity"
+						android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.main.MyMedicationActivity" />
+                android:value=".activities.main.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".activities.main.AddAllergyActivity"
+            android:label="@string/title_activity_add_allergy"
+						android:theme="@style/AllergyTheme"
+            android:parentActivityName=".activities.main.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.main.EditAllergyActivity"
+            android:label="@string/title_activity_edit_allergy"
+						android:theme="@style/AllergyTheme"
+            android:parentActivityName=".activities.main.MainActivity"
+						android:windowSoftInputMode="stateHidden">>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.main.AddConditionActivity"
+            android:label="@string/title_activity_add_condition"
+            android:parentActivityName=".activities.main.AddConditionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.AddConditionActivity" />
+        </activity>
+
+        <activity
+            android:name=".activities.main.EditConditionActivity"
+            android:label="@string/title_activity_edit_condition"
+            android:parentActivityName=".activities.main.EditConditionActivity"
+						android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.main.EditConditionActivity" />
+        </activity>
+
 			<receiver
 				android:name="orionhealth.app.services.AlarmReceiver"
 				android:process=":remote" />
+
+			<receiver android:name=".services.AlarmReceiver$OnCancelReceiver"
+								android:process=":remote"/>
+
+			<service android:name=".services.RingToneService"/>
+			<service android:name=".services.MedResponseService"/>
 		</application>
 
 	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 
 </manifest>

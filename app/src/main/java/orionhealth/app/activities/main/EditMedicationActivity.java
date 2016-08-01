@@ -8,11 +8,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.DialogFragment;
 
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
@@ -51,9 +53,10 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
+		if (item.getItemId() == android.R.id.home) {
+			onBackPressed();
+			return true;
+		}
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -63,12 +66,29 @@ public class EditMedicationActivity extends AppCompatActivity implements RemoveM
 	}
 
 	public void updateMedicationInDatabase(View view){
-		mMedDetailsFragment.updateMedicationInDatabase(this);
+		try {
+			mMedDetailsFragment.updateMedicationInDatabase(this);
+			returnToMainActivity();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void returnToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onBackPressed() {
+		returnToMainActivity();
+		return;
 	}
 
 	@Override
 	public void onRemovePositiveClick(DialogFragment dialog) {
 		mMedDetailsFragment.onRemovePositiveClick(this);
+		returnToMainActivity();
 	}
 
 	@Override

@@ -15,4 +15,14 @@ public final class DatabaseContract {
 		public static final String TABLE_NAME = "medication";
 		public static final String COLUMN_NAME_JSON_STRING = "json_string";
 	}
+
+	public static abstract class AllergyTableInfo implements BaseColumns{
+		public static final String TABLE_NAME = "allergy";
+		public static final String COLUMN_NAME_JSON_STRING = "json_string_allergy";
+	}
+
+	public static  abstract class CondTableInfo implements BaseColumns {
+		public static final String TABLE_NAME = "condition";
+		public static final String COLUMN_NAME_JSON_STRING = "json_string";
+	}
 }

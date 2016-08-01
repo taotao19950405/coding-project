@@ -5,7 +5,6 @@
 package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,16 +24,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import orionhealth.app.R;
-import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
+import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
+import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 
-public class MyMedicationActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
-	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Notifications", "Calendar"};
+	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Symptoms", "Calendar"};
 	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
@@ -42,15 +43,21 @@ public class MyMedicationActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
 	private String[] mHamburgerTitles = {"Profile", "Notifications", "Settings"};
+	private static String SAVED_SLIDE_POSITION = "SAVED_SLIDE_POSITION";
+	public static int CurrentTabNumber = 0;
+
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
-
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
+
+//      AllergyTableOperations.getInstance().clearAllergyTable(this);
 //		MedTableOperations.getInstance().clearMedTable(this);
+//		CondTableOperations.getInstance().clearCondTable(this);
+
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
@@ -69,6 +76,13 @@ public class MyMedicationActivity extends AppCompatActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mTabbedPagerAdapter);
 
+		if (savedInstanceState != null) {
+			CurrentTabNumber = savedInstanceState.getInt(SAVED_SLIDE_POSITION);
+		}
+		mViewPager.setCurrentItem(CurrentTabNumber);
+		getSupportActionBar().setTitle(mTabsTitles[CurrentTabNumber]);
+
+
 		mTabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
 		mTabLayout.setupWithViewPager(mViewPager);
 
@@ -83,6 +97,7 @@ public class MyMedicationActivity extends AppCompatActivity {
 			@Override
 			public void onPageSelected(int i) {
 				getSupportActionBar().setTitle(mTabsTitles[i]);
+				CurrentTabNumber = i;
 			}
 
 			@Override
@@ -107,12 +122,10 @@ public class MyMedicationActivity extends AppCompatActivity {
 		// as a parent activity is specified in AndroidManifest.xml.
 		int id = item.getItemId();
 
-
 		// Activate the navigation drawer toggle
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -125,11 +138,10 @@ public class MyMedicationActivity extends AppCompatActivity {
 		String[] navDrawerArray = mHamburgerTitles;
 		mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, navDrawerArray);
 		mDrawerList.setAdapter(mAdapter);
-
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MyMedicationActivity.this, "Item", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Item", Toast.LENGTH_SHORT).show();
             }
         });
 	}
@@ -156,8 +168,7 @@ public class MyMedicationActivity extends AppCompatActivity {
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
-        mDrawerToggle.setDrawerIndicatorEnabled(true);
+		mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
@@ -193,10 +204,12 @@ public class MyMedicationActivity extends AppCompatActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			if (position == 0){
-				return MedicationListFragment.newInstance();
+			switch (position){
+				case 0: return MedicationListFragment.newInstance();
+				case 2: return AllergyListFragment.newInstance();
+				case 3: return ConditionListFragment.newInstance();
+				default: return UnderConstructionFragment.newInstance();
 			}
-			return UnderConstructionFragment.newInstance();
 		}
 
 		@Override
@@ -210,4 +223,15 @@ public class MyMedicationActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(SAVED_SLIDE_POSITION, CurrentTabNumber);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mViewPager.setCurrentItem(savedInstanceState.getInt(SAVED_SLIDE_POSITION));
+	}
 }

@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * Created by bill on 4/05/16.
  */
-public class MyExpandableListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
+public class MedicationExpandableListAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
 	private Context mContext;
 	private Cursor mCursor;
 
-	public MyExpandableListAdapter(Context context) {
+	public MedicationExpandableListAdapter(Context context) {
 		this.mContext = context;
 	}
-	public MyExpandableListAdapter(Context context, Cursor cursor){
+	public MedicationExpandableListAdapter(Context context, Cursor cursor){
 		this.mContext = context;
 		this.mCursor = cursor;
 	}

@@ -1,29 +1,26 @@
 package orionhealth.app.activities.fragments.fragments;
 
 import android.app.AlarmManager;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.DialogFragment;
-import android.app.Fragment;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.*;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import android.widget.Toast;
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
@@ -31,11 +28,12 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
-import ca.uhn.fhir.model.primitive.DateTimeDt;
+
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
-import orionhealth.app.activities.main.MyMedicationActivity;
+import orionhealth.app.activities.main.MainActivity;
+import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.dataModels.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
@@ -58,10 +56,11 @@ public class MedicationDetailsFragment extends Fragment {
 	private EditText mStartDateTextField;
 	private EditText mEndDateTextFeild;
 	private EditText mNotesTextField;
+	private TimePicker mTimePicker;
 
 	private DateService dateService;
 
-        @Override
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View detailsFragment = inflater.inflate(R.layout.fragment_medication_details, container, false);
@@ -79,6 +78,7 @@ public class MedicationDetailsFragment extends Fragment {
 		setUpDateEditTextFields();
 
 		mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
+		mTimePicker = (TimePicker) detailsFragment.findViewById(R.id.time_picker);
 
 		dateService = new DateService();
 
@@ -140,7 +140,7 @@ public class MedicationDetailsFragment extends Fragment {
 
     }
 
-	public void addMedicationToDatabase(Context context) {
+	public void addMedicationToDatabase(Context context) throws Exception {
 		//Do something in response to clicking add button
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
@@ -156,23 +156,34 @@ public class MedicationDetailsFragment extends Fragment {
 			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
 			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
 			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-			Intent intent2 = new Intent(context, AlarmReceiver.class);
-			PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent2, 0);
-			alarmMgr.set(AlarmManager.RTC, Calendar.getInstance().getTimeInMillis() + 10000, alarmIntent);
-			Intent intent = new Intent(context, MyMedicationActivity.class);
-			startActivity(intent);
+			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+			NotificationParcel parcel =
+			  		new NotificationParcel(Character.toUpperCase(name.charAt(0)) + name.substring(1), instructions, unit.ordinal());
+			Bundle bundle = new Bundle();
+			bundle.putParcelable(AlarmReceiver.PARCEL_KEY, parcel);
+			alarmIntent.putExtra(AlarmReceiver.MEDICATION_KEY, bundle);
+			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+			  			 mTimePicker.getHour(), mTimePicker.getMinute(), 2);
+			alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+				60 * 1000, alarmPendingIntent);
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NoDosageException e) {
 			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NumberFormatException e) {
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (Exception e){
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
-	public void updateMedicationInDatabase(Context context){
+	public void updateMedicationInDatabase(Context context) throws Exception{
 		String name = mNameTextField.getText().toString();
 		String dosage = mDosageTextField.getText().toString();
 		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
@@ -184,16 +195,18 @@ public class MedicationDetailsFragment extends Fragment {
 			mMedication =
 			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
-			Intent intent = new Intent(context, MyMedicationActivity.class);
-			startActivity(intent);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NoDosageException e){
 			Toast.makeText(context, "Please enter a dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (NumberFormatException e){
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
+			throw e;
 		} catch (Exception e){
 			e.printStackTrace();
+			throw e;
 		}
 	}
 
@@ -201,6 +214,7 @@ public class MedicationDetailsFragment extends Fragment {
 												   String reasonForUse, String startDate,
 												   String endDate, String note) throws Exception {
 		checkValidMedication(name, dosage);
+		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
 		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
@@ -234,8 +248,6 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void onRemovePositiveClick(Context context) {
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
-		Intent intent = new Intent(context, MyMedicationActivity.class);
-		startActivity(intent);
 	}
 
 	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag){
@@ -269,13 +281,13 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private void setUpDateEditTextFields() {
-		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mStartDateTextField.getId()+""));
-		mStartDateTextField.setOnClickListener(new showDatePickerClickListener(mStartDateTextField.getId()+""));
+		mStartDateTextField.setOnFocusChangeListener(new showDatePickerFocusChangeListener());
+		mStartDateTextField.setOnClickListener(new showDatePickerClickListener());
 		mStartDateTextField.setShowSoftInputOnFocus(false);
 		mStartDateTextField.setOnTouchListener(new hideKeyBoardTouchListener());
 
-		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener(mEndDateTextFeild.getId()+""));
-		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener(mEndDateTextFeild.getId()+""));
+		mEndDateTextFeild.setOnFocusChangeListener(new showDatePickerFocusChangeListener());
+		mEndDateTextFeild.setOnClickListener(new showDatePickerClickListener());
 		mEndDateTextFeild.setShowSoftInputOnFocus(false);
 		mEndDateTextFeild.setOnTouchListener(new hideKeyBoardTouchListener());
 	}
@@ -307,33 +319,46 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private class showDatePickerFocusChangeListener implements View.OnFocusChangeListener {
-		private String tag;
 
-		public showDatePickerFocusChangeListener(String tag) {
-			this.tag = tag;
+		public showDatePickerFocusChangeListener() {
 		}
 
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
 			if (hasFocus) {
-				DialogFragment dialogFragment = new DatePicker();
-				dialogFragment.show(getFragmentManager(), tag);
-				hideKeyBoard(v);
+				DatePicker datePicker = new DatePicker();
+				EditText editText = (EditText) v;
+				Date date = dateService.parseDate(editText.getText().toString());
+				if (date != null) {
+					final Calendar calendar = Calendar.getInstance();
+					calendar.setTime(date);
+					datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+				} else {
+					datePicker.setDate();
+				}
+				datePicker.show(getFragmentManager(), v.getId()+"");
 			}
 		}
 	}
 
 	private class showDatePickerClickListener implements View.OnClickListener {
-		private String tag;
 
-		public showDatePickerClickListener(String tag) {
-			this.tag = tag;
+		public showDatePickerClickListener() {
 		}
 
 		@Override
 		public void onClick(View v) {
-			DialogFragment dialogFragment = new DatePicker();
-			dialogFragment.show(getFragmentManager(), tag);
+			DatePicker datePicker = new DatePicker();
+			EditText editText = (EditText) v;
+			Date date = dateService.parseDate(editText.getText().toString());
+			if (date != null) {
+				final Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+			} else {
+				datePicker.setDate();
+			}
+			datePicker.show(getFragmentManager(), v.getId()+"");
 		}
 	}
 
@@ -346,35 +371,6 @@ public class MedicationDetailsFragment extends Fragment {
 	private class NoDosageException extends Exception {
 
 	}
-
-//    public static class DatePickerFragment extends DialogFragment
-//            implements DatePicker.OnDateSetListener {
-//
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the current date as the default date in the picker
-//            final Calendar c = Calendar.getInstance();
-//            int year = c.get(Calendar.YEAR);
-//            int month = c.get(Calendar.MONTH);
-//            int day = c.get(Calendar.DAY_OF_MONTH);
-//
-//            // Create a new instance of DatePicker and return it
-//            return new DatePicker(getActivity(), this, year, month, day);
-//        }
-//
-//        public void onDateSet(DatePicker view, int year, int month, int day) {
-//           EditText dateEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_effectiveStart);
-//            dateEditTextField.setText(day + "/" + month + "/" + year);
-//        }
-//
-//
-//        public void showDatePickerDialog(View v) {
-//            DialogFragment newFragment = new DatePickerFragment();
-//            newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-//        }
-//
-//    }
-
 
 }
 

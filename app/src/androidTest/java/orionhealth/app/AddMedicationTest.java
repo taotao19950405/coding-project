@@ -3,15 +3,12 @@ package orionhealth.app;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
-import ca.uhn.fhir.model.dstu2.resource.Medication;
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import orionhealth.app.activities.main.MyMedicationActivity;
+import orionhealth.app.activities.main.MainActivity;
 
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -21,7 +18,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.*;
 
 /**
  * Created by bill on 13/06/16.
@@ -39,8 +35,8 @@ public class AddMedicationTest {
 
 
 	@Rule
-	public ActivityTestRule<MyMedicationActivity> mActivityRule = new ActivityTestRule<>(
-	  MyMedicationActivity.class);
+	public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(
+	  MainActivity.class);
 
 	public void navigateToAddMed(){
 		onView(withId(R.id.button_add))
