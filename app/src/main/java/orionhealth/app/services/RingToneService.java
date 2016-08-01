@@ -17,6 +17,7 @@ import android.util.Log;
  * Created by bill on 10/07/16.
  */
 public class RingToneService extends Service {
+	private boolean isRinging = false;
 	private Ringtone ringtone;
 //	private final class ServiceHandler extends Handler {
 //		public ServiceHandler(Looper looper) {
@@ -40,9 +41,10 @@ public class RingToneService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Uri ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 		Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
-		if (r != null){
+		if (r != null && !isRinging){
 			ringtone = r;
 			ringtone.play();
+			isRinging = true;
 		}
 		return START_STICKY;
 	}
@@ -50,6 +52,7 @@ public class RingToneService extends Service {
 	@Override
 	public void onDestroy() {
 		ringtone.stop();
+		isRinging = false;
 		super.onDestroy();
 	}
 

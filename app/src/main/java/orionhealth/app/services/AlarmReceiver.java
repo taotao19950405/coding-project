@@ -20,6 +20,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 	public static int NOTIFICATION_ID = 0;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
 	public static String MEDICATION_KEY = "medication";
+	public static String PARCEL_KEY = "parcel";
 	// activity handle ringtone stop
 	// intent send information about medication
 	@Override
@@ -34,7 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		intent.setExtrasClassLoader(context.getClassLoader());
 
 		Bundle bundle = intent.getBundleExtra(MEDICATION_KEY);
-		NotificationParcel notificationParcel = bundle.getParcelable("here");
+		NotificationParcel notificationParcel = bundle.getParcelable(PARCEL_KEY);
 
 		int drawable;
 		if (notificationParcel.getIcon() == Unit.MG.ordinal()) {
@@ -48,8 +49,6 @@ public class AlarmReceiver extends BroadcastReceiver {
 		} else {
 			drawable = R.drawable.warning;
 		}
-
-		Log.d("after send", notificationParcel.getTitle());
 
 		Notification notification = new NotificationCompat.Builder(context)
 		  .setContentTitle("Reminder: Take "+notificationParcel.getTitle())
