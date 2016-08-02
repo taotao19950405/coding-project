@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -59,6 +60,7 @@ public class MedicationDetailsFragment extends Fragment {
 	private TimePicker mTimePicker;
 
 	private DateService dateService;
+	private AlarmManager alarmManager;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,6 +83,7 @@ public class MedicationDetailsFragment extends Fragment {
 		mTimePicker = (TimePicker) detailsFragment.findViewById(R.id.time_picker);
 
 		dateService = new DateService();
+		alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
         return detailsFragment;
     }
@@ -152,22 +155,26 @@ public class MedicationDetailsFragment extends Fragment {
 
 		MedicationStatement medicationStatement;
 		try {
-			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
-			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
-			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
-			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			mMedication = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, mMedication);
+			FhirServices.getsFhirServices().sendToServer(mMedication, context);
 			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
 			NotificationParcel parcel =
-			  		new NotificationParcel(Character.toUpperCase(name.charAt(0)) + name.substring(1), instructions, unit.ordinal());
+			  		new NotificationParcel(mMedicationID, Character.toUpperCase(name.charAt(0)) + name.substring(1), instructions, unit.ordinal());
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(AlarmReceiver.PARCEL_KEY, parcel);
 			alarmIntent.putExtra(AlarmReceiver.MEDICATION_KEY, bundle);
-			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, mMedicationID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			Calendar calendar = Calendar.getInstance();
-			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			  			 mTimePicker.getHour(), mTimePicker.getMinute(), 2);
-			alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-				60 * 1000, alarmPendingIntent);
+			if (Build.VERSION.SDK_INT >= 23 ) {
+				calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+				  mTimePicker.getHour(), mTimePicker.getMinute(), 1);
+			} else {
+				calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
+				  mTimePicker.getCurrentHour(), mTimePicker.getCurrentMinute(), 2);
+			}
+			alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+			  alarmPendingIntent);
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -248,6 +255,10 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void onRemovePositiveClick(Context context) {
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
+		Intent alarmIntent = new Intent(context, AlarmReceiver.class);
+		PendingIntent alarmPendingIntent
+		  		= PendingIntent.getBroadcast(context, mMedicationID, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		alarmManager.cancel(alarmPendingIntent);
 	}
 
 	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag){

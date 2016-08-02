@@ -1,5 +1,6 @@
 package orionhealth.app.services;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,11 +14,13 @@ import orionhealth.app.R;
 import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.dataModels.Unit;
 
+import java.util.Calendar;
+
 /**
  * Created by bill on 4/07/16.
  */
 public class AlarmReceiver extends BroadcastReceiver {
-	public static int NOTIFICATION_ID = 0;
+	private int notificationId;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
 	public static String MEDICATION_KEY = "medication";
 	public static String PARCEL_KEY = "parcel";
@@ -25,17 +28,18 @@ public class AlarmReceiver extends BroadcastReceiver {
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Bundle bundle = intent.getBundleExtra(MEDICATION_KEY);
+		NotificationParcel notificationParcel = bundle.getParcelable(PARCEL_KEY);
+		notificationId = notificationParcel.getId();
+		Log.e("ASDF", "onRecieve: "+notificationId);
+
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Intent startRingToneIntent = new Intent(context, RingToneService.class);
 		context.startService(startRingToneIntent);
 
 		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, NOTIFICATION_ID);
-		PendingIntent pendingIntentCancel = PendingIntent.getService(context, 0, takeMedicationIntent, 0);
-		intent.setExtrasClassLoader(context.getClassLoader());
-
-		Bundle bundle = intent.getBundleExtra(MEDICATION_KEY);
-		NotificationParcel notificationParcel = bundle.getParcelable(PARCEL_KEY);
+		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, notificationId);
+		PendingIntent pendingIntentCancel = PendingIntent.getService(context, notificationId, takeMedicationIntent, 0);
 
 		int drawable;
 		if (notificationParcel.getIcon() == Unit.MG.ordinal()) {
@@ -52,7 +56,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 		Notification notification = new NotificationCompat.Builder(context)
 		  .setContentTitle("Reminder: Take "+notificationParcel.getTitle())
-		  .setContentText("Random text")
+		  .setContentText("Touch for more Infomation")
 		  .setSmallIcon(drawable)
 		  .setPriority(Notification.PRIORITY_MAX)
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
@@ -64,7 +68,12 @@ public class AlarmReceiver extends BroadcastReceiver {
 		  .build();
 
 		WakeLockService.acquire(context);
-		notificationManager.notify(AlarmReceiver.NOTIFICATION_ID, notification);
+		PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		Calendar calendar = Calendar.getInstance();
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + 120 * 1000,
+		  alarmPendingIntent);
+		notificationManager.notify(notificationParcel.getId(), notification);
 
 	}
 }

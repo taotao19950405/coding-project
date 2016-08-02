@@ -80,9 +80,6 @@
 				android:name="orionhealth.app.services.AlarmReceiver"
 				android:process=":remote" />
 
-			<receiver android:name=".services.AlarmReceiver$OnCancelReceiver"
-								android:process=":remote"/>
-
 			<service android:name=".services.RingToneService"/>
 			<service android:name=".services.MedResponseService"/>
 		</application>

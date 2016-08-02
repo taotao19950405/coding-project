@@ -7,15 +7,21 @@ import android.os.Parcelable;
  * Created by bill on 11/07/16.
  */
 public class NotificationParcel implements Parcelable{
+	private int id;
 	private String title;
 	private String content;
 	private int icon;
 
-	public NotificationParcel(String title, String content, int icon) {
+	public NotificationParcel(int id,String title, String content, int icon) {
+		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.icon = icon;
 
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public String getTitle() {
@@ -35,6 +41,7 @@ public class NotificationParcel implements Parcelable{
 	}
 
 	protected NotificationParcel(Parcel in) {
+		id = in.readInt();
 		title = in.readString();
 		content = in.readString();
 		icon = in.readInt();
@@ -59,6 +66,7 @@ public class NotificationParcel implements Parcelable{
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(id);
 		dest.writeString(title);
 		dest.writeString(content);
 		dest.writeInt(icon);

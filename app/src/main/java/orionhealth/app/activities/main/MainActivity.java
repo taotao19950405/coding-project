@@ -189,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
 	/*--------the following was added to support tabbed navigation--------*/
 
 	public void setTabIcons(){
-		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_local_hospital_white_24dp);
-		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_wb_sunny_white_24dp);
+		mTabLayout.getTabAt(0).setIcon(R.mipmap.white_medicine);
+		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_schedule_white_24dp);
 		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
 		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
 		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);

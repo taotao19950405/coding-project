@@ -34,6 +34,7 @@
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentRight="true"
 		app:backgroundTint="#ff8900"
+		app:elevation="5dp"
 		style="@style/MedicationFABStyle"/>
 
 </RelativeLayout>

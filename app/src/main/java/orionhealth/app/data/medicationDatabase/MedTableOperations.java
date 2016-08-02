@@ -35,14 +35,14 @@ public final class MedTableOperations {
 		}
 	}
 
-	public void addToMedTable(Context context, MedicationStatement medStatement) {
+	public int addToMedTable(Context context, MedicationStatement medStatement) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
 		String jsonStringMed = FhirServices.getsFhirServices().toJsonString(medStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
-		database.insert(MedTableInfo.TABLE_NAME, null, cv);
+		return (int) database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public Cursor getAllRows(Context context){
