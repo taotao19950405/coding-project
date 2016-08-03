@@ -1,4 +1,4 @@
-package orionhealth.app.data.dataModels;
+package orionhealth.app.data.spinnerEnum;
 
 /**
  * Created by bill on 6/06/16.

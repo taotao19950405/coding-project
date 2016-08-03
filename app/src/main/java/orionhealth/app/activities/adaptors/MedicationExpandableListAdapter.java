@@ -11,7 +11,7 @@ import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.data.dataModels.MyMedicationStatement;
-import orionhealth.app.data.dataModels.Unit;
+import orionhealth.app.data.spinnerEnum.Unit;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.activities.external.AnimatedExpandableListView;

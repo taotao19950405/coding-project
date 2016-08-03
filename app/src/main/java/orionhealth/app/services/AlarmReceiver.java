@@ -9,10 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+
 import orionhealth.app.R;
 import orionhealth.app.data.dataModels.NotificationParcel;
-import orionhealth.app.data.dataModels.Unit;
+import orionhealth.app.data.spinnerEnum.Unit;
 
 import java.util.Calendar;
 
