@@ -40,7 +40,6 @@ import orionhealth.app.services.DateService;
  * Created by Lu on 16/07/16.
  */
 
-//Issue: date pasring issue unsolved
 public class ConditionDetailsFragment extends Fragment {
 
     private VerificationStatus[] verificationStatuses;
