@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationCompat;
 
 import orionhealth.app.R;
 import orionhealth.app.data.dataModels.NotificationParcel;
-import orionhealth.app.data.spinnerEnum.Unit;
+import orionhealth.app.data.spinnerEnum.MedicationUnit;
 
 import java.util.Calendar;
 
@@ -22,16 +22,15 @@ import java.util.Calendar;
 public class AlarmReceiver extends BroadcastReceiver {
 	private int notificationId;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
-	public static String MEDICATION_KEY = "medication";
+	public static String BUNDLE_KEY = "medication";
 	public static String PARCEL_KEY = "parcel";
 	// activity handle ringtone stop
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Bundle bundle = intent.getBundleExtra(MEDICATION_KEY);
+		Bundle bundle = intent.getBundleExtra(BUNDLE_KEY);
 		NotificationParcel notificationParcel = bundle.getParcelable(PARCEL_KEY);
 		notificationId = notificationParcel.getId();
-		Log.e("ASDF", "onRecieve: "+notificationId);
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		Intent startRingToneIntent = new Intent(context, RingToneService.class);
@@ -42,13 +41,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 		PendingIntent pendingIntentCancel = PendingIntent.getService(context, notificationId, takeMedicationIntent, 0);
 
 		int drawable;
-		if (notificationParcel.getIcon() == Unit.MG.ordinal()) {
+		if (notificationParcel.getIcon() == MedicationUnit.MG.ordinal()) {
 			drawable = R.drawable.two_color_pill;
-		} else if (notificationParcel.getIcon() == Unit.ML.ordinal()) {
+		} else if (notificationParcel.getIcon() == MedicationUnit.ML.ordinal()) {
 			drawable = R.drawable.medicine;
-		} else if (notificationParcel.getIcon() == Unit.SPRAY.ordinal()) {
+		} else if (notificationParcel.getIcon() == MedicationUnit.SPRAY.ordinal()) {
 			drawable = R.drawable.spray_can;
-		} else if (notificationParcel.getIcon() == Unit.TABLET.ordinal()) {
+		} else if (notificationParcel.getIcon() == MedicationUnit.TABLET.ordinal()) {
 			drawable= R.drawable.pill;
 		} else {
 			drawable = R.drawable.warning;
@@ -71,7 +70,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Calendar calendar = Calendar.getInstance();
-		alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + 120 * 1000,
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + notificationParcel.getTimeToNextAlarm(),
 		  alarmPendingIntent);
 		notificationManager.notify(notificationParcel.getId(), notification);
 

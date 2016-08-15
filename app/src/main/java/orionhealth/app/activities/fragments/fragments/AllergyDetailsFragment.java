@@ -154,7 +154,7 @@ public class AllergyDetailsFragment extends Fragment {
 
 
     public void removeAllergy(){
-        AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
+        AllergyTableOperations.getInstance().removeAllergy(getActivity(), aAllergyId);
     }
 
     public void onRemovePositiveClick(Context context) {

@@ -19,6 +19,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
+	private static final String BOOLEAN_TYPE = " BOOLEAN";
     private static final String COMMA_SEP = ",";
 
     private static final String SQL_CREATE_ENTRIES =
@@ -38,6 +39,10 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     CondTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
 
+	private static final String SQL_ADD_REMINDER_SET_COLUMN =
+	  		"ALTER TABLE "+ MedTableInfo.TABLE_NAME + " ADD COLUMN " +
+					MedTableInfo.COLUMN_NAME_REMINDER_SET + BOOLEAN_TYPE;
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
@@ -48,7 +53,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -71,6 +76,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES2);
         db.execSQL(SQL_CREATE_ENTRIES_COND);
+		db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
     }
 
     @Override
@@ -79,6 +85,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 			case 2: db.execSQL(SQL_CREATE_ENTRIES);
 			case 3: db.execSQL(SQL_CREATE_ENTRIES2);
 			case 4: db.execSQL(SQL_CREATE_ENTRIES_COND);
+			case 5: db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
 		}
     }
 

@@ -11,14 +11,14 @@ public class NotificationParcel implements Parcelable{
 	private String title;
 	private String content;
 	private int icon;
+	private int timeToNextAlarm;
 
-	public NotificationParcel(int id,String title, String content, int icon) {
+	public NotificationParcel(int id,String title, String content) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
-		this.icon = icon;
-
 	}
+
 
 	public int getId() {
 		return id;
@@ -36,8 +36,16 @@ public class NotificationParcel implements Parcelable{
 		return icon;
 	}
 
+	public int getTimeToNextAlarm() {
+		return timeToNextAlarm;
+	}
+
 	public void setIcon(int icon) {
 		this.icon = icon;
+	}
+
+	public void setTimeIntervalToNextAlarm(int timeInterval) {
+		this.timeToNextAlarm = timeInterval;
 	}
 
 	protected NotificationParcel(Parcel in) {
@@ -45,6 +53,7 @@ public class NotificationParcel implements Parcelable{
 		title = in.readString();
 		content = in.readString();
 		icon = in.readInt();
+		timeToNextAlarm = in.readInt();
 	}
 
 	public static final Creator<NotificationParcel> CREATOR = new Creator<NotificationParcel>() {
@@ -70,5 +79,6 @@ public class NotificationParcel implements Parcelable{
 		dest.writeString(title);
 		dest.writeString(content);
 		dest.writeInt(icon);
+		dest.writeInt(timeToNextAlarm);
 	}
 }

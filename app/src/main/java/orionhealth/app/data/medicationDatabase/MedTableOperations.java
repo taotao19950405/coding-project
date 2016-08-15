@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 
@@ -35,13 +36,17 @@ public final class MedTableOperations {
 		}
 	}
 
-	public int addToMedTable(Context context, MedicationStatement medStatement) {
+	public int addToMedTable(Context context, MyMedicationStatement myMedStatement) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
-		String jsonStringMed = FhirServices.getsFhirServices().toJsonString(medStatement);
+		String jsonStringMed =
+		  		FhirServices.getsFhirServices().toJsonString(myMedStatement.getFhirMedStatement());
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
+
+		Boolean reminderSet = myMedStatement.getReminderSet();
+		cv.put(MedTableInfo.COLUMN_NAME_REMINDER_SET, reminderSet);
 		return (int) database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 

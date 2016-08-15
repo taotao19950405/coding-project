@@ -10,10 +10,14 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 public class MyMedicationStatement {
 	private int mLocalId;
 	private MedicationStatement mFhirMedStatement;
+	private Boolean mReminderSet;
 
-	public MyMedicationStatement(int localId, MedicationStatement fhirMedStatement) {
+	public MyMedicationStatement(){}
+
+	public MyMedicationStatement(int localId, MedicationStatement fhirMedStatement, Boolean mReminderSet) {
 		this.mLocalId = localId;
 		this.mFhirMedStatement = fhirMedStatement;
+		this.mReminderSet = mReminderSet;
 	}
 
 	@Override
@@ -28,4 +32,16 @@ public class MyMedicationStatement {
 	public MedicationStatement getFhirMedStatement() {
 		return mFhirMedStatement;
 	}
+
+	public Boolean getReminderSet() {return mReminderSet; }
+
+	public void setLocalId(int localId){
+		this.mLocalId = localId;
+	}
+
+	public void setFhirMedStatement(MedicationStatement medStatement) {
+		this.mFhirMedStatement = medStatement;
+	}
+
+	public void setReminderSet(Boolean reminderSet) {this.mReminderSet = reminderSet; }
 }

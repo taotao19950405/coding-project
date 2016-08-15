@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
-	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Symptoms", "Calendar"};
+	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Conditions", "Calendar"};
 	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
