@@ -10,7 +10,7 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.data.dataModels.MyMedicationStatement;
+import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.data.spinnerEnum.MedicationUnit;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
@@ -52,7 +52,9 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 			  		mCursor.getString(mCursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
 			MedicationStatement medStatement =
 			  		(MedicationStatement)FhirServices.getsFhirServices().toResource(jsonMedString);
-			return new MyMedicationStatement((int) localId, medStatement, true);
+			Boolean reminderSet =
+			  		mCursor.getInt(mCursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_REMINDER_SET)) != 0;
+			return new MyMedication((int) localId, medStatement, reminderSet);
 		}else {
 			return null;
 		}
@@ -84,8 +86,8 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 		LayoutInflater inflater =
 		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_group, null);
-		MyMedicationStatement medStatement = (MyMedicationStatement) getGroup(groupPosition);
-		MedicationStatement medStatementFhir = medStatement.getFhirMedStatement();
+		MyMedication myMedication = (MyMedication) getGroup(groupPosition);
+		MedicationStatement medStatementFhir = myMedication.getFhirMedStatement();
 		CodeableConceptDt codeableConcept = (CodeableConceptDt)medStatementFhir.getMedication();
 		String name = codeableConcept.getText();
 		TextView textView = (TextView) result.findViewById(R.id.list_display_name);
@@ -121,15 +123,27 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 			imageView.setImageResource(R.drawable.warning);
 		}
 
+		final RelativeLayout alarmIndicator = (RelativeLayout) result.findViewById(R.id.alarm_indicator);
+		imageView = (ImageView) alarmIndicator.findViewById(R.id.alarm_indicator_image);
+
+		if (myMedication.getReminderSet()) {
+			imageView.setVisibility(View.VISIBLE);
+		} else {
+			imageView.setVisibility(View.INVISIBLE);
+		}
 
 		final RelativeLayout indicator = (RelativeLayout) result.findViewById(R.id.indicator);
 		imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
+
+
 
 		if (isExpanded) {
 			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
 		} else {
 			imageView.setImageResource(R.drawable.arrow_down_grey_11dp);
 		}
+
+
 
 		return result;
 	}
@@ -140,8 +154,8 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 		LayoutInflater inflater =
 		  		(LayoutInflater) this.mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View result = inflater.inflate(R.layout.fragment_medication_list_child, null);
-		final MyMedicationStatement myMedicationStatement = (MyMedicationStatement) getGroup(groupPosition);
-		final MedicationStatement medicationStatement = myMedicationStatement.getFhirMedStatement();
+		final MyMedication myMedication = (MyMedication) getGroup(groupPosition);
+		final MedicationStatement medicationStatement = myMedication.getFhirMedStatement();
 		CodeableConceptDt codeableConceptDt = (CodeableConceptDt) medicationStatement.getReasonForUse();
 
 		if (codeableConceptDt == null) {
@@ -165,7 +179,7 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 
 			@Override
 			public void onClick(View v) {
-				OnEditButtonClick(myMedicationStatement.getLocalId());
+				OnEditButtonClick(myMedication.getLocalId());
 			}
 		});
 

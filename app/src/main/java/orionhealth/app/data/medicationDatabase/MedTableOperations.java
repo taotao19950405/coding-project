@@ -10,9 +10,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
-import orionhealth.app.data.dataModels.MyMedicationStatement;
+import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 
@@ -36,7 +35,7 @@ public final class MedTableOperations {
 		}
 	}
 
-	public int addToMedTable(Context context, MyMedicationStatement myMedStatement) {
+	public int addToMedTable(Context context, MyMedication myMedStatement) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
@@ -56,7 +55,8 @@ public final class MedTableOperations {
 
 		String[] projection = {
 		  MedTableInfo._ID,
-		  MedTableInfo.COLUMN_NAME_JSON_STRING
+		  MedTableInfo.COLUMN_NAME_JSON_STRING,
+		  MedTableInfo.COLUMN_NAME_REMINDER_SET
 		};
 
 		String sortOrder =
@@ -68,12 +68,12 @@ public final class MedTableOperations {
 		return cursor;
 	}
 
-	public MedicationStatement getMedicationStatement(Context context, int id){
+	public MyMedication getMedicationStatement(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
 		String[] projection = {
-		  MedTableInfo.COLUMN_NAME_JSON_STRING
+		  MedTableInfo.COLUMN_NAME_JSON_STRING, MedTableInfo.COLUMN_NAME_REMINDER_SET
 		};
 
 		Cursor cursor = db.query(
@@ -83,7 +83,13 @@ public final class MedTableOperations {
 		if (cursor.moveToFirst()) {
 			String jsonMedString = cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
 			MedicationStatement medStatement = (MedicationStatement) mFhirServices.toResource(jsonMedString);
-			return medStatement;
+
+			Boolean reminderSet = cursor.getInt(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_REMINDER_SET)) != 0;
+
+			MyMedication myMedication = new MyMedication();
+			myMedication.setFhirMedStatement(medStatement);
+			myMedication.setReminderSet(reminderSet);
+			return myMedication;
 		}
 		return null;
 	};
@@ -96,12 +102,14 @@ public final class MedTableOperations {
 		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
-	public void updateMedication(Context context, int id, MedicationStatement updatedMedStatement){
+	public void updateMedication(Context context, int id, MyMedication updatedMyMedication){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
+		MedicationStatement updatedMedStatement = updatedMyMedication.getFhirMedStatement();
 		String updatedJsonMedString = mFhirServices.toJsonString(updatedMedStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonMedString);
+		cv.put(MedTableInfo.COLUMN_NAME_REMINDER_SET, updatedMyMedication.getReminderSet());
 		String selection = MedTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
 		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);

@@ -54,8 +54,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 		}
 
 		Notification notification = new NotificationCompat.Builder(context)
-		  .setContentTitle("Reminder: Take "+notificationParcel.getTitle())
-		  .setContentText("Touch for more Infomation")
+		  .setContentTitle("Take "+notificationParcel.getTitle())
+		  .setContentText("Medication Reminder")
 		  .setSmallIcon(drawable)
 		  .setPriority(Notification.PRIORITY_MAX)
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})

@@ -31,7 +31,7 @@ import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
-import orionhealth.app.data.dataModels.MyMedicationStatement;
+import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.spinnerEnum.MedicationUnit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
@@ -46,7 +46,7 @@ import orionhealth.app.services.DateService;
 public class MedicationDetailsFragment extends Fragment {
 
 	private int mMedicationID;
-	private MedicationStatement mMedication;
+	private MyMedication mMyMedication;
 
 	private EditText mNameTextField;
 	private EditText mDosageTextField;
@@ -99,6 +99,7 @@ public class MedicationDetailsFragment extends Fragment {
 		mTimeIntervalValueSelector.setDisplayedValues(array);
 		mTimeIntervalValueSelector.setMinValue(1);
 		mTimeIntervalValueSelector.setMaxValue(12);
+		mTimeIntervalValueSelector.setEnabled(false);
 
 		mTimeIntervalUnitSelector = (Spinner) detailsFragment.findViewById(R.id.time_interval_unit_spinner);
 		setUpTimeIntervalUnitSelector();
@@ -111,13 +112,14 @@ public class MedicationDetailsFragment extends Fragment {
 
 
     public void populateFields() {
-		if (mMedication != null) {
+		if (mMyMedication != null) {
+			MedicationStatement medStatement = mMyMedication.getFhirMedStatement();
 			EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-			CodeableConceptDt codeableConcept = (CodeableConceptDt) mMedication.getMedication();
+			CodeableConceptDt codeableConcept = (CodeableConceptDt) medStatement.getMedication();
 			nameEditTextField.setText(codeableConcept.getText());
 
 			EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-			List<MedicationStatement.Dosage> listDosage = mMedication.getDosage();
+			List<MedicationStatement.Dosage> listDosage = medStatement.getDosage();
 			MedicationStatement.Dosage dosage = listDosage.get(0);
 			SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
 			dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger() + "");
@@ -140,13 +142,13 @@ public class MedicationDetailsFragment extends Fragment {
 			}
 			EditText reasonForUseEditTextField =
 			  (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
-			codeableConcept = (CodeableConceptDt) mMedication.getReasonForUse();
+			codeableConcept = (CodeableConceptDt) medStatement.getReasonForUse();
 
 			if (codeableConcept != null) {
 				reasonForUseEditTextField.setText(codeableConcept.getText());
 			}
 
-			PeriodDt p = (PeriodDt) mMedication.getEffective();
+			PeriodDt p = (PeriodDt) medStatement.getEffective();
 
 			if (p != null) {
 				Date d = p.getStart();
@@ -158,8 +160,10 @@ public class MedicationDetailsFragment extends Fragment {
 				mEndDateTextFeild.setText(dateString);
 			}
 
+			mReminderSwitch.setChecked(mMyMedication.getReminderSet());
+
 			EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
-			instructionsEditTextField.setText(mMedication.getNote());
+			instructionsEditTextField.setText(medStatement.getNote());
 		}
 
     }
@@ -176,12 +180,13 @@ public class MedicationDetailsFragment extends Fragment {
 
 		MedicationStatement medicationStatement;
 		try {
-			mMedication = createMedStatement(name, dosage, medicationUnit, reasonForUse, startDate, endDate, instructions);
-			MyMedicationStatement myMedicationStatement = new MyMedicationStatement();
-			myMedicationStatement.setFhirMedStatement(mMedication);
-			myMedicationStatement.setReminderSet(mReminderSwitchState);
-			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedicationStatement);
-			FhirServices.getsFhirServices().sendToServer(mMedication, context);
+			MedicationStatement medStatement =
+			  		createMedStatement(name, dosage, medicationUnit, reasonForUse, startDate, endDate, instructions);
+			MyMedication myMedication = new MyMedication();
+			myMedication.setFhirMedStatement(medStatement);
+			myMedication.setReminderSet(mReminderSwitchState);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+			FhirServices.getsFhirServices().sendToServer(medStatement, context);
 
 			if (mReminderSwitchState) {
 				Intent alarmIntent = new Intent(context, AlarmReceiver.class);
@@ -213,6 +218,7 @@ public class MedicationDetailsFragment extends Fragment {
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
 			throw e;
 		} catch (Exception e){
+			Toast.makeText(context, "Unexpected error occurred", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 			throw e;
 		}
@@ -227,9 +233,11 @@ public class MedicationDetailsFragment extends Fragment {
 		String endDate = mEndDateTextFeild.getText().toString();
 		String notes = mNotesTextField.getText().toString();
 		try {
-			mMedication =
+			MedicationStatement medStatement =
 			  		createMedStatement(name, dosage, medicationUnit, reasonForUse, startDate, endDate, notes);
-			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
+			mMyMedication.setFhirMedStatement(medStatement);
+			mMyMedication.setReminderSet(mReminderSwitchState);
+			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -307,7 +315,7 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void setMedication(Context context, int medLocalId){
 		mMedicationID = medLocalId;
-		mMedication = MedTableOperations.getInstance().getMedicationStatement(context, medLocalId);
+		mMyMedication = MedTableOperations.getInstance().getMedicationStatement(context, medLocalId);
 	}
 
 	private void checkValidMedication(String name, String dosage) throws Exception {
@@ -377,6 +385,7 @@ public class MedicationDetailsFragment extends Fragment {
 		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, timeIntervalUnits);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mTimeIntervalUnitSelector.setAdapter(adapter);
+		mTimeIntervalUnitSelector.setEnabled(false);
 	}
 
 

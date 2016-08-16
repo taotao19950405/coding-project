@@ -7,14 +7,14 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 /**
  * Created by bill on 8/04/16.
  */
-public class MyMedicationStatement {
+public class MyMedication {
 	private int mLocalId;
 	private MedicationStatement mFhirMedStatement;
 	private Boolean mReminderSet;
 
-	public MyMedicationStatement(){}
+	public MyMedication(){}
 
-	public MyMedicationStatement(int localId, MedicationStatement fhirMedStatement, Boolean mReminderSet) {
+	public MyMedication(int localId, MedicationStatement fhirMedStatement, Boolean mReminderSet) {
 		this.mLocalId = localId;
 		this.mFhirMedStatement = fhirMedStatement;
 		this.mReminderSet = mReminderSet;
