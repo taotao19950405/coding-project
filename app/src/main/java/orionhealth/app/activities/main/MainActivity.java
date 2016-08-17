@@ -27,6 +27,7 @@ import android.widget.Toast;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
+import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
-		// AllergyTableOperations.getInstance().clearAllergyTable(this);
+		//AllergyTableOperations.getInstance().clearAllergyTable(this);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
 //		MedTableOperations.getInstance().clearMedTable(this);
 //		CondTableOperations.getInstance().clearCondTable(this);

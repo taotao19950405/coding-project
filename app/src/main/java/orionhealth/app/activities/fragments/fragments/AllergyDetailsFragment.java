@@ -8,14 +8,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.os.Bundle;
 
 import ca.uhn.fhir.model.dstu2.composite.AnnotationDt;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.valueset.AllergyIntoleranceCriticalityEnum;
+import ca.uhn.fhir.model.dstu2.valueset.SystemRestfulInteractionEnum;
 import orionhealth.app.R;
 import android.content.Context;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -23,6 +27,7 @@ import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.activities.main.MainActivity;
+import orionhealth.app.data.dataModels.Criticality;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.fhir.FhirServices;
 
@@ -34,9 +39,11 @@ public class AllergyDetailsFragment extends Fragment {
     private int aAllergyId;
     private AllergyIntolerance aAllergy;
 
+    private Criticality[] criticalities;
     private EditText aNameTextField;
     private EditText aDetailsTextField;
     private EditText aReactionTextField;
+    private Spinner aCriticalitySelector;
 
 
     @Override
@@ -45,9 +52,14 @@ public class AllergyDetailsFragment extends Fragment {
         View detailsFragment = inflater.inflate(R.layout.fragment_allergy_details, container, false);
 
         aNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_substance_allergy);
-        aDetailsTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_details_allergy);
+
         aReactionTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_reaction_allergy);
 
+        criticalities = Criticality.values();
+        aCriticalitySelector = (Spinner) detailsFragment.findViewById(R.id.criticality_spinner);
+        setUpSelector(criticalities, aCriticalitySelector);
+
+        aDetailsTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_details_allergy);
         return detailsFragment;
     }
 
@@ -68,8 +80,28 @@ public class AllergyDetailsFragment extends Fragment {
                 CodeableConceptDt reactionCodeableConcept = reaction.getManifestation().get(0);
                 reactionEditTextFieldAllergy.setText(reactionCodeableConcept.getText());
             }
-        } else {
-            Log.d("HERE", "populateFields: ");
+
+            String criticality = aAllergy.getCriticality();
+            Log.d("ASDF", ""+criticality);
+            Spinner spinner = (Spinner) getActivity().findViewById(R.id.criticality_spinner);
+            if (aAllergy.getCriticality().toString().equals("CRITL")){
+                criticality = "Low Risk";
+            } else if (aAllergy.getCriticality().toString().equals("CRITU")){
+                criticality = "Unknown";
+            } else if (aAllergy.getCriticality().toString().equals("CRITH")){
+                criticality = "High Risk";
+            }
+
+            if (!criticality.isEmpty()) {
+                int index = 0;
+                for (int i = 0; i < spinner.getCount(); i++) {
+                    if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(criticality)) {
+                        index = i;
+                        break;
+                    }
+                }
+                spinner.setSelection(index);
+            }
         }
     }
 
@@ -78,10 +110,12 @@ public class AllergyDetailsFragment extends Fragment {
         String name = aNameTextField.getText().toString();
         String details = aDetailsTextField.getText().toString();
         String reaction = aReactionTextField.getText().toString();
+        Criticality criticality = (Criticality) aCriticalitySelector.getSelectedItem();
 
         AllergyIntolerance allergyIntolerance;
         try{
-            allergyIntolerance = createAllergyIntolerance(name, details, reaction);
+            allergyIntolerance = createAllergyIntolerance(name, details, reaction, criticality.toString());
+            System.out.println("Crit" + criticality.toString());
             AllergyTableOperations.getInstance().addToAllergyTable(context, allergyIntolerance);
             FhirServices.getsFhirServices().sendToServer(allergyIntolerance, context);
         } catch (NoSubstanceException e) {
@@ -90,12 +124,9 @@ public class AllergyDetailsFragment extends Fragment {
 		} catch (NoReactionException e) {
 			Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
 				throw e;
-		} catch (NoDetailsException e){
-			Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
-			    throw e;
-        } catch (Exception e){
-             e.printStackTrace();
-			 throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -104,9 +135,11 @@ public class AllergyDetailsFragment extends Fragment {
         String name = aNameTextField.getText().toString();
         String details = aDetailsTextField.getText().toString();
         String reaction = aReactionTextField.getText().toString();
+        Criticality criticality = (Criticality) aCriticalitySelector.getSelectedItem();
+
         try {
             aAllergy =
-                    createAllergyIntolerance(name, details, reaction);
+                    createAllergyIntolerance(name, details, reaction, criticality.toString());
             AllergyTableOperations.getInstance().updateAllergy(context, aAllergyId, aAllergy);
             Intent intentAllergy = new Intent(context, MainActivity.class);
             startActivity(intentAllergy);
@@ -116,9 +149,6 @@ public class AllergyDetailsFragment extends Fragment {
 		} catch (NoReactionException e) {
 			Toast.makeText(context, "Please enter reaction", Toast.LENGTH_SHORT).show();
 			throw e;
-		}  catch (NoDetailsException e){
-			Toast.makeText(context, "Please enter details", Toast.LENGTH_SHORT).show();
-			throw e;
         } catch (Exception e) {
             e.printStackTrace();
 			throw e;
@@ -126,7 +156,7 @@ public class AllergyDetailsFragment extends Fragment {
     }
 
 
-    private AllergyIntolerance createAllergyIntolerance(String name, String details, String reaction)
+    private AllergyIntolerance createAllergyIntolerance(String name, String details, String reaction, String criticality)
             throws Exception {
 
         checkValidAllergy(name, reaction);
@@ -148,6 +178,16 @@ public class AllergyDetailsFragment extends Fragment {
         List<AllergyIntolerance.Reaction> listReaction = new LinkedList<AllergyIntolerance.Reaction>();
         listReaction.add(reactionFhir);
         allergyIntolerance.setReaction(listReaction);
+
+        if (criticality.toString().equals("Low Risk")){
+            criticality = "CRITL";
+        } else if (criticality.toString().equals("Unknown")){
+            criticality = "CRITU";
+        } else if (criticality.toString().equals("High Risk")) {
+            criticality = "CRITH";
+        }
+
+        allergyIntolerance.setCriticality(AllergyIntoleranceCriticalityEnum.forCode(criticality));
 
         return allergyIntolerance;
     }
@@ -178,6 +218,15 @@ public class AllergyDetailsFragment extends Fragment {
 
     }
 
+    private void setUpSelector(Object[] cs, Spinner selector) {
+        ArrayAdapter<CharSequence> adapter =
+                new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_item, cs);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        selector.setAdapter(adapter);
+    }
+
+
+
     private void hideKeyBoard(View view) {
         InputMethodManager imm = (InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
@@ -199,12 +248,7 @@ public class AllergyDetailsFragment extends Fragment {
 
     }
 
-    private class NoDetailsException extends Exception {
-
-    }
-
     private class NoReactionException extends Exception{
 
     }
-
 }

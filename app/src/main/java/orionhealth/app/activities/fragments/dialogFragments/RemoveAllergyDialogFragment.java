@@ -45,6 +45,7 @@ public class RemoveAllergyDialogFragment extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.remove_allergy_dialog_title).setMessage(R.string.remove_allergy_dialog_message)
+
                 .setPositiveButton(R.string.remove_allergy_dialog_positive_button, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         aListener.onRemovePositiveClick(RemoveAllergyDialogFragment.this);

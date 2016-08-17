@@ -1,0 +1,26 @@
+package orionhealth.app.data.dataModels;
+
+/**
+ * Created by archanakhanal on 2/8/2016.
+ */
+public enum Criticality {
+    LOW_RISK("Low Risk"),
+    UNABLE_TO_DETERMINE("Unknown"),
+    HIGH_RISK("High Risk");
+
+    private final String name;
+
+    Criticality (String name) {
+            this.name = name;
+        }
+
+    public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString(){
+            return getName();
+        }
+    }
+

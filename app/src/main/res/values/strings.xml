@@ -37,7 +37,7 @@
     <string name="text_label_substance">Substance:</string>
 	<string name="text_label_allergy_details">Details:</string>
     <string name="text_label_allergy_reaction">Reaction:</string>
-    <string name="text_label_allergy_severity">Severity:</string>
+    <string name="text_label_allergy_criticality">Criticality:</string>
 
 	<string name="medication_information_header">Medication Information:</string>
 	<string name="allergy_information_header">Allergy Information:</string>
