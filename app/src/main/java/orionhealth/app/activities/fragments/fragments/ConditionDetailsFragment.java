@@ -26,6 +26,7 @@ import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.primitive.DateDt;
+import ca.uhn.fhir.model.primitive.IdDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
@@ -249,6 +250,9 @@ public class ConditionDetailsFragment extends Fragment {
         List<Condition.Evidence> listEvidence = new LinkedList<Condition.Evidence>();
         listEvidence.add(evidenceFhir);
         condition.setEvidence(listEvidence);
+
+		condition.setId(new IdDt(2));
+
         return condition;
     }
 
