@@ -1,11 +1,13 @@
 package orionhealth.app.activities.fragments.fragments;
 
+import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,6 +32,7 @@ import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
+import orionhealth.app.data.dataModels.MyMedicationStatement;
 import orionhealth.app.data.dataModels.NotificationParcel;
 import orionhealth.app.data.spinnerEnum.Unit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
@@ -137,6 +140,7 @@ public class MedicationDetailsFragment extends Fragment {
 
     }
 
+	@TargetApi(Build.VERSION_CODES.M)
 	public void addMedicationToDatabase(Context context) throws Exception {
 		//Do something in response to clicking add button
 		String name = mNameTextField.getText().toString();
@@ -150,8 +154,11 @@ public class MedicationDetailsFragment extends Fragment {
 		MedicationStatement medicationStatement;
 		try {
 			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
-			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
-			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
+			int localID = MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
+			MyMedicationStatement myMedicationStatement = new MyMedicationStatement(localID, medicationStatement);
+			FhirServices.getsFhirServices().sendMedicationToServer(myMedicationStatement, context);
+
+//			Alarm function
 			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
 			NotificationParcel parcel =
@@ -191,7 +198,9 @@ public class MedicationDetailsFragment extends Fragment {
 		try {
 			mMedication =
 			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
+			MyMedicationStatement myMedicationStatement = new MyMedicationStatement(mMedicationID, mMedication);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
+			FhirServices.getsFhirServices().updateMedicationServer(myMedicationStatement, context);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -214,6 +223,13 @@ public class MedicationDetailsFragment extends Fragment {
 		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
+
+//		set up ID from existed medication statement if available
+		if(mMedication != null) {
+			medicationStatement.setId(mMedication.getId());
+			System.out.println();
+		}
+
 		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
 		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
 		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");

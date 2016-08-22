@@ -10,10 +10,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import ca.uhn.fhir.context.FhirContext;
+
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
-import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
+import orionhealth.app.fhir.FhirServices;
 
 /**
  * Created by bill on 11/04/16.
@@ -35,14 +35,15 @@ public final class MedTableOperations {
 		}
 	}
 
-	public void addToMedTable(Context context, MedicationStatement medStatement) {
+	public int addToMedTable(Context context, MedicationStatement medStatement) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
 		String jsonStringMed = FhirServices.getsFhirServices().toJsonString(medStatement);
 		cv.put(MedTableInfo.COLUMN_NAME_JSON_STRING, jsonStringMed);
-		database.insert(MedTableInfo.TABLE_NAME, null, cv);
+
+		return (int) database.insert(MedTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public Cursor getAllRows(Context context){
@@ -107,4 +108,6 @@ public final class MedTableOperations {
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		db.delete(MedTableInfo.TABLE_NAME, null, null);
 	}
+
+
 }

@@ -23,12 +23,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.facebook.stetho.Stetho;
+
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
+import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_medication);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
+
+		//Method to look at database in chrome://inspect
+		Stetho.initializeWithDefaults(this);
 
 //      AllergyTableOperations.getInstance().clearAllergyTable(this);
 //		MedTableOperations.getInstance().clearMedTable(this);

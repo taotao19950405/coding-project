@@ -51,7 +51,7 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 			String jsonMedString =
 			  		mCursor.getString(mCursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
 			MedicationStatement medStatement =
-			  		(MedicationStatement)FhirServices.getsFhirServices().toResource(jsonMedString);
+			  		(MedicationStatement) FhirServices.getsFhirServices().toResource(jsonMedString);
 			return new MyMedicationStatement((int) localId, medStatement);
 		}else {
 			return null;

@@ -29,6 +29,7 @@ import ca.uhn.fhir.model.primitive.DateDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
+import orionhealth.app.data.dataModels.MyCondition;
 import orionhealth.app.data.spinnerEnum.Category;
 import orionhealth.app.data.spinnerEnum.Severity;
 import orionhealth.app.data.spinnerEnum.VerificationStatus;
@@ -177,14 +178,18 @@ public class ConditionDetailsFragment extends Fragment {
         try {
             condition = createCondition(conditionCode, recordedDate, evidence, notes,
                     category.toString(), severity.toString(), verificationStatus.toString());
-            CondTableOperations.getInstance().addToCondTable(context, condition);
-            FhirServices.getsFhirServices().sendToServer(condition, context);
+            int localID = CondTableOperations.getInstance().addToCondTable(context, condition);
+            MyCondition myCondition = new MyCondition(localID ,condition);
+            FhirServices.getsFhirServices().sendConditionToServer(myCondition, context);
         } catch (NoNameException e) {
             Toast.makeText(context, "Please enter a condition", Toast.LENGTH_SHORT).show();
 			throw e;
         } catch (NoVerificationStatusException e) {
             Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
 			throw e;
+        } catch (NoDateRecordedException e) {
+            Toast.makeText(context, "Please select the date recorded", Toast.LENGTH_SHORT).show();
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
 			throw e;
@@ -204,7 +209,9 @@ public class ConditionDetailsFragment extends Fragment {
             mCondition =
                     createCondition(conditionCode, recordedDate, evidence, notes,
                             category.toString(), severity.toString(), verificationStatus.toString());
+            MyCondition myCondition = new MyCondition(mConditionID, mCondition);
             CondTableOperations.getInstance().updateCondition(context, mConditionID, mCondition);
+            FhirServices.getsFhirServices().updateConditionServer(myCondition, context);
         } catch (NoNameException e) {
             Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -226,6 +233,12 @@ public class ConditionDetailsFragment extends Fragment {
 
         checkValidCondition(conditionCode, verificationStatus, recordedDate);
         Condition condition = new Condition();
+
+        //		set up ID from existed condition if available
+        if(mCondition != null) {
+            condition.setId(mCondition.getId());
+            System.out.println();
+        }
         condition.setCode(new CodeableConceptDt().setText(conditionCode));
         ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
         condition.setPatient(patientRef);
@@ -285,7 +298,7 @@ public class ConditionDetailsFragment extends Fragment {
         } else if (verificationStatus.equals("")) {
             throw new NoVerificationStatusException();
         } else if (recordedDate.equals("")) {
-            throw new NoVerificationStatusException();
+            throw new NoDateRecordedException();
         }
     }
 

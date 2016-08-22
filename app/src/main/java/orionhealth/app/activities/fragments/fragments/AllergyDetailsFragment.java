@@ -23,6 +23,7 @@ import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.activities.main.MainActivity;
+import orionhealth.app.data.dataModels.MyAllergyIntolerance;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.fhir.FhirServices;
 
@@ -82,8 +83,9 @@ public class AllergyDetailsFragment extends Fragment {
         AllergyIntolerance allergyIntolerance;
         try{
             allergyIntolerance = createAllergyIntolerance(name, details, reaction);
-            AllergyTableOperations.getInstance().addToAllergyTable(context, allergyIntolerance);
-            FhirServices.getsFhirServices().sendToServer(allergyIntolerance, context);
+            int localID = AllergyTableOperations.getInstance().addToAllergyTable(context, allergyIntolerance);
+            MyAllergyIntolerance myAllergyIntolerance = new MyAllergyIntolerance(localID, allergyIntolerance);
+            FhirServices.getsFhirServices().sendAllergyToServer(myAllergyIntolerance, context);
         } catch (NoSubstanceException e) {
                 Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 				throw e;
@@ -107,7 +109,11 @@ public class AllergyDetailsFragment extends Fragment {
         try {
             aAllergy =
                     createAllergyIntolerance(name, details, reaction);
+            MyAllergyIntolerance myAllergyIntolerance = new MyAllergyIntolerance(aAllergyId, aAllergy);
+
             AllergyTableOperations.getInstance().updateAllergy(context, aAllergyId, aAllergy);
+            FhirServices.getsFhirServices().updateAllergyServer(myAllergyIntolerance, context);
+
             Intent intentAllergy = new Intent(context, MainActivity.class);
             startActivity(intentAllergy);
         } catch (NoSubstanceException e){
@@ -131,6 +137,13 @@ public class AllergyDetailsFragment extends Fragment {
 
         checkValidAllergy(name, reaction);
         AllergyIntolerance allergyIntolerance = new AllergyIntolerance();
+
+        //		set up ID from existed condition if available
+        if(aAllergy != null) {
+            allergyIntolerance.setId(aAllergy.getId());
+            System.out.println();
+        }
+
         allergyIntolerance.setSubstance(new CodeableConceptDt().setText(name));
         ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
         allergyIntolerance.setPatient(patientRef);
