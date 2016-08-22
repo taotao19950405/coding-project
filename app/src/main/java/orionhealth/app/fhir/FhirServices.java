@@ -11,6 +11,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.IGenericClient;
@@ -133,6 +134,49 @@ public final class FhirServices {
 					MedTableOperations.getInstance().updateMedication(context, params[i].getLocalId(), m);
 					Log.d("UPDATE SERVER", "Got Id " + id);
 					outcomeMessage = "Update the Server " +id;
+					return null;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				outcomeMessage = "Failed to Update to Server";
+			}
+			return null;
+		}
+
+		protected void onPostExecute(Void v) {
+			super.onPostExecute(v);
+			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+		}
+	}
+
+
+	public void inactiveMedication(MedicationStatement resource, Context context){
+		inactiveMedicationToServerTask task = new inactiveMedicationToServerTask(context);
+		task.execute(resource);
+	}
+
+	private class inactiveMedicationToServerTask extends AsyncTask<MedicationStatement, Integer, Void> {
+
+		private Context context;
+		private String outcomeMessage;
+
+		private inactiveMedicationToServerTask(Context context){
+			this.context = context;
+		}
+
+		protected Void doInBackground(MedicationStatement... params) {
+			FhirContext fhirContext = getFhirContextInstance();
+			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
+
+			try {
+				for (int i = 0; i < params.length; i++) {
+					params[i].setStatus(MedicationStatementStatusEnum.COMPLETED);
+					MethodOutcome outcome = client.update().resource(params[i])
+							.execute();
+					IdDt id = (IdDt) outcome.getId();
+					Log.d("INACTIVE", "Got Id " + id);
+					outcomeMessage = "Disable the Medication " +id + "In Fhir server";
 					return null;
 				}
 

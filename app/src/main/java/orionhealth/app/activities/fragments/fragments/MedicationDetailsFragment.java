@@ -260,6 +260,8 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public void onRemovePositiveClick(Context context) {
+		FhirServices.getsFhirServices().inactiveMedication(mMedication, context);
+
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
 	}
 
