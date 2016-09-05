@@ -9,8 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.util.Collections;
+import java.util.Comparator;
+
+import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.AllergyListAdapter;
 import orionhealth.app.activities.main.AddAllergyActivity;
@@ -33,6 +38,7 @@ public class AllergyListFragment extends ListFragment {
         return allergyFragment;
     }
 
+    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -56,13 +62,14 @@ public class AllergyListFragment extends ListFragment {
         aAllergyList = getListView();
         AllergyListAdapter allergylistAdapter = new AllergyListAdapter(getContext(), cursor);
         aAllergyList.setAdapter(allergylistAdapter);
+
+
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id){
         super.onListItemClick(l, v, position, id);
         Intent intent = new Intent(getContext(), EditAllergyActivity.class);
-        Log.d("BILLBILL", ""+id);
         intent.putExtra(SELECTED_ALLERGY_ID, (int) id);
         startActivity(intent);
     }

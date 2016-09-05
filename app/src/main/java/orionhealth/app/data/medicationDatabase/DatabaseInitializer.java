@@ -26,6 +26,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     MedTableInfo._ID + " INTEGER PRIMARY KEY," +
                     MedTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
+
     private static final String SQL_CREATE_ENTRIES2=
             "CREATE TABLE " + AllergyTableInfo.TABLE_NAME + " (" +
                     AllergyTableInfo._ID + " INTEGER PRIMARY KEY," +
@@ -38,6 +39,11 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     CondTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
 
+    private static final String SQL_CREATE_CRITICALITY_ALLERGY =
+            "ALTER TABLE " + AllergyTableInfo.TABLE_NAME + " ADD " +
+                    AllergyTableInfo.COLUMN_NAME_CRITICALITY + INTEGER_TYPE;
+
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
@@ -48,7 +54,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -64,13 +70,13 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    ;
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
         db.execSQL(SQL_CREATE_ENTRIES2);
         db.execSQL(SQL_CREATE_ENTRIES_COND);
+        db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
     }
 
     @Override
@@ -79,6 +85,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 			case 2: db.execSQL(SQL_CREATE_ENTRIES);
 			case 3: db.execSQL(SQL_CREATE_ENTRIES2);
 			case 4: db.execSQL(SQL_CREATE_ENTRIES_COND);
+            case 5: db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
 		}
     }
 
