@@ -19,7 +19,6 @@ public class RemoveAllergyDialogFragment extends DialogFragment {
 
     public interface RemoveAllergyDialogListener {
         void onRemovePositiveClick(DialogFragment dialog);
-
         void onRemoveNegativeClick(DialogFragment dialog);
     }
 

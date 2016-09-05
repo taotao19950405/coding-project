@@ -1,5 +1,6 @@
 package orionhealth.app.activities.fragments.fragments;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.util.Log;
@@ -26,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
 import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.data.dataModels.Criticality;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
@@ -194,7 +196,9 @@ public class AllergyDetailsFragment extends Fragment {
 
 
     public void removeAllergy(){
-        AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
+        DialogFragment removeAllergyDialog = new RemoveAllergyDialogFragment();
+        removeAllergyDialog.show(getFragmentManager(), "removeAllergy");
+        //AllergyTableOperations.getInstance().removeAllergy(getContext(), aAllergyId);
     }
 
     public void onRemovePositiveClick(Context context) {

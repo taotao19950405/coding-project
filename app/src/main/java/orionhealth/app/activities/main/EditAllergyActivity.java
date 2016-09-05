@@ -14,11 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.dialogFragments.RemoveAllergyDialogFragment;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
 import orionhealth.app.activities.fragments.fragments.AllergyDetailsFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 
-public class EditAllergyActivity extends AppCompatActivity {
+public class EditAllergyActivity extends AppCompatActivity implements RemoveAllergyDialogFragment.RemoveAllergyDialogListener{
 
 	public static final String ActivityKey = "Allergy";
 
@@ -74,7 +75,6 @@ public class EditAllergyActivity extends AppCompatActivity {
 
     public void removeAllergy(View view){
         aAllergyDetailsFragment.removeAllergy();
-		returnToMainActivity();
     }
 
     public void updateAllergyInDatabase(View view){
@@ -87,4 +87,14 @@ public class EditAllergyActivity extends AppCompatActivity {
 	}
 
 
+    @Override
+    public void onRemovePositiveClick(DialogFragment dialog) {
+        aAllergyDetailsFragment.onRemovePositiveClick(this);
+        returnToMainActivity();
+    }
+
+    @Override
+    public void onRemoveNegativeClick(DialogFragment dialog) {
+
+    }
 }
