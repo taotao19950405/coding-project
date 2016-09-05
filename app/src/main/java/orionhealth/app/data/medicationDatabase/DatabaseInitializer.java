@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.AllergyTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.CondTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.MedReminderTableInfo;
 
 /**
  * Created by bill on 8/04/16.
@@ -20,7 +21,8 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
 	private static final String BOOLEAN_TYPE = " BOOLEAN";
-    private static final String COMMA_SEP = ",";
+	private static final String DATETIME_TYPE = " DATETIME";
+    private static final String COMMA_SEP = ", ";
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + MedTableInfo.TABLE_NAME + " (" +
@@ -43,6 +45,13 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 	  		"ALTER TABLE "+ MedTableInfo.TABLE_NAME + " ADD COLUMN " +
 					MedTableInfo.COLUMN_NAME_REMINDER_SET + BOOLEAN_TYPE;
 
+	private static final String SQL_CREATE__ENTRIES_REMINDER =
+			  "CREATE TABLE " + MedReminderTableInfo.TABLE_NAME + " (" +
+				MedReminderTableInfo._ID + " INTEGER PRIMARY KEY," +
+				MedReminderTableInfo.COLUMN_NAME_MEDICATION + INTEGER_TYPE + COMMA_SEP +
+				MedReminderTableInfo.COLUMN_NAME_TIME + DATETIME_TYPE +
+				" )";
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
@@ -53,7 +62,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -86,6 +95,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 			case 3: db.execSQL(SQL_CREATE_ENTRIES2);
 			case 4: db.execSQL(SQL_CREATE_ENTRIES_COND);
 			case 5: db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
+			case 6: db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
 		}
     }
 

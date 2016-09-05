@@ -28,6 +28,7 @@ import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
+import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 
@@ -209,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
 		public Fragment getItem(int position) {
 			switch (position){
 				case 0: return MedicationListFragment.newInstance();
+				case 1: return MedReminderListFragment.newInstance();
 				case 2: return AllergyListFragment.newInstance();
 				case 3: return ConditionListFragment.newInstance();
 				default: return UnderConstructionFragment.newInstance();

@@ -11,6 +11,7 @@ public class MyMedication {
 	private int mLocalId;
 	private MedicationStatement mFhirMedStatement;
 	private Boolean mReminderSet;
+	private AlarmPackage mAlarmPackage;
 
 	public MyMedication(){}
 
@@ -35,6 +36,8 @@ public class MyMedication {
 
 	public Boolean getReminderSet() {return mReminderSet; }
 
+	public AlarmPackage getAlarmPackage() { return  mAlarmPackage;}
+
 	public void setLocalId(int localId){
 		this.mLocalId = localId;
 	}
@@ -44,4 +47,8 @@ public class MyMedication {
 	}
 
 	public void setReminderSet(Boolean reminderSet) {this.mReminderSet = reminderSet; }
+
+	public void setAlarmPackage(AlarmPackage alarmPackage) {
+		this.mAlarmPackage = alarmPackage;
+	}
 }

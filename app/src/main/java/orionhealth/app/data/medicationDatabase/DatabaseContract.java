@@ -17,6 +17,12 @@ public final class DatabaseContract {
 		public static final String COLUMN_NAME_REMINDER_SET = "reminder_set";
 	}
 
+	public static abstract class MedReminderTableInfo implements BaseColumns {
+		public static final String TABLE_NAME = "medication_reminders";
+		public static final String COLUMN_NAME_MEDICATION = "medication_id";
+		public static final String COLUMN_NAME_TIME = "time";
+	}
+
 	public static abstract class AllergyTableInfo implements BaseColumns{
 		public static final String TABLE_NAME = "allergy";
 		public static final String COLUMN_NAME_JSON_STRING = "json_string_allergy";
