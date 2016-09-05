@@ -85,11 +85,11 @@ public class AllergyListAdapter extends BaseAdapter {
         displayAllergyReaction.setText(reaction);
 
         if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITL")) {
-            view.setBackgroundColor(Color.rgb(254, 236, 223));
-        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITU")) {
             view.setBackgroundColor(Color.rgb(255, 224, 201));
+        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITU")) {
+            view.setBackgroundColor(Color.rgb(254, 236, 223));
         } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITH")) {
-            view.setBackgroundColor(Color.rgb(255, 204, 166));
+            view.setBackgroundColor(Color.rgb(255, 200, 166));
         }
         return view;
     }
