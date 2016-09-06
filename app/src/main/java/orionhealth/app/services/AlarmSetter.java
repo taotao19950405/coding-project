@@ -26,7 +26,7 @@ public class AlarmSetter extends BroadcastReceiver {
 		int medId = intent.getIntExtra(MED_ID_KEY, -1);
 		Cursor cursor = MedTableOperations.getInstance().getRemindersForMed(context, medId);
 		Calendar calendar = Calendar.getInstance();
-		if (cursor.moveToNext()) {
+		while (cursor.moveToNext()) {
 			String jsonString =
 			  		cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
 			long alarmTime =
