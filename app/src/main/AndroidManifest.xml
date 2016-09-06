@@ -81,6 +81,11 @@
 				android:process=":remote"
 				android:exported="false"/>
 
+			<receiver
+				android:name="orionhealth.app.services.AlarmSetter"
+				android:process=":remote"
+				android:exported="false"/>
+
 			<service android:name=".services.RingToneService"/>
 			<service android:name=".services.MedResponseService"/>
 		</application>

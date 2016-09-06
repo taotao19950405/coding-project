@@ -24,7 +24,6 @@ import java.util.LinkedList;
  * Created by bill on 4/07/16.
  */
 public class AlarmReceiver extends BroadcastReceiver {
-	private int notificationId;
 	public static int FLAG_UPDATE = 1;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
 	public static String BUNDLE_KEY = "medication";
@@ -34,14 +33,54 @@ public class AlarmReceiver extends BroadcastReceiver {
 	private String title;
 	private String content;
 	private int icon;
-	private long alarmTime;
 	private int timeToNextAlarm;
 	private LinkedList<Long> times;
 	// activity handle ringtone stop
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
-//		int alarmIndex = intent.getIntExtra("here", -1);
+
+		int medId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
+		String jsonString = intent.getStringExtra(AlarmSetter.JSON_STRING_KEY);
+		long alarmTime = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
+
+		MedicationStatement medicationStatement =
+		  (MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
+
+		CodeableConceptDt conceptDt = (CodeableConceptDt) medicationStatement.getMedication();
+		String medName = conceptDt.getText();
+
+		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
+		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, medId);
+		takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, 0);
+
+		Intent startRingToneIntent = new Intent(context, RingToneService.class);
+		context.startService(startRingToneIntent);
+
+		Notification notification = new NotificationCompat.Builder(context)
+		  .setContentTitle("Take " + medName)
+		  .setContentText("Medication Reminder")
+		  .setSmallIcon(R.drawable.medicine)
+		  .setPriority(Notification.PRIORITY_MAX)
+		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
+		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
+		  .setDeleteIntent(pendingIntentCancel)
+		  .setFullScreenIntent(pendingIntentCancel, true)
+//		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
+		  .build();
+
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.notify(medId, notification);
+
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+		context.sendBroadcast(alarmIntent);
+
+	}
+
+// int alarmIndex = intent.getIntExtra("here", -1);
 //		Bundle bundle = intent.getBundleExtra(BUNDLE_KEY);
 //		AlarmPackage alarmPackage = bundle.getParcelable(PARCEL_KEY);
 //		notificationId = alarmPackage.getId();
@@ -76,41 +115,38 @@ public class AlarmReceiver extends BroadcastReceiver {
 //			alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmPackage.getAlarmTime() + alarmIndex * alarmPackage.getIntervalTimeToNextAlarm(), alarmPendingIntent);
 //		}
 
-	}
 
-	private void createNotification(Context context) {
 
-		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, notificationId);
-		PendingIntent pendingIntentCancel = PendingIntent.getService(context, notificationId, takeMedicationIntent, 0);
-
-		int drawable;
-		if (icon == MedicationUnit.MG.ordinal()) {
-			drawable = R.drawable.two_color_pill;
-		} else if (icon == MedicationUnit.ML.ordinal()) {
-			drawable = R.drawable.medicine;
-		} else if (icon == MedicationUnit.SPRAY.ordinal()) {
-			drawable = R.drawable.spray_can;
-		} else if (icon == MedicationUnit.TABLET.ordinal()) {
-			drawable= R.drawable.pill;
-		} else {
-			drawable = R.drawable.warning;
-		}
-
-		Notification notification = new NotificationCompat.Builder(context)
-		  .setContentTitle("Take "+title)
-		  .setContentText("Medication Reminder")
-		  .setSmallIcon(drawable)
-		  .setPriority(Notification.PRIORITY_MAX)
-		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
-		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
-		  .setDeleteIntent(pendingIntentCancel)
-		  .setFullScreenIntent(pendingIntentCancel, true)
-//		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
-		  .build();
-
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.notify(notificationId, notification);
-	}
+//	private void createNotification(Context context) {
+//
+//		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
+//		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, notificationId);
+//		PendingIntent pendingIntentCancel = PendingIntent.getService(context, notificationId, takeMedicationIntent, 0);
+//
+//		int drawable;
+//		if (icon == MedicationUnit.MG.ordinal()) {
+//			drawable = R.drawable.two_color_pill;
+//		} else if (icon == MedicationUnit.ML.ordinal()) {
+//			drawable = R.drawable.medicine;
+//		} else if (icon == MedicationUnit.SPRAY.ordinal()) {
+//			drawable = R.drawable.spray_can;
+//		} else if (icon == MedicationUnit.TABLET.ordinal()) {
+//			drawable= R.drawable.pill;
+//		} else {
+//			drawable = R.drawable.warning;
+//		}
+//
+//		Notification notification = new NotificationCompat.Builder(context)
+//		  .setContentTitle("Take "+title)
+//		  .setContentText("Medication Reminder")
+//		  .setSmallIcon(drawable)
+//		  .setPriority(Notification.PRIORITY_MAX)
+//		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+//		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
+//		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
+//		  .setDeleteIntent(pendingIntentCancel)
+//		  .setFullScreenIntent(pendingIntentCancel, true)
+////		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
+//		  .build();
+//	}
 }

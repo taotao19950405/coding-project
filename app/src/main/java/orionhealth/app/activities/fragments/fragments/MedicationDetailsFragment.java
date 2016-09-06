@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +38,7 @@ import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.TimeIntervalUnit;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.AlarmReceiver;
+import orionhealth.app.services.AlarmSetter;
 import orionhealth.app.services.DateService;
 
 /**
@@ -187,16 +189,15 @@ public class MedicationDetailsFragment extends Fragment {
 			MedicationStatement medStatement = createMedStatement();
 			MyMedication myMedication = new MyMedication();
 			myMedication.setFhirMedStatement(medStatement);
+			myMedication.setReminderSet(mReminderSwitchState);
 			if (mReminderSwitchState) {
-//				IntentFilter intentFilter = new IntentFilter("com.orionhealth."+mMedicationID);
-//				AlarmReceiver alarmReceiver = new AlarmReceiver();
-//				context.registerReceiver(alarmReceiver, intentFilter);
-//				setReminder(context, medStatement);
 				AlarmPackage alarmPackage = createAlarmPackage();
 				myMedication.setAlarmPackage(alarmPackage);
+				mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+				setReminder(context);
+			} else {
+				mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			}
-			myMedication.setReminderSet(mReminderSwitchState);
-			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			FhirServices.getsFhirServices().sendToServer(medStatement, context);
 
 		} catch (NoNameException e) {
@@ -335,22 +336,11 @@ public class MedicationDetailsFragment extends Fragment {
 		mNotesTextField.requestFocus();
 	}
 
-//	public void setReminder(Context context, MedicationStatement medicationStatement) {
-//		Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-//		alarmIntent.setAction("com.orionhealth."+mMedicationID);
-//		String jsonMedStatement = FhirServices.getsFhirServices().toJsonString(medicationStatement);
-//		AlarmPackage parcel =
-//		  new AlarmPackage(mMedicationID, jsonMedStatement);
-//		parcel.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
-//		parcel.setAlarmTime(calendar.getTimeInMillis());
-////		parcel.setAlarmTimes();
-//		Bundle bundle = new Bundle();
-//		bundle.putParcelable(AlarmReceiver.PARCEL_KEY, parcel);
-//		alarmIntent.putExtra(AlarmReceiver.BUNDLE_KEY, bundle);
-//		alarmIntent.putExtra("here", -1);
-//
-//		context.sendBroadcast(alarmIntent);
-//	}
+	public void setReminder(Context context) {
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		context.sendBroadcast(alarmIntent);
+	}
 //
 //	public void cancelReminder(Context context) {
 //		Intent alarmIntent = new Intent(context, AlarmReceiver.class);

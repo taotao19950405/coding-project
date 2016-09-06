@@ -17,6 +17,8 @@ import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedReminderTableInfo;
 
+import java.util.Calendar;
+
 /**
  * Created by bill on 11/04/16.
  */
@@ -93,6 +95,24 @@ public final class MedTableOperations {
 		return c;
 	}
 
+	public Cursor getRemindersForMed(Context context, int medId){
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
+		SQLiteDatabase db = dbo.getReadableDatabase();
+
+		String query = 	"SELECT " + MedTableInfo.COLUMN_NAME_JSON_STRING +
+		  ", " + MedReminderTableInfo.COLUMN_NAME_TIME +
+		  " FROM " + MedTableInfo.TABLE_NAME  +
+		  " JOIN " + MedReminderTableInfo.TABLE_NAME +
+		  " ON " + MedTableInfo.TABLE_NAME+"."+MedTableInfo._ID +
+		  " = " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID +
+		  " WHERE " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID + " = " + medId +
+		  " ORDER BY " + MedReminderTableInfo.COLUMN_NAME_TIME;
+
+		Cursor c = db.rawQuery(query, null);
+
+		return c;
+	}
+
 	public MyMedication getMedicationStatement(Context context, int id){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
@@ -136,6 +156,14 @@ public final class MedTableOperations {
 		db.delete(MedReminderTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
+	public void removeSingleReminder(Context context, long time) {
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
+		SQLiteDatabase db = dbo.getReadableDatabase();
+		String selection = MedReminderTableInfo.COLUMN_NAME_TIME + " LIKE ?";
+		String[] selectionArgs = { String.valueOf(time) };
+		db.delete(MedReminderTableInfo.TABLE_NAME, selection, selectionArgs);
+	}
+
 	public void updateMedication(Context context, int id, MyMedication updatedMyMedication){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
@@ -162,12 +190,15 @@ public final class MedTableOperations {
 		if (alarmPackage != null) {
 			DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 			SQLiteDatabase database = dbo.getWritableDatabase();
+			Calendar calendar = Calendar.getInstance();
 			for (int i = 0; i < alarmPackage.getDailyNumOfAlarms(); i++) {
 				long alarmTime = alarmPackage.getAlarmTime() + i * alarmPackage.getIntervalTimeToNextAlarm();
-				ContentValues cv2 = new ContentValues();
-				cv2.put(MedReminderTableInfo.COLUMN_NAME_MED_ID, medId);
-				cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
-				database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
+				if (calendar.getTimeInMillis() < alarmTime) {
+					ContentValues cv2 = new ContentValues();
+					cv2.put(MedReminderTableInfo.COLUMN_NAME_MED_ID, medId);
+					cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
+					database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
+				}
 			}
 		}
 	}

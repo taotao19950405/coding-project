@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
  * Created by bill on 11/07/16.
@@ -27,12 +28,15 @@ public class MedResponseService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		int notificationId = intent.getIntExtra(AlarmReceiver.NOTIFICATION_ID_KEY, 0);
-		Log.e("ASDF", ""+notificationId);
+		int notificationId = intent.getIntExtra(AlarmReceiver.NOTIFICATION_ID_KEY, -1);
 		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(notificationId);
 		Intent service = new Intent(getApplicationContext(), RingToneService.class);
 		getApplicationContext().stopService(service);
 		WakeLockService.release();
+
+		long time = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
+		MedTableOperations.getInstance().removeSingleReminder(getApplicationContext(), time);
+
 	}
 }

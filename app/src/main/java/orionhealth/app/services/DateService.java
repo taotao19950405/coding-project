@@ -35,7 +35,7 @@ public class DateService {
 			return (Date) format.parseObject(dateString);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			Log.d("ASDF", "error");
+			Log.d("ERROR", "errorInDate");
 		}
 		return null;
 	}
