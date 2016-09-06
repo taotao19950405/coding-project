@@ -29,6 +29,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     MedTableInfo._ID + " INTEGER PRIMARY KEY," +
                     MedTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
+
     private static final String SQL_CREATE_ENTRIES2=
             "CREATE TABLE " + AllergyTableInfo.TABLE_NAME + " (" +
                     AllergyTableInfo._ID + " INTEGER PRIMARY KEY," +
@@ -40,6 +41,11 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
                     CondTableInfo._ID + " INTEGER PRIMARY KEY," +
                     CondTableInfo.COLUMN_NAME_JSON_STRING + TEXT_TYPE +
                     " )";
+
+    private static final String SQL_CREATE_CRITICALITY_ALLERGY =
+            "ALTER TABLE " + AllergyTableInfo.TABLE_NAME + " ADD " +
+                    AllergyTableInfo.COLUMN_NAME_CRITICALITY + INTEGER_TYPE;
+
 
 	private static final String SQL_ADD_REMINDER_SET_COLUMN =
 	  		"ALTER TABLE "+ MedTableInfo.TABLE_NAME + " ADD COLUMN " +
@@ -62,7 +68,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
 
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -78,7 +84,6 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    ;
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -87,6 +92,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES_COND);
 		db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
 		db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
+        db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
     }
 
     @Override
@@ -97,6 +103,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 			case 4: db.execSQL(SQL_CREATE_ENTRIES_COND);
 			case 5: db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
 			case 6: db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
+            case 7: db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
 		}
     }
 

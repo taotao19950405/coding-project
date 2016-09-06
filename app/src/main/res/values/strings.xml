@@ -37,7 +37,7 @@
     <string name="text_label_substance">Substance:</string>
 	<string name="text_label_allergy_details">Details:</string>
     <string name="text_label_allergy_reaction">Reaction:</string>
-    <string name="text_label_allergy_severity">Severity:</string>
+    <string name="text_label_allergy_criticality">Criticality:</string>
 
 	<string name="medication_information_header">Medication Information:</string>
 	<string name="allergy_information_header">Allergy Information:</string>
@@ -70,8 +70,8 @@
 	<string name="remove_med_dialog_positive_button">Yes</string>
 	<string name="remove_med_dialog_negative_button">No</string>
 
-	<string name="remove_allergy_dialog_title">Remove Medication</string>
-	<string name="remove_allergy_dialog_message">Are you sure you want to remove this medication?</string>
+	<string name="remove_allergy_dialog_title">Remove Allergy</string>
+	<string name="remove_allergy_dialog_message">Are you sure you want to remove this allergy?</string>
 	<string name="remove_allergy_dialog_positive_button">Yes</string>
 	<string name="remove_allergy_dialog_negative_button">No</string>
 

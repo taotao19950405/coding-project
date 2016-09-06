@@ -3,6 +3,7 @@ package orionhealth.app.activities.fragments.fragments;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,7 +27,6 @@ import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionCategoryCodesEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ConditionVerificationStatusEnum;
 import ca.uhn.fhir.model.primitive.DateDt;
-import ca.uhn.fhir.model.primitive.IdDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveConditionDialogFragment;
@@ -214,7 +214,7 @@ public class ConditionDetailsFragment extends Fragment {
             Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
         	throw e;
 		} catch (NoDateRecordedException e) {
-            Toast.makeText(context, "Please select a verification status", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please enter a date", Toast.LENGTH_SHORT).show();
     		throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,9 +250,6 @@ public class ConditionDetailsFragment extends Fragment {
         List<Condition.Evidence> listEvidence = new LinkedList<Condition.Evidence>();
         listEvidence.add(evidenceFhir);
         condition.setEvidence(listEvidence);
-
-		condition.setId(new IdDt(2));
-
         return condition;
     }
 
