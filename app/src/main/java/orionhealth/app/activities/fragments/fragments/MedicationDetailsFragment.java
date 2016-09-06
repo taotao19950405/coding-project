@@ -187,19 +187,17 @@ public class MedicationDetailsFragment extends Fragment {
 			MedicationStatement medStatement = createMedStatement();
 			MyMedication myMedication = new MyMedication();
 			myMedication.setFhirMedStatement(medStatement);
-			myMedication.setReminderSet(mReminderSwitchState);
-			AlarmPackage alarmPackage = createAlarmPackage();
-			myMedication.setAlarmPackage(alarmPackage);
-			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
-
-			FhirServices.getsFhirServices().sendToServer(medStatement, context);
-
-//			if (mReminderSwitchState) {
+			if (mReminderSwitchState) {
 //				IntentFilter intentFilter = new IntentFilter("com.orionhealth."+mMedicationID);
 //				AlarmReceiver alarmReceiver = new AlarmReceiver();
 //				context.registerReceiver(alarmReceiver, intentFilter);
 //				setReminder(context, medStatement);
-//			}
+				AlarmPackage alarmPackage = createAlarmPackage();
+				myMedication.setAlarmPackage(alarmPackage);
+			}
+			myMedication.setReminderSet(mReminderSwitchState);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+			FhirServices.getsFhirServices().sendToServer(medStatement, context);
 
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
@@ -222,13 +220,14 @@ public class MedicationDetailsFragment extends Fragment {
 			MedicationStatement medStatement = createMedStatement();
 			mMyMedication.setFhirMedStatement(medStatement);
 			mMyMedication.setReminderSet(mReminderSwitchState);
-			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
-//
-//			if (mReminderSwitchState) {
+			if (mReminderSwitchState) {
 //				setReminder(context, medStatement);
-//			}else{
-//				cancelReminder(context);
-//			}
+				AlarmPackage alarmPackage = createAlarmPackage();
+				mMyMedication.setAlarmPackage(alarmPackage);
+			}else{
+
+			}
+			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;

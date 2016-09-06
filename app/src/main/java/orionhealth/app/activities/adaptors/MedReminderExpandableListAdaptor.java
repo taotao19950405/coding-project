@@ -15,7 +15,6 @@ import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.services.DateService;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by bill on 5/09/16.
@@ -40,7 +39,7 @@ public class MedReminderExpandableListAdaptor extends CursorAdapter {
 		TextView dateText = (TextView) view.findViewById(R.id.list_display_date);
 
 		String text =
-		  	cursor.getString(cursor.getColumnIndex(DatabaseContract.MedReminderTableInfo.COLUMN_NAME_MEDICATION));
+		  	cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
 		Long l =
 			cursor.getLong(cursor.getColumnIndex(DatabaseContract.MedReminderTableInfo.COLUMN_NAME_TIME));
 

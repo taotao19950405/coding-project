@@ -31,6 +31,7 @@ import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_medication);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
+        setContentView(R.layout.activity_my_medication);
+
 //Method to look at database in chrome://inspect.
 		Stetho.initializeWithDefaults(this);
 

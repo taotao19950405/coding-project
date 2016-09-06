@@ -49,15 +49,10 @@ public final class MedTableOperations {
 		Boolean reminderSet = myMedStatement.getReminderSet();
 		cv.put(MedTableInfo.COLUMN_NAME_REMINDER_SET, reminderSet);
 
+		int medId = (int) database.insert(MedTableInfo.TABLE_NAME, null, cv);
 		AlarmPackage alarmPackage = myMedStatement.getAlarmPackage();
-		for (int i = 0; i < alarmPackage.getDailyNumOfAlarms(); i++) {
-			long alarmTime = alarmPackage.getAlarmTime() + i * alarmPackage.getIntervalTimeToNextAlarm();
-			ContentValues cv2 = new ContentValues();
-			cv2.put(MedReminderTableInfo.COLUMN_NAME_MEDICATION, jsonStringMed);
-			cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
-			database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
-		}
-		return (int) database.insert(MedTableInfo.TABLE_NAME, null, cv);
+		addMedReminder(context, medId, alarmPackage);
+		return medId;
 	}
 
 	public Cursor getAllRows(Context context){
@@ -76,6 +71,7 @@ public final class MedTableOperations {
 		Cursor cursor = db.query(
 		  MedTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
 		);
+
 		return cursor;
 	}
 
@@ -83,20 +79,18 @@ public final class MedTableOperations {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
-		String[] projection = {
-		  MedReminderTableInfo._ID,
-		  MedReminderTableInfo.COLUMN_NAME_MEDICATION,
-		  MedReminderTableInfo.COLUMN_NAME_TIME
-		};
+		String query = 	"SELECT " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo._ID +
+		  				", " + MedTableInfo.COLUMN_NAME_JSON_STRING +
+		  				", " + MedReminderTableInfo.COLUMN_NAME_TIME +
+		  				" FROM " + MedTableInfo.TABLE_NAME + " " +
+		  				" JOIN " + MedReminderTableInfo.TABLE_NAME +
+		  				" ON " + MedTableInfo.TABLE_NAME+"."+MedTableInfo._ID +
+		  				" = " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID +
+		  				" ORDER BY " + MedReminderTableInfo.COLUMN_NAME_TIME;
 
-		String sortOrder =
-		  MedReminderTableInfo._ID + " ASC";
+		Cursor c = db.rawQuery(query, null);
 
-		Cursor cursor = db.query(
-		  MedReminderTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
-		);
-
-		return cursor;
+		return c;
 	}
 
 	public MyMedication getMedicationStatement(Context context, int id){
@@ -131,6 +125,15 @@ public final class MedTableOperations {
 		String selection = MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
 		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
+		removeMedReminder(context, id);
+	}
+
+	public void removeMedReminder(Context context, int id) {
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
+		SQLiteDatabase db = dbo.getReadableDatabase();
+		String selection = MedReminderTableInfo.COLUMN_NAME_MED_ID + " LIKE ?";
+		String[] selectionArgs = { String.valueOf(id) };
+		db.delete(MedReminderTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
 	public void updateMedication(Context context, int id, MyMedication updatedMyMedication){
@@ -144,11 +147,29 @@ public final class MedTableOperations {
 		String selection = MedTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
 		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
+		removeMedReminder(context, id);
+		addMedReminder(context, id, updatedMyMedication.getAlarmPackage());
 	}
 
 	public void clearMedTable(Context context){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		db.delete(MedTableInfo.TABLE_NAME, null, null);
+		db.delete(MedReminderTableInfo.TABLE_NAME, null, null);
 	}
+
+	private void addMedReminder(Context context, int medId, AlarmPackage alarmPackage) {
+		if (alarmPackage != null) {
+			DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
+			SQLiteDatabase database = dbo.getWritableDatabase();
+			for (int i = 0; i < alarmPackage.getDailyNumOfAlarms(); i++) {
+				long alarmTime = alarmPackage.getAlarmTime() + i * alarmPackage.getIntervalTimeToNextAlarm();
+				ContentValues cv2 = new ContentValues();
+				cv2.put(MedReminderTableInfo.COLUMN_NAME_MED_ID, medId);
+				cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
+				database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
+			}
+		}
+	}
+
 }

@@ -19,7 +19,7 @@ public final class DatabaseContract {
 
 	public static abstract class MedReminderTableInfo implements BaseColumns {
 		public static final String TABLE_NAME = "medication_reminders";
-		public static final String COLUMN_NAME_MEDICATION = "medication_id";
+		public static final String COLUMN_NAME_MED_ID = "medication_id";
 		public static final String COLUMN_NAME_TIME = "time";
 	}
 

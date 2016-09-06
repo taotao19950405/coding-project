@@ -48,7 +48,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 	private static final String SQL_CREATE__ENTRIES_REMINDER =
 			  "CREATE TABLE " + MedReminderTableInfo.TABLE_NAME + " (" +
 				MedReminderTableInfo._ID + " INTEGER PRIMARY KEY," +
-				MedReminderTableInfo.COLUMN_NAME_MEDICATION + INTEGER_TYPE + COMMA_SEP +
+				MedReminderTableInfo.COLUMN_NAME_MED_ID + INTEGER_TYPE + COMMA_SEP +
 				MedReminderTableInfo.COLUMN_NAME_TIME + DATETIME_TYPE +
 				" )";
 
@@ -86,6 +86,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES2);
         db.execSQL(SQL_CREATE_ENTRIES_COND);
 		db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
+		db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
     }
 
     @Override
