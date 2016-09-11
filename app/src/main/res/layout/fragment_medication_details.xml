@@ -202,6 +202,14 @@
 
 		</RelativeLayout>
 
+	</LinearLayout>
+
+	<LinearLayout android:id="@+id/alarm_setter_linear_layout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:padding="10dp"
+								android:orientation="vertical">
+
 	<LinearLayout style="@style/section_Layout_style">
 
 	<TextView
@@ -258,7 +266,29 @@
 
 		</LinearLayout>
 
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:text="Daily Number of Dosages"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="15dp"
+			android:paddingLeft="15dp"
+			android:paddingRight="15dp"
+			android:paddingBottom="0dp">
+
+			<NumberPicker
+				android:id="@+id/daily_frequency_value_spinner"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+
 		</LinearLayout>
+
+	</LinearLayout>
 
 	<TextView
 		android:layout_width="wrap_content"

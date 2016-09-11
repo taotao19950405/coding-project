@@ -1,29 +1,27 @@
 package orionhealth.app.services;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 
+import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.data.dataModels.AlarmPackage;
-import orionhealth.app.data.spinnerEnum.MedicationUnit;
+import orionhealth.app.activities.main.TakeMedicationActivity;
 import orionhealth.app.fhir.FhirServices;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 
 /**
  * Created by bill on 4/07/16.
  */
-public class AlarmReceiver extends BroadcastReceiver {
+public class AlarmReceiver extends WakefulBroadcastReceiver {
 	public static int FLAG_UPDATE = 1;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
 	public static String BUNDLE_KEY = "medication";
@@ -39,11 +37,19 @@ public class AlarmReceiver extends BroadcastReceiver {
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
-
 		int medId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
 		String jsonString = intent.getStringExtra(AlarmSetter.JSON_STRING_KEY);
 		long alarmTime = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
 
+		PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		if (!powerManager.isInteractive()) {
+			Intent activityIntent = new Intent(context, TakeMedicationActivity.class);
+			activityIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+			activityIntent.putExtra(AlarmSetter.JSON_STRING_KEY, jsonString);
+			activityIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(activityIntent);
+		} else {
 		MedicationStatement medicationStatement =
 		  (MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
 
@@ -51,9 +57,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 		String medName = conceptDt.getText();
 
 		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, medId);
+		takeMedicationIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
 		takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
-		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, 0);
+		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
 		Intent startRingToneIntent = new Intent(context, RingToneService.class);
 		context.startService(startRingToneIntent);
@@ -74,6 +81,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(medId, notification);
 
+		}
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
 		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
 		context.sendBroadcast(alarmIntent);

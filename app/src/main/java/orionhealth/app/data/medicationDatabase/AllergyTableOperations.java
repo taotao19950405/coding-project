@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.data.dataModels.Criticality;
@@ -31,13 +30,14 @@ public final class AllergyTableOperations {
         }
     }
 
-    public void addToAllergyTable(Context context, AllergyIntolerance allergyIntolerance) {
+    public int addToAllergyTable(Context context, AllergyIntolerance allergyIntolerance) {
         DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
         SQLiteDatabase database = dbo.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         String jsonStringAllergy = FhirServices.getsFhirServices().toJsonString(allergyIntolerance);
         cv.put(AllergyTableInfo.COLUMN_NAME_JSON_STRING, jsonStringAllergy);
+
 
         int criticalityInt = Criticality.UNABLE_TO_DETERMINE.ordinal();
 
@@ -50,7 +50,7 @@ public final class AllergyTableOperations {
         }
 
         cv.put(AllergyTableInfo.COLUMN_NAME_CRITICALITY, criticalityInt);
-        database.insert(AllergyTableInfo.TABLE_NAME, null, cv);
+		return (int) database.insert(AllergyTableInfo.TABLE_NAME, null, cv);
     }
 
     public Cursor getAllRows(Context context){

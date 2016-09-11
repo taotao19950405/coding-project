@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,8 @@ import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
+import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
         setContentView(R.layout.activity_my_medication);
-
+		Log.d("ASDF", "OnCreate");
 //Method to look at database in chrome://inspect.
 		Stetho.initializeWithDefaults(this);
 
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
+		getSupportActionBar().setElevation(0);
 
 		mTabbedPagerAdapter = new TabbedPagerAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);

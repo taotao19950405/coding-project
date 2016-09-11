@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.data.dataModels.AlarmPackage;
 import orionhealth.app.data.dataModels.MyMedication;
@@ -175,8 +176,13 @@ public final class MedTableOperations {
 		String selection = MedTableInfo._ID + " = ?";
 		String[] selectionArgs = new String[]{String.valueOf(id)};
 		db.update(MedTableInfo.TABLE_NAME, cv, selection, selectionArgs);
-		removeMedReminder(context, id);
-		addMedReminder(context, id, updatedMyMedication.getAlarmPackage());
+
+		if (updatedMyMedication.getReminderSet()) {
+			removeMedReminder(context, id);
+			addMedReminder(context, id, updatedMyMedication.getAlarmPackage());
+		} else {
+			removeMedReminder(context, id);
+		}
 	}
 
 	public void clearMedTable(Context context){

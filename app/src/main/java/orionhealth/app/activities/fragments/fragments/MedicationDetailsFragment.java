@@ -5,10 +5,8 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,7 +35,6 @@ import orionhealth.app.data.spinnerEnum.MedicationUnit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.TimeIntervalUnit;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.services.AlarmReceiver;
 import orionhealth.app.services.AlarmSetter;
 import orionhealth.app.services.DateService;
 
@@ -59,9 +56,12 @@ public class MedicationDetailsFragment extends Fragment {
 	private LinearLayout mEndDateLinearLayout;
 	private EditText mEndDateTextFeild;
 	private EditText mNotesTextField;
+
+	private LinearLayout mAlarmSetterLinearLayout;
 	private TimePicker mTimePicker;
 	private Spinner mTimeIntervalUnitSelector;
 	private NumberPicker mTimeIntervalValueSelector;
+	private NumberPicker mFrequencySelector;
 	private Switch mReminderSwitch;
 
 	private Calendar calendar;
@@ -93,21 +93,26 @@ public class MedicationDetailsFragment extends Fragment {
 		setUpReminderSwitch();
 
 		mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
-		mTimePicker = (TimePicker) detailsFragment.findViewById(R.id.time_picker);
-		mTimePicker.setEnabled(false);
 
-		mTimeIntervalValueSelector = (NumberPicker) detailsFragment.findViewById(R.id.time_interval_value_spinner);
+		mAlarmSetterLinearLayout = (LinearLayout) detailsFragment.findViewById(R.id.alarm_setter_linear_layout);
+		mAlarmSetterLinearLayout.setVisibility(View.GONE);
+		mTimePicker = (TimePicker) mAlarmSetterLinearLayout.findViewById(R.id.time_picker);
+
+		mTimeIntervalValueSelector = (NumberPicker) mAlarmSetterLinearLayout.findViewById(R.id.time_interval_value_spinner);
 		String[] array = getResources().getStringArray(R.array.minute_interval_array);
 		mTimeIntervalValueSelector.setDisplayedValues(array);
 		mTimeIntervalValueSelector.setMinValue(1);
 		mTimeIntervalValueSelector.setMaxValue(12);
-		mTimeIntervalValueSelector.setEnabled(false);
 
-		mTimeIntervalUnitSelector = (Spinner) detailsFragment.findViewById(R.id.time_interval_unit_spinner);
+		mFrequencySelector = (NumberPicker) mAlarmSetterLinearLayout.findViewById(R.id.daily_frequency_value_spinner);
+		mFrequencySelector.setMinValue(1);
+		mFrequencySelector.setMaxValue(5);
+		mFrequencySelector.setWrapSelectorWheel(false);
+
+		mTimeIntervalUnitSelector = (Spinner) mAlarmSetterLinearLayout.findViewById(R.id.time_interval_unit_spinner);
 		setUpTimeIntervalUnitSelector();
 
 		dateService = new DateService();
-		alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
         return detailsFragment;
     }
@@ -127,8 +132,9 @@ public class MedicationDetailsFragment extends Fragment {
 			dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger() + "");
 
 			TimingDt timingDt = dosage.getTiming();
-			if (!timingDt.getEvent().isEmpty()) {
+			if (!timingDt.getEvent().isEmpty() && mMyMedication.getReminderSet()) {
 				DateTimeDt dateTimeDt = timingDt.getEvent().get(0);
+				TimingDt.Repeat repeat = timingDt.getRepeat();
 				if (Build.VERSION.SDK_INT >= 23) {
 					mTimePicker.setHour(dateTimeDt.getHour());
 					mTimePicker.setMinute(dateTimeDt.getMinute());
@@ -136,6 +142,8 @@ public class MedicationDetailsFragment extends Fragment {
 					mTimePicker.setCurrentHour(dateTimeDt.getHour());
 					mTimePicker.setCurrentMinute(dateTimeDt.getMinute());
 				}
+				mFrequencySelector.setValue(repeat.getFrequency());
+				mTimeIntervalValueSelector.setValue(repeat.getPeriod().intValue() / 5);
 			}
 
 			String unitIdString = simpleQuantityDt.getCode();
@@ -190,15 +198,13 @@ public class MedicationDetailsFragment extends Fragment {
 			MyMedication myMedication = new MyMedication();
 			myMedication.setFhirMedStatement(medStatement);
 			myMedication.setReminderSet(mReminderSwitchState);
-			if (mReminderSwitchState) {
-				AlarmPackage alarmPackage = createAlarmPackage();
-				myMedication.setAlarmPackage(alarmPackage);
-				mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
-				setReminder(context);
-			} else {
-				mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
-			}
-			FhirServices.getsFhirServices().sendToServer(medStatement, context);
+			AlarmPackage alarmPackage = createAlarmPackage();
+			myMedication.setAlarmPackage(alarmPackage);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+			setUpReminder(context);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+			myMedication.setLocalId(mMedicationID);
+			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
 
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
@@ -221,14 +227,12 @@ public class MedicationDetailsFragment extends Fragment {
 			MedicationStatement medStatement = createMedStatement();
 			mMyMedication.setFhirMedStatement(medStatement);
 			mMyMedication.setReminderSet(mReminderSwitchState);
-			if (mReminderSwitchState) {
-//				setReminder(context, medStatement);
-				AlarmPackage alarmPackage = createAlarmPackage();
-				mMyMedication.setAlarmPackage(alarmPackage);
-			}else{
-
-			}
+			AlarmPackage alarmPackage = createAlarmPackage();
+			mMyMedication.setAlarmPackage(alarmPackage);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
+			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
+			setUpReminder(context);
+			mMyMedication.setLocalId(mMedicationID);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -258,6 +262,13 @@ public class MedicationDetailsFragment extends Fragment {
 		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
+
+//		set up ID from existed medication statement if available
+		if(mMyMedication != null) {
+			medicationStatement.setId(mMyMedication.getFhirMedStatement().getId());
+			System.out.println();
+		}
+
 		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
 		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
 		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
@@ -281,7 +292,7 @@ public class MedicationDetailsFragment extends Fragment {
 		TimingDt timingDt = new TimingDt();
 		timingDt.addEvent(calendar.getTime());
 		TimingDt.Repeat repeat = new TimingDt.Repeat();
-		repeat.setFrequency(3);
+		repeat.setFrequency(mFrequencySelector.getValue());
 		repeat.setPeriodUnits(UnitsOfTimeEnum.MIN);
 		repeat.setPeriod(mTimeIntervalValueSelector.getValue()*5);
 		timingDt.setRepeat(repeat);
@@ -294,11 +305,15 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public AlarmPackage createAlarmPackage() {
-		AlarmPackage alarmPackage = new AlarmPackage();
-		alarmPackage.setAlarmTime(calendar.getTimeInMillis());
-		alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
-		alarmPackage.setDailyNumOfAlarmsTime(3);
-		return alarmPackage;
+		if (mReminderSwitchState) {
+			AlarmPackage alarmPackage = new AlarmPackage();
+			alarmPackage.setAlarmTime(calendar.getTimeInMillis());
+			alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
+			alarmPackage.setDailyNumOfAlarmsTime(mFrequencySelector.getValue());
+			return alarmPackage;
+		} else {
+			return null;
+		}
 	}
 
 	public void removeMedication(){
@@ -307,6 +322,8 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public void onRemovePositiveClick(Context context) {
+		FhirServices.getsFhirServices().inactiveMedication(mMyMedication.getFhirMedStatement(), context);
+
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
 //		cancelReminder(context);
 	}
@@ -336,23 +353,12 @@ public class MedicationDetailsFragment extends Fragment {
 		mNotesTextField.requestFocus();
 	}
 
-	public void setReminder(Context context) {
+	public void setUpReminder(Context context) {
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
 		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, mReminderSwitchState);
 		context.sendBroadcast(alarmIntent);
 	}
-//
-//	public void cancelReminder(Context context) {
-//		Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-//		alarmIntent.setAction("com.orionhealth."+mMedicationID);
-//		AlarmPackage parcel =
-//		  new AlarmPackage(mMedicationID, "");
-//		Bundle bundle = new Bundle();
-//		bundle.putParcelable(AlarmReceiver.PARCEL_KEY, parcel);
-//		alarmIntent.putExtra(AlarmReceiver.BUNDLE_KEY, bundle);
-//		alarmIntent.putExtra("here", -2);
-//		context.sendBroadcast(alarmIntent);
-//	}
 
 	public void setMedication(Context context, int medLocalId){
 		mMedicationID = medLocalId;
@@ -367,9 +373,11 @@ public class MedicationDetailsFragment extends Fragment {
 		if (Build.VERSION.SDK_INT >= 23) {
 			calendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getHour());
 			calendar.set(Calendar.MINUTE, mTimePicker.getMinute());
+			calendar.set(Calendar.SECOND, 0);
 		} else {
 			calendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getCurrentHour());
 			calendar.set(Calendar.MINUTE, mTimePicker.getCurrentMinute());
+			calendar.set(Calendar.SECOND, 0);
 		}
 	}
 
@@ -379,14 +387,10 @@ public class MedicationDetailsFragment extends Fragment {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked) {
 					mReminderSwitchState = isChecked;
-					mTimePicker.setEnabled(true);
-					mTimeIntervalValueSelector.setEnabled(true);
-					mTimeIntervalUnitSelector.setEnabled(true);
+					mAlarmSetterLinearLayout.setVisibility(View.VISIBLE);
 				} else {
 					mReminderSwitchState = isChecked;
-					mTimePicker.setEnabled(false);
-					mTimeIntervalValueSelector.setEnabled(false);
-					mTimeIntervalUnitSelector.setEnabled(false);
+					mAlarmSetterLinearLayout.setVisibility(View.GONE);
 				}
 			}
 		});
@@ -432,7 +436,6 @@ public class MedicationDetailsFragment extends Fragment {
 		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, timeIntervalUnits);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mTimeIntervalUnitSelector.setAdapter(adapter);
-		mTimeIntervalUnitSelector.setEnabled(false);
 	}
 
 

@@ -28,7 +28,7 @@ public class MedResponseService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		int notificationId = intent.getIntExtra(AlarmReceiver.NOTIFICATION_ID_KEY, -1);
+		int notificationId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
 		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(notificationId);
 		Intent service = new Intent(getApplicationContext(), RingToneService.class);
