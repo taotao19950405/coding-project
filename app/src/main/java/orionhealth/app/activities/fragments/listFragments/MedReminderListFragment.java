@@ -1,26 +1,26 @@
 package orionhealth.app.activities.fragments.listFragments;
 
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import orionhealth.app.R;
-import orionhealth.app.activities.adaptors.ConditionListAdapter;
-import orionhealth.app.activities.adaptors.MedReminderExpandableListAdaptor;
-import orionhealth.app.activities.main.AddMedicationActivity;
-import orionhealth.app.data.medicationDatabase.CondTableOperations;
+import orionhealth.app.activities.adaptors.MedReminderListAdaptor;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
  * Created by bill on 5/09/16.
  */
 public class MedReminderListFragment extends ListFragment {
+	private View pendingMedTitle;
+
+	private MedReminderListAdaptor cursorAdapter;
 
 	public MedReminderListFragment() {
 	}
@@ -33,6 +33,7 @@ public class MedReminderListFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_med_reminder_list, container, false);
+		pendingMedTitle = inflater.inflate(R.layout.pending_med_title, container, false);
 		return view;
 	}
 
@@ -42,8 +43,10 @@ public class MedReminderListFragment extends ListFragment {
 		Cursor cursor = MedTableOperations.getInstance().getAllRemindersRows((getContext()));
 
 		ListView listView = getListView();
-		MedReminderExpandableListAdaptor listAdapter = new MedReminderExpandableListAdaptor(getContext(), cursor);
+		MedReminderListAdaptor listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+		cursorAdapter = listAdapter;
 		listView.setAdapter(listAdapter);
+		listView.addHeaderView(pendingMedTitle);
 	}
 
 	@Override
@@ -51,4 +54,8 @@ public class MedReminderListFragment extends ListFragment {
 		super.onListItemClick(l, v, position, id);
 
 	};
+
+	public MedReminderListAdaptor getCursorAdapter() {
+		return cursorAdapter;
+	}
 }

@@ -2,6 +2,7 @@ package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,9 @@ import java.util.Calendar;
 /**
  * Created by bill on 5/09/16.
  */
-public class MedReminderExpandableListAdaptor extends CursorAdapter {
+public class MedReminderListAdaptor extends CursorAdapter {
 
-	public MedReminderExpandableListAdaptor(Context context, Cursor c) {
+	public MedReminderListAdaptor(Context context, Cursor c) {
 		super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
 	}
 
@@ -52,5 +53,15 @@ public class MedReminderExpandableListAdaptor extends CursorAdapter {
 		DateService dateService = new DateService();
 		dateService.setFormat(DateService.FLAG_TIME_FORMAT);
 		dateText.setText(dateService.formatToString(calendar.getTime()));
+	}
+
+	@Override
+	public void registerDataSetObserver(DataSetObserver observer) {
+		super.registerDataSetObserver(observer);
+	}
+
+	@Override
+	public void unregisterDataSetObserver(DataSetObserver observer) {
+		super.unregisterDataSetObserver(observer);
 	}
 }

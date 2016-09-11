@@ -202,7 +202,6 @@ public class MedicationDetailsFragment extends Fragment {
 			myMedication.setAlarmPackage(alarmPackage);
 			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			setUpReminder(context);
-			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			myMedication.setLocalId(mMedicationID);
 			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
 
@@ -323,9 +322,8 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void onRemovePositiveClick(Context context) {
 		FhirServices.getsFhirServices().inactiveMedication(mMyMedication.getFhirMedStatement(), context);
-
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
-//		cancelReminder(context);
+		removeReminder(context);
 	}
 
 	private void checkValidMedication(String name, String dosage) throws Exception {
@@ -357,6 +355,13 @@ public class MedicationDetailsFragment extends Fragment {
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
 		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
 		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, mReminderSwitchState);
+		context.sendBroadcast(alarmIntent);
+	}
+
+	public void removeReminder(Context context) {
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, false);
 		context.sendBroadcast(alarmIntent);
 	}
 

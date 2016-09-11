@@ -1,5 +1,6 @@
 package orionhealth.app.services;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +14,7 @@ import android.util.Log;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.activities.main.TakeMedicationActivity;
 import orionhealth.app.fhir.FhirServices;
 
@@ -28,11 +30,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 	public static String PARCEL_KEY = "parcel";
 	public static int UPDATE_FLAG = 1;
 
-	private String title;
-	private String content;
-	private int icon;
-	private int timeToNextAlarm;
-	private LinkedList<Long> times;
 	// activity handle ringtone stop
 	// intent send information about medication
 	@Override
@@ -84,6 +81,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 		}
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
 		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, true);
 		context.sendBroadcast(alarmIntent);
 
 	}

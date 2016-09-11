@@ -5,6 +5,10 @@
 package orionhealth.app.activities.main;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,18 +16,18 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.*;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.*;
 import com.facebook.stetho.Stetho;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
@@ -53,13 +57,16 @@ public class MainActivity extends AppCompatActivity {
 	public static int CurrentTabNumber = 0;
 
 
+	private BroadcastReceiver receiver;
+	public MedReminderListFragment todayListFragment;
+
+
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
         setContentView(R.layout.activity_my_medication);
-		Log.d("ASDF", "OnCreate");
 //Method to look at database in chrome://inspect.
 		Stetho.initializeWithDefaults(this);
 
@@ -115,6 +122,13 @@ public class MainActivity extends AppCompatActivity {
 				return;
 			}
 		});
+
+		receiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				mTabbedPagerAdapter.notifyDataSetChanged();
+			}
+		};
 
 	}
 
@@ -216,7 +230,9 @@ public class MainActivity extends AppCompatActivity {
 		public Fragment getItem(int position) {
 			switch (position){
 				case 0: return MedicationListFragment.newInstance();
-				case 1: return MedReminderListFragment.newInstance();
+				case 1: todayListFragment =
+				  				MedReminderListFragment.newInstance();
+						return todayListFragment;
 				case 2: return AllergyListFragment.newInstance();
 				case 3: return ConditionListFragment.newInstance();
 				default: return UnderConstructionFragment.newInstance();
@@ -232,6 +248,12 @@ public class MainActivity extends AppCompatActivity {
 		public CharSequence getPageTitle(int position) {
 			return null;
 		}
+
+		@Override
+		public int getItemPosition(Object object) {
+			//updates all views in pager when notifyDataSetChanged is called
+			return POSITION_NONE;
+		}
 	}
 
 	@Override
@@ -244,5 +266,19 @@ public class MainActivity extends AppCompatActivity {
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 		mViewPager.setCurrentItem(savedInstanceState.getInt(SAVED_SLIDE_POSITION));
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
+		  new IntentFilter("update")
+		);
+	}
+
+	@Override
+	protected void onStop() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+		super.onStop();
 	}
 }
