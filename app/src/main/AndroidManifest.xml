@@ -86,6 +86,7 @@
 
         <service android:name=".services.RingToneService" />
         <service android:name=".services.MedResponseService" />
+				<service android:name=".services.UpdateUIService"/>
 
         <activity
             android:name=".activities.main.TakeMedicationActivity"

@@ -10,6 +10,7 @@ import android.util.Log;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedReminderTableInfo;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 
 import java.util.Calendar;
 
@@ -28,7 +29,8 @@ public class AlarmSetter extends BroadcastReceiver {
 		Boolean isReminderSet = intent.getBooleanExtra(REMINDER_SET_KEY, false);
 
 		if (isReminderSet) {
-			Cursor cursor = MedTableOperations.getInstance().getRemindersForMed(context, medId);
+			Cursor cursor =
+			  		MedTableOperations.getInstance().getMedReminders(context, medId, MedUptakeStatus.PENDING.ordinal());
 			Calendar calendar = Calendar.getInstance();
 			while (cursor.moveToNext()) {
 				String jsonString =

@@ -42,6 +42,10 @@
 		<item name="android:background">#14b1ba</item>
 	</style>
 
+	<style name="RedHorizontalDivider" parent="HorizontalDivider">
+		<item name="android:background">#f7001e</item>
+	</style>
+
 	<style name="LightGreenHorizontalDivider" parent="HorizontalDivider">
 		<item name="android:background">#35fe38</item>
 	</style>

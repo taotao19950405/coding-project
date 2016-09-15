@@ -14,6 +14,7 @@ import android.util.Log;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.data.dataModels.AlarmPackage;
 import orionhealth.app.data.dataModels.MyMedication;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedReminderTableInfo;
@@ -78,7 +79,7 @@ public final class MedTableOperations {
 		return cursor;
 	}
 
-	public Cursor getAllRemindersRows(Context context){
+	public Cursor getMedReminders(Context context, int status){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
@@ -89,6 +90,7 @@ public final class MedTableOperations {
 		  				" JOIN " + MedReminderTableInfo.TABLE_NAME +
 		  				" ON " + MedTableInfo.TABLE_NAME+"."+MedTableInfo._ID +
 		  				" = " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID +
+		  				" WHERE " + MedReminderTableInfo.COLUMN_NAME_STATUS + " = " + status +
 		  				" ORDER BY " + MedReminderTableInfo.COLUMN_NAME_TIME;
 
 		Cursor c = db.rawQuery(query, null);
@@ -96,7 +98,7 @@ public final class MedTableOperations {
 		return c;
 	}
 
-	public Cursor getRemindersForMed(Context context, int medId){
+	public Cursor getMedReminders(Context context, int medId, int status){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
 
@@ -107,6 +109,7 @@ public final class MedTableOperations {
 		  " ON " + MedTableInfo.TABLE_NAME+"."+MedTableInfo._ID +
 		  " = " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID +
 		  " WHERE " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo.COLUMN_NAME_MED_ID + " = " + medId +
+		  " AND " + MedReminderTableInfo.COLUMN_NAME_STATUS + " = " + status +
 		  " ORDER BY " + MedReminderTableInfo.COLUMN_NAME_TIME;
 
 		Cursor c = db.rawQuery(query, null);
@@ -157,12 +160,14 @@ public final class MedTableOperations {
 		db.delete(MedReminderTableInfo.TABLE_NAME, selection, selectionArgs);
 	}
 
-	public void removeSingleReminder(Context context, long time) {
+	public void changeMedReminderStatus(Context context, long time, int newStatus) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
-		SQLiteDatabase db = dbo.getReadableDatabase();
+		SQLiteDatabase db = dbo.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(MedReminderTableInfo.COLUMN_NAME_STATUS, newStatus);
 		String selection = MedReminderTableInfo.COLUMN_NAME_TIME + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(time) };
-		db.delete(MedReminderTableInfo.TABLE_NAME, selection, selectionArgs);
+		db.update(MedReminderTableInfo.TABLE_NAME, cv, selection, selectionArgs);
 	}
 
 	public void updateMedication(Context context, int id, MyMedication updatedMyMedication){
@@ -203,6 +208,8 @@ public final class MedTableOperations {
 					ContentValues cv2 = new ContentValues();
 					cv2.put(MedReminderTableInfo.COLUMN_NAME_MED_ID, medId);
 					cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
+						cv2.put(MedReminderTableInfo.COLUMN_NAME_STATUS, MedUptakeStatus.PENDING.ordinal());
+
 					database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
 				}
 			}

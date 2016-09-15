@@ -16,11 +16,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.*;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -35,10 +33,7 @@ import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
-import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
-import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
-import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -126,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 		receiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				Log.d("asdf", "OnReceive");
 				mTabbedPagerAdapter.notifyDataSetChanged();
 			}
 		};
@@ -230,9 +226,7 @@ public class MainActivity extends AppCompatActivity {
 		public Fragment getItem(int position) {
 			switch (position){
 				case 0: return MedicationListFragment.newInstance();
-				case 1: todayListFragment =
-				  				MedReminderListFragment.newInstance();
-						return todayListFragment;
+				case 1: return MedReminderListFragment.newInstance();
 				case 2: return AllergyListFragment.newInstance();
 				case 3: return ConditionListFragment.newInstance();
 				default: return UnderConstructionFragment.newInstance();

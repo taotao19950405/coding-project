@@ -4,21 +4,26 @@ package orionhealth.app.activities.fragments.listFragments;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.widget.CursorAdapter;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.commonsware.cwac.merge.MergeAdapter;
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.MedReminderListAdaptor;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 
 /**
  * Created by bill on 5/09/16.
  */
 public class MedReminderListFragment extends ListFragment {
-	private View pendingMedTitle;
+	private int medStatus;
+	private View headerView;
+	private View headerView2;
+	private View emptyListMessage;
 
 	private MedReminderListAdaptor cursorAdapter;
 
@@ -26,27 +31,60 @@ public class MedReminderListFragment extends ListFragment {
 	}
 
 	public static MedReminderListFragment newInstance() {
+		return newInstance(MedUptakeStatus.PENDING.ordinal());
+	}
+
+	public static MedReminderListFragment newInstance(int status) {
 		MedReminderListFragment fragment = new MedReminderListFragment();
+		fragment.medStatus = status;
 		return fragment;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-		View view = inflater.inflate(R.layout.fragment_med_reminder_list, container, false);
-		pendingMedTitle = inflater.inflate(R.layout.pending_med_title, container, false);
-		return view;
+		View resultView = inflater.inflate(R.layout.fragment_med_reminder_list, container, false);
+		headerView = inflater.inflate(R.layout.template_header, container, false);
+		TextView textView = (TextView) headerView.findViewById(R.id.header_text);
+		textView.setText("Overdue Medication");
+		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.light_red));
+		View divider = headerView.findViewById(R.id.header_divider);
+		divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_red));
+		headerView2 = inflater.inflate(R.layout.template_header, container, false);
+		textView = (TextView) headerView2.findViewById(R.id.header_text);
+		textView.setText("Pending Medication");
+		emptyListMessage = inflater.inflate(R.layout.template_empty_list_message, container, false);
+		return resultView;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Cursor cursor = MedTableOperations.getInstance().getAllRemindersRows((getContext()));
+
+		MergeAdapter mergeAdapter = new MergeAdapter();
+		Cursor cursor =
+		  MedTableOperations.getInstance().
+			getMedReminders((getContext()), MedUptakeStatus.OVERDUE.ordinal());
+		if (cursor.getCount() != 0) {
+			mergeAdapter.addView(headerView);
+		}
+		MedReminderListAdaptor listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+		mergeAdapter.addAdapter(listAdapter);
+		mergeAdapter.addView(headerView2);
+
+		cursor = MedTableOperations.getInstance().
+		  			getMedReminders(getContext(), MedUptakeStatus.PENDING.ordinal());
+
+		if (cursor.getCount() == 0){
+			mergeAdapter.addView(emptyListMessage);
+		}
+
+		listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+
+		mergeAdapter.addAdapter(listAdapter);
 
 		ListView listView = getListView();
-		MedReminderListAdaptor listAdapter = new MedReminderListAdaptor(getContext(), cursor);
-		cursorAdapter = listAdapter;
-		listView.setAdapter(listAdapter);
-		listView.addHeaderView(pendingMedTitle);
+		listView.setAdapter(mergeAdapter);
+		listView.addFooterView(new View(getContext()), null, true);
 	}
 
 	@Override

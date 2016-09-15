@@ -9,6 +9,7 @@ import android.content.Intent;
 
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
@@ -16,6 +17,8 @@ import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.activities.main.TakeMedicationActivity;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 import orionhealth.app.fhir.FhirServices;
 
 import java.util.LinkedList;
@@ -37,6 +40,12 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 		int medId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
 		String jsonString = intent.getStringExtra(AlarmSetter.JSON_STRING_KEY);
 		long alarmTime = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
+
+		MedTableOperations.getInstance().
+		  		changeMedReminderStatus(context, alarmTime, MedUptakeStatus.OVERDUE.ordinal());
+
+		intent = new Intent(context, UpdateUIService.class);
+		context.startService(intent);
 
 		PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		if (!powerManager.isInteractive()) {

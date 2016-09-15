@@ -1,14 +1,12 @@
 package orionhealth.app.services;
 
-import android.app.Activity;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import orionhealth.app.activities.adaptors.MedReminderListAdaptor;
-import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 
 /**
  * Created by bill on 11/07/16.
@@ -39,11 +37,9 @@ public class MedResponseService extends IntentService {
 		WakeLockService.release();
 
 		long time = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
-		MedTableOperations.getInstance().removeSingleReminder(getApplicationContext(), time);
+		MedTableOperations.getInstance().changeMedReminderStatus(getApplicationContext(), time, MedUptakeStatus.TAKEN.ordinal());
 
-		LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(this);
-		intent = new Intent("update");
-		broadcaster.sendBroadcast(intent);
-
+		intent = new Intent(this, UpdateUIService.class);
+		startService(intent);
 	}
 }

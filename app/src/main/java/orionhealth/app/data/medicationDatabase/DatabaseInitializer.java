@@ -58,6 +58,10 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 				MedReminderTableInfo.COLUMN_NAME_TIME + DATETIME_TYPE +
 				" )";
 
+	private static final String SQL_ADD_REMINDER_STATUS_COLUMN =
+	  "ALTER TABLE "+ MedReminderTableInfo.TABLE_NAME + " ADD COLUMN " +
+		MedReminderTableInfo.COLUMN_NAME_STATUS + INTEGER_TYPE;
+
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + MedTableInfo.TABLE_NAME;
 
@@ -67,8 +71,11 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_COND =
             "DROP TABLE IF EXISTS " + CondTableInfo.TABLE_NAME;
 
+	private static final String SQL_DELETE_ENTRIES_REMINDERS =
+	  "DROP TABLE IF EXISTS " + MedReminderTableInfo.TABLE_NAME;
+
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 8;
+    public static final int DATABASE_VERSION = 9;
     public static final String DATABASE_NAME = "Main.db";
 
     private static DatabaseInitializer sInstance;
@@ -93,6 +100,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 		db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
 		db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
         db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
+		db.execSQL(SQL_ADD_REMINDER_STATUS_COLUMN);
     }
 
     @Override
@@ -104,6 +112,7 @@ public class DatabaseInitializer extends SQLiteOpenHelper {
 			case 5: db.execSQL(SQL_ADD_REMINDER_SET_COLUMN);
 			case 6: db.execSQL(SQL_CREATE__ENTRIES_REMINDER);
             case 7: db.execSQL(SQL_CREATE_CRITICALITY_ALLERGY);
+			case 8: db.execSQL(SQL_ADD_REMINDER_STATUS_COLUMN);
 		}
     }
 

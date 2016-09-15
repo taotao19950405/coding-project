@@ -14,6 +14,9 @@ repositories {
 	maven {
 		url "https://oss.sonatype.org/content/repositories/snapshots"
 	}
+	maven {
+		url "https://s3.amazonaws.com/repo.commonsware.com"
+	}
 }
 
 android {
@@ -55,6 +58,7 @@ dependencies {
 		exclude module: 'javax.servlet-api'
 		exclude module: 'hapi-fhir-base'
 	}
+	compile 'com.commonsware.cwac:merge:1.1.+'
 
 	testCompile 'junit:junit:4.12'
 
