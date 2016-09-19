@@ -13,6 +13,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/medication_information_header"
+		android:textStyle="bold"
 		style="@style/LightBlueHeader"/>
 
 	<View
@@ -20,83 +21,91 @@
 		android:layout_height="1dp"
 		style="@style/LightBlueHorizontalDivider"/>
 
-	<GridLayout
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="10dp"
+		android:orientation="vertical">
+
+		<LinearLayout
+				style="@style/section_Layout_style">
+
+		<TextView
+			android:id="@+id/text_label_name"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingLeft="4dp"
+			android:text="@string/text_label_name" />
+
+		<EditText
+			android:id="@+id/edit_text_name"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:rowCount="3"
-			android:columnCount="2"
-			android:padding="10dp"
-			android:orientation="horizontal">
+			android:hint="@string/edit_text_name_hint" />
 
-					<TextView
-							android:id="@+id/text_label_name"
-							android:layout_row="0"
-							android:layout_column="0"
-							android:layout_width="wrap_content"
-							android:layout_height="wrap_content"
-							android:text="@string/text_label_name" />
+		</LinearLayout>
 
-					<EditText
-							android:id="@+id/edit_text_name"
-							android:layout_row="0"
-							android:layout_column="1"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							android:hint="@string/edit_text_name_hint" />
 
+		<LinearLayout
+			style="@style/section_Layout_style">
 
 					<TextView
 							android:id="@+id/text_label_dosage"
-							android:layout_row="1"
-							android:layout_column="0"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
-							android:layout_marginTop="15dp"
+							android:textStyle="bold"
+							android:paddingLeft="4dp"
 							android:text="@string/text_label_dosage" />
 
-					<LinearLayout
+					<RelativeLayout
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
-							android:layout_row="1"
-							android:layout_column="1"
 							android:orientation="horizontal">
 
 						<EditText
 							android:id="@+id/edit_text_dosage"
-							android:layout_width="wrap_content"
+							android:layout_width="fill_parent"
 							android:layout_height="wrap_content"
 							android:hint="@string/edit_text_dosage_hint"
+							android:layout_alignParentLeft="true"
 							android:inputType="number" />
 
 						<Spinner
 							android:id="@+id/unit_spinner"
 							android:layout_width="wrap_content"
 							android:layout_height="wrap_content"
+							android:layout_alignParentRight="true"
 						/>
 
-					</LinearLayout>
+					</RelativeLayout>
 
-					<TextView
-						android:id="@+id/text_reasonForUse"
-						android:layout_row="2"
-						android:layout_column="0"
-						android:layout_width="wrap_content"
-						android:layout_height="wrap_content"
-						android:text="@string/text_label_reasonForUse" />
+	</LinearLayout>
 
-					<EditText
-						android:id="@+id/edit_text_reasonForUse"
-						android:layout_row="2"
-						android:layout_column="1"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:hint="@string/edit_text_reasonForUse_hint" />
+		<LinearLayout
+			style="@style/section_Layout_style">
 
-	</GridLayout>
+		<TextView
+			android:id="@+id/text_reasonForUse"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingLeft="4dp"
+			android:text="@string/text_label_reasonForUse"/>
+
+		<EditText
+			android:id="@+id/edit_text_reasonForUse"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_reasonForUse_hint" />
+		</LinearLayout>
+
+	</LinearLayout>
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:textStyle="bold"
 		android:text="@string/schedule_header"
 		style="@style/LightBlueHeader"/>
 
@@ -105,60 +114,186 @@
 		android:layout_height="1dp"
 		style="@style/LightBlueHorizontalDivider"/>
 
-	<GridLayout
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:rowCount="2"
-		android:columnCount="2"
 		android:padding="10dp"
-		android:orientation="horizontal">
+		android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_effectiveStart"
-						android:layout_row="0"
-						android:layout_column="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_label_effectiveStart" />
+	<RelativeLayout
+		style="@style/section_Layout_style">
 
-        <EditText
-            android:id="@+id/edit_text_effectiveStart"
-						android:layout_row="0"
-						android:layout_column="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_effectiveStart_hint"
-            android:inputType="date"/>
-            <!--android:onClick="showDatePickerDialog" />-->
+	<TextView android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_alignParentLeft="true"
+						android:layout_centerVertical="true"
+						android:textStyle="bold"
+						android:paddingLeft="4dp"
+						android:text="Ongoing"/>
 
-        <TextView
-            android:id="@+id/text_effectiveEnd"
-						android:layout_row="1"
-						android:layout_column="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_label_effectiveEnd" />
+	<ToggleButton
+					android:id="@+id/ongoing_toggle_button"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textOff="No"
+					android:textOn="Yes"
+					android:layout_alignParentRight="true"/>
 
-        <EditText
-            android:id="@+id/edit_text_effectiveEnd"
-						android:layout_row="1"
-						android:layout_column="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/edit_text_effectiveEnd_hint"
-            android:inputType="date" />
+	</RelativeLayout>
 
-	</GridLayout>
+	<LinearLayout style="@style/section_Layout_style">
+
+	<TextView
+			android:id="@+id/text_effectiveStart"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingLeft="4dp"
+			android:text="@string/text_label_effectiveStart" />
+
+	<EditText
+			android:id="@+id/edit_text_effectiveStart"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_effectiveStart_hint"
+			android:inputType="date"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/linear_layout_effectiveEnd"
+		style="@style/section_Layout_style">
+
+		<TextView
+			android:id="@+id/text_effectiveEnd"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:paddingLeft="4dp"
+			android:text="@string/text_label_effectiveEnd" />
+
+	<EditText
+			android:id="@+id/edit_text_effectiveEnd"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:hint="@string/edit_text_effectiveEnd_hint"
+			android:inputType="none"/>
+
+	</LinearLayout>
+
+		<RelativeLayout
+			style="@style/section_Layout_style"
+			android:paddingTop="7dp"
+			android:paddingBottom="7dp">
+
+			<TextView android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_alignParentLeft="true"
+								android:layout_centerVertical="true"
+								android:textStyle="bold"
+								android:paddingLeft="4dp"
+								android:text="Set Reminders?"/>
+
+			<Switch android:id="@+id/switch_reminder"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_alignParentRight="true"
+							android:splitTrack="true"/>
+
+		</RelativeLayout>
+
+	</LinearLayout>
+
+	<LinearLayout android:id="@+id/alarm_setter_linear_layout"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:padding="10dp"
+								android:orientation="vertical">
+
+	<LinearLayout style="@style/section_Layout_style">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:paddingLeft="4dp"
+		android:text="Daily Start Time:"/>
 
 	<TimePicker
 		android:id="@+id/time_picker"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:timePickerMode="spinner"/>
+		android:timePickerMode="spinner"
+	/>
+
+	</LinearLayout>
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:text="Time Interval:"/>
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingTop="15dp"
+		android:paddingLeft="15dp"
+		android:paddingRight="15dp"
+		android:paddingBottom="0dp">
+
+			<NumberPicker
+				android:id="@+id/time_interval_value_spinner"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+			/>
+
+			<RelativeLayout
+				android:layout_width="0dp"
+				android:layout_height="match_parent"
+				android:layout_weight="1">
+
+				<Spinner
+					android:id="@+id/time_interval_unit_spinner"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_centerVertical="true"
+				/>
+
+			</RelativeLayout>
+
+		</LinearLayout>
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textStyle="bold"
+			android:text="Daily Number of Dosages"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="15dp"
+			android:paddingLeft="15dp"
+			android:paddingRight="15dp"
+			android:paddingBottom="0dp">
+
+			<NumberPicker
+				android:id="@+id/daily_frequency_value_spinner"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+			/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
 		android:text="@string/additional_header"
 		style="@style/LightBlueHeader"/>
 

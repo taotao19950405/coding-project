@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.Date;
 
-import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.primitive.DateDt;
@@ -43,10 +42,10 @@ public class ConditionListAdapter extends BaseAdapter {
 	public Object getItem (int position) {
 		if (mCursor.moveToPosition(position)) {
             long localId = mCursor.getLong(mCursor.getColumnIndex(DatabaseContract.CondTableInfo._ID));
-            String jsonMedString =
+            String jsonCondString =
                     mCursor.getString(mCursor.getColumnIndex(DatabaseContract.CondTableInfo.COLUMN_NAME_JSON_STRING));
             Condition condition =
-                    (Condition) FhirServices.getsFhirServices().toResource(jsonMedString);
+                    (Condition) FhirServices.getsFhirServices().toResource(jsonCondString);
 			return new MyCondition((int) localId, condition);
 		}else {
 			return null;

@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="orionhealth.app" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+	  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.main.AddMedicationActivity"
             android:label="@string/title_activity_add_medication"
@@ -25,38 +28,35 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.main.EditMedicationActivity"
             android:label="@string/title_activity_edit_medication"
             android:parentActivityName=".activities.main.MainActivity"
-						android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.main.AddAllergyActivity"
             android:label="@string/title_activity_add_allergy"
-						android:theme="@style/AllergyTheme"
-            android:parentActivityName=".activities.main.MainActivity">
+            android:parentActivityName=".activities.main.MainActivity"
+            android:theme="@style/AllergyTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.main.EditAllergyActivity"
             android:label="@string/title_activity_edit_allergy"
-						android:theme="@style/AllergyTheme"
             android:parentActivityName=".activities.main.MainActivity"
-						android:windowSoftInputMode="stateHidden">>
+            android:theme="@style/AllergyTheme"
+            android:windowSoftInputMode="stateHidden" >
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.MainActivity" />
         </activity>
-
         <activity
             android:name=".activities.main.AddConditionActivity"
             android:label="@string/title_activity_add_condition"
@@ -65,29 +65,33 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.AddConditionActivity" />
         </activity>
-
         <activity
             android:name=".activities.main.EditConditionActivity"
             android:label="@string/title_activity_edit_condition"
             android:parentActivityName=".activities.main.EditConditionActivity"
-						android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.main.EditConditionActivity" />
         </activity>
 
-			<receiver
-				android:name="orionhealth.app.services.AlarmReceiver"
-				android:process=":remote" />
+        <receiver
+            android:name=".services.AlarmReceiver"
+            android:exported="false"
+            android:process=":remote" />
+        <receiver
+            android:name=".services.AlarmSetter"
+            android:exported="false"
+            android:process=":remote" />
 
-			<receiver android:name=".services.AlarmReceiver$OnCancelReceiver"
-								android:process=":remote"/>
+        <service android:name=".services.RingToneService" />
+        <service android:name=".services.MedResponseService" />
+				<service android:name=".services.UpdateUIService"/>
 
-			<service android:name=".services.RingToneService"/>
-			<service android:name=".services.MedResponseService"/>
-		</application>
-
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+        <activity
+            android:name=".activities.main.TakeMedicationActivity"
+            android:label="@string/title_activity_take_medication" >
+        </activity>
+    </application>
 
 </manifest>

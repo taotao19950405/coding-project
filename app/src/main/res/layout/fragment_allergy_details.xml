@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_column="1"
             android:layout_row="0"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
             android:hint="@string/edit_text_substance_hint" />
 
     </GridLayout>
@@ -68,37 +69,36 @@
             android:layout_height="wrap_content"
             android:layout_column="1"
             android:layout_row="0"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
             android:hint="@string/edit_text_allergy_hint" />
     </GridLayout>
 
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:rowCount="3">
 
-    <!-- Temporarily commenting out Severity Spinner -->
-    <!--<GridLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:columnCount="2"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:padding="10dp"-->
-        <!--android:rowCount="3">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/text_label_severity_allergy"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_column="0"-->
-            <!--android:layout_row="0"-->
-            <!--android:text="@string/text_label_allergy_severity" />-->
+        <TextView
+            android:id="@+id/text_label_criticality_allergy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:text="@string/text_label_allergy_criticality" />
 
 
-        <!--<Spinner-->
-            <!--android:id="@+id/severity_spinner"-->
-            <!--android:layout_width="300dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--/>-->
+        <Spinner
+            android:id="@+id/criticality_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
 
 
-    <!--</GridLayout>-->
+    </GridLayout>
 
     <TextView
         android:layout_width="wrap_content"

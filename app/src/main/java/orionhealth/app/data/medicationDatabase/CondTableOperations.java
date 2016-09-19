@@ -29,14 +29,14 @@ public final class CondTableOperations {
 		}
 	}
 
-	public void addToCondTable(Context context, Condition condition) {
+	public int addToCondTable(Context context, Condition condition) {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		ContentValues cv = new ContentValues();
 
 		String jsonStringCond = FhirServices.getsFhirServices().toJsonString(condition);
 		cv.put(CondTableInfo.COLUMN_NAME_JSON_STRING, jsonStringCond);
-		database.insert(CondTableInfo.TABLE_NAME, null, cv);
+		return (int) database.insert(CondTableInfo.TABLE_NAME, null, cv);
 	}
 
 	public Cursor getAllRows(Context context){

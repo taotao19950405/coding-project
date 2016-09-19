@@ -3,9 +3,9 @@ package orionhealth.app.activities.fragments.fragments;
 import android.app.AlarmManager;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,42 +20,54 @@ import java.util.LinkedList;
 import java.util.List;
 
 import ca.uhn.fhir.model.api.TemporalPrecisionEnum;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.composite.PeriodDt;
-import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
-import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
+import ca.uhn.fhir.model.dstu2.composite.*;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 
+import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
+import ca.uhn.fhir.model.primitive.DateTimeDt;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.dialogFragments.DatePicker;
 import orionhealth.app.activities.fragments.dialogFragments.RemoveMedicationDialogFragment;
-import orionhealth.app.data.dataModels.NotificationParcel;
-import orionhealth.app.data.spinnerEnum.Unit;
+import orionhealth.app.data.dataModels.AlarmPackage;
+import orionhealth.app.data.dataModels.MyMedication;
+import orionhealth.app.data.spinnerEnum.MedicationUnit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.TimeIntervalUnit;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.services.AlarmReceiver;
+import orionhealth.app.services.AlarmSetter;
 import orionhealth.app.services.DateService;
 
 /**
  * Created by bill on 25/04/16.
  */
 public class MedicationDetailsFragment extends Fragment {
-	private Unit[] units;
 
 	private int mMedicationID;
-	private MedicationStatement mMedication;
+	private MyMedication mMyMedication;
 
 	private EditText mNameTextField;
 	private EditText mDosageTextField;
 	private Spinner mDosageUnitSelector;
 	private EditText mReasonTextField;
+
+	private ToggleButton mOngoingToggleButton;
 	private EditText mStartDateTextField;
+	private LinearLayout mEndDateLinearLayout;
 	private EditText mEndDateTextFeild;
 	private EditText mNotesTextField;
-	private TimePicker mTimePicker;
 
+	private LinearLayout mAlarmSetterLinearLayout;
+	private TimePicker mTimePicker;
+	private Spinner mTimeIntervalUnitSelector;
+	private NumberPicker mTimeIntervalValueSelector;
+	private NumberPicker mFrequencySelector;
+	private Switch mReminderSwitch;
+
+	private Calendar calendar;
+	private Boolean mReminderSwitchState = false;
 	private DateService dateService;
+	private AlarmManager alarmManager;
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,17 +77,40 @@ public class MedicationDetailsFragment extends Fragment {
 		mNameTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_name);
 		mDosageTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_dosage);
 
-		units = Unit.values();
         mDosageUnitSelector = (Spinner) detailsFragment.findViewById(R.id.unit_spinner);
 		setUpUnitSelector();
 
 		mReasonTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_reasonForUse);
+
+		mOngoingToggleButton = (ToggleButton) detailsFragment.findViewById(R.id.ongoing_toggle_button);
+		setUpToggleButton();
 		mStartDateTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_effectiveStart);
+		mEndDateLinearLayout = (LinearLayout) detailsFragment.findViewById(R.id.linear_layout_effectiveEnd);
 		mEndDateTextFeild = (EditText) detailsFragment.findViewById(R.id.edit_text_effectiveEnd);
 		setUpDateEditTextFields();
 
+		mReminderSwitch = (Switch) detailsFragment.findViewById(R.id.switch_reminder);
+		setUpReminderSwitch();
+
 		mNotesTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_notes);
-		mTimePicker = (TimePicker) detailsFragment.findViewById(R.id.time_picker);
+
+		mAlarmSetterLinearLayout = (LinearLayout) detailsFragment.findViewById(R.id.alarm_setter_linear_layout);
+		mAlarmSetterLinearLayout.setVisibility(View.GONE);
+		mTimePicker = (TimePicker) mAlarmSetterLinearLayout.findViewById(R.id.time_picker);
+
+		mTimeIntervalValueSelector = (NumberPicker) mAlarmSetterLinearLayout.findViewById(R.id.time_interval_value_spinner);
+		String[] array = getResources().getStringArray(R.array.minute_interval_array);
+		mTimeIntervalValueSelector.setDisplayedValues(array);
+		mTimeIntervalValueSelector.setMinValue(1);
+		mTimeIntervalValueSelector.setMaxValue(12);
+
+		mFrequencySelector = (NumberPicker) mAlarmSetterLinearLayout.findViewById(R.id.daily_frequency_value_spinner);
+		mFrequencySelector.setMinValue(1);
+		mFrequencySelector.setMaxValue(5);
+		mFrequencySelector.setWrapSelectorWheel(false);
+
+		mTimeIntervalUnitSelector = (Spinner) mAlarmSetterLinearLayout.findViewById(R.id.time_interval_unit_spinner);
+		setUpTimeIntervalUnitSelector();
 
 		dateService = new DateService();
 
@@ -84,16 +119,32 @@ public class MedicationDetailsFragment extends Fragment {
 
 
     public void populateFields() {
-		if (mMedication != null) {
+		if (mMyMedication != null) {
+			MedicationStatement medStatement = mMyMedication.getFhirMedStatement();
 			EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-			CodeableConceptDt codeableConcept = (CodeableConceptDt) mMedication.getMedication();
+			CodeableConceptDt codeableConcept = (CodeableConceptDt) medStatement.getMedication();
 			nameEditTextField.setText(codeableConcept.getText());
 
 			EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-			List<MedicationStatement.Dosage> listDosage = mMedication.getDosage();
+			List<MedicationStatement.Dosage> listDosage = medStatement.getDosage();
 			MedicationStatement.Dosage dosage = listDosage.get(0);
 			SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
 			dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger() + "");
+
+			TimingDt timingDt = dosage.getTiming();
+			if (!timingDt.getEvent().isEmpty() && mMyMedication.getReminderSet()) {
+				DateTimeDt dateTimeDt = timingDt.getEvent().get(0);
+				TimingDt.Repeat repeat = timingDt.getRepeat();
+				if (Build.VERSION.SDK_INT >= 23) {
+					mTimePicker.setHour(dateTimeDt.getHour());
+					mTimePicker.setMinute(dateTimeDt.getMinute());
+				} else {
+					mTimePicker.setCurrentHour(dateTimeDt.getHour());
+					mTimePicker.setCurrentMinute(dateTimeDt.getMinute());
+				}
+				mFrequencySelector.setValue(repeat.getFrequency());
+				mTimeIntervalValueSelector.setValue(repeat.getPeriod().intValue() / 5);
+			}
 
 			String unitIdString = simpleQuantityDt.getCode();
 			Spinner spinner = (Spinner) getActivity().findViewById(R.id.unit_spinner);
@@ -113,13 +164,13 @@ public class MedicationDetailsFragment extends Fragment {
 			}
 			EditText reasonForUseEditTextField =
 			  (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
-			codeableConcept = (CodeableConceptDt) mMedication.getReasonForUse();
+			codeableConcept = (CodeableConceptDt) medStatement.getReasonForUse();
 
 			if (codeableConcept != null) {
 				reasonForUseEditTextField.setText(codeableConcept.getText());
 			}
 
-			PeriodDt p = (PeriodDt) mMedication.getEffective();
+			PeriodDt p = (PeriodDt) medStatement.getEffective();
 
 			if (p != null) {
 				Date d = p.getStart();
@@ -131,40 +182,29 @@ public class MedicationDetailsFragment extends Fragment {
 				mEndDateTextFeild.setText(dateString);
 			}
 
+			mReminderSwitch.setChecked(mMyMedication.getReminderSet());
+
 			EditText instructionsEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_notes);
-			instructionsEditTextField.setText(mMedication.getNote());
+			instructionsEditTextField.setText(medStatement.getNote());
+
 		}
 
     }
 
 	public void addMedicationToDatabase(Context context) throws Exception {
 		//Do something in response to clicking add button
-		String name = mNameTextField.getText().toString();
-		String dosage = mDosageTextField.getText().toString();
-		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
-		String reasonForUse = mReasonTextField.getText().toString();
-		String startDate = mStartDateTextField.getText().toString();
-		String endDate = mEndDateTextFeild.getText().toString();
-		String instructions = mNotesTextField.getText().toString();
-
-		MedicationStatement medicationStatement;
 		try {
-			medicationStatement = createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, instructions);
-			MedTableOperations.getInstance().addToMedTable(context, medicationStatement);
-			FhirServices.getsFhirServices().sendToServer(medicationStatement, context);
-			AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-			Intent alarmIntent = new Intent(context, AlarmReceiver.class);
-			NotificationParcel parcel =
-			  		new NotificationParcel(Character.toUpperCase(name.charAt(0)) + name.substring(1), instructions, unit.ordinal());
-			Bundle bundle = new Bundle();
-			bundle.putParcelable(AlarmReceiver.PARCEL_KEY, parcel);
-			alarmIntent.putExtra(AlarmReceiver.MEDICATION_KEY, bundle);
-			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH),
-			  			 mTimePicker.getHour(), mTimePicker.getMinute(), 2);
-			alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-				60 * 1000, alarmPendingIntent);
+			MedicationStatement medStatement = createMedStatement();
+			MyMedication myMedication = new MyMedication();
+			myMedication.setFhirMedStatement(medStatement);
+			myMedication.setReminderSet(mReminderSwitchState);
+			AlarmPackage alarmPackage = createAlarmPackage();
+			myMedication.setAlarmPackage(alarmPackage);
+			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
+			setUpReminder(context);
+			myMedication.setLocalId(mMedicationID);
+			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
+
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -175,23 +215,23 @@ public class MedicationDetailsFragment extends Fragment {
 			Toast.makeText(context, "Please enter a valid dosage", Toast.LENGTH_SHORT).show();
 			throw e;
 		} catch (Exception e){
+			Toast.makeText(context, "Unexpected error occurred", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
 			throw e;
 		}
 	}
 
 	public void updateMedicationInDatabase(Context context) throws Exception{
-		String name = mNameTextField.getText().toString();
-		String dosage = mDosageTextField.getText().toString();
-		Unit unit = (Unit) mDosageUnitSelector.getSelectedItem();
-		String reasonForUse = mReasonTextField.getText().toString();
-		String startDate = mStartDateTextField.getText().toString();
-		String endDate = mEndDateTextFeild.getText().toString();
-		String notes = mNotesTextField.getText().toString();
 		try {
-			mMedication =
-			  		createMedStatement(name, dosage, unit, reasonForUse, startDate, endDate, notes);
-			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMedication);
+			MedicationStatement medStatement = createMedStatement();
+			mMyMedication.setFhirMedStatement(medStatement);
+			mMyMedication.setReminderSet(mReminderSwitchState);
+			AlarmPackage alarmPackage = createAlarmPackage();
+			mMyMedication.setAlarmPackage(alarmPackage);
+			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
+			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
+			setUpReminder(context);
+			mMyMedication.setLocalId(mMedicationID);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -207,13 +247,27 @@ public class MedicationDetailsFragment extends Fragment {
 		}
 	}
 
-	private MedicationStatement createMedStatement(String name, String dosage, Unit unit,
-												   String reasonForUse, String startDate,
-												   String endDate, String note) throws Exception {
+	private MedicationStatement createMedStatement() throws Exception {
+		setCalendar();
+		String name = mNameTextField.getText().toString();
+		String dosage = mDosageTextField.getText().toString();
+		MedicationUnit medicationUnit = (MedicationUnit) mDosageUnitSelector.getSelectedItem();
+		String reasonForUse = mReasonTextField.getText().toString();
+		String startDate = mStartDateTextField.getText().toString();
+		String endDate = mEndDateTextFeild.getText().toString();
+		String note = mNotesTextField.getText().toString();
+
 		checkValidMedication(name, dosage);
 		name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
 		Long dosageLong = Long.parseLong(dosage);
 		MedicationStatement medicationStatement = new MedicationStatement();
+
+//		set up ID from existed medication statement if available
+		if(mMyMedication != null) {
+			medicationStatement.setId(mMyMedication.getFhirMedStatement().getId());
+			System.out.println();
+		}
+
 		medicationStatement.setMedication(new CodeableConceptDt().setText(name));
 		medicationStatement.setStatus(MedicationStatementStatusEnum.ACTIVE);
 		ResourceReferenceDt patientRef = new ResourceReferenceDt().setDisplay("LOCAL");
@@ -229,13 +283,36 @@ public class MedicationDetailsFragment extends Fragment {
 		medicationStatement.setNote(note);
 		MedicationStatement.Dosage dosageFhir = new MedicationStatement.Dosage();
 		SimpleQuantityDt simpleQuantityDt = new SimpleQuantityDt(dosageLong);
-		simpleQuantityDt.setUnit(unit.toString());
-		simpleQuantityDt.setCode(unit.ordinal()+"");
+		simpleQuantityDt.setUnit(medicationUnit.toString());
+		simpleQuantityDt.setCode(medicationUnit.ordinal()+"");
 		dosageFhir.setQuantity(simpleQuantityDt);
+
+
+		TimingDt timingDt = new TimingDt();
+		timingDt.addEvent(calendar.getTime());
+		TimingDt.Repeat repeat = new TimingDt.Repeat();
+		repeat.setFrequency(mFrequencySelector.getValue());
+		repeat.setPeriodUnits(UnitsOfTimeEnum.MIN);
+		repeat.setPeriod(mTimeIntervalValueSelector.getValue()*5);
+		timingDt.setRepeat(repeat);
+
+		dosageFhir.setTiming(timingDt);
 		List<MedicationStatement.Dosage> listDosage = new LinkedList<MedicationStatement.Dosage>();
 		listDosage.add(dosageFhir);
 		medicationStatement.setDosage(listDosage);
 		return medicationStatement;
+	}
+
+	public AlarmPackage createAlarmPackage() {
+		if (mReminderSwitchState) {
+			AlarmPackage alarmPackage = new AlarmPackage();
+			alarmPackage.setAlarmTime(calendar.getTimeInMillis());
+			alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
+			alarmPackage.setDailyNumOfAlarmsTime(mFrequencySelector.getValue());
+			return alarmPackage;
+		} else {
+			return null;
+		}
 	}
 
 	public void removeMedication(){
@@ -244,7 +321,18 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public void onRemovePositiveClick(Context context) {
+		FhirServices.getsFhirServices().inactiveMedication(mMyMedication.getFhirMedStatement(), context);
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
+		removeReminder(context);
+	}
+
+	private void checkValidMedication(String name, String dosage) throws Exception {
+		if (name.equals("")) {
+			throw new NoNameException();
+		} else if (dosage.equals("")) {
+			throw new NoDosageException();
+		}
+		Long.parseLong(dosage);
 	}
 
 	public void onSetDate(int year, int monthOfYear, int dayOfMonth, String tag){
@@ -263,18 +351,66 @@ public class MedicationDetailsFragment extends Fragment {
 		mNotesTextField.requestFocus();
 	}
 
-	public void setMedication(Context context, int medLocalId){
-		mMedicationID = medLocalId;
-		mMedication = MedTableOperations.getInstance().getMedicationStatement(context, medLocalId);
+	public void setUpReminder(Context context) {
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, mReminderSwitchState);
+		context.sendBroadcast(alarmIntent);
 	}
 
-	private void checkValidMedication(String name, String dosage) throws Exception {
-		if (name.equals("")){
-			throw new NoNameException();
-		} else if (dosage.equals("")){
-			throw  new NoDosageException();
+	public void removeReminder(Context context) {
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, false);
+		context.sendBroadcast(alarmIntent);
+	}
+
+	public void setMedication(Context context, int medLocalId){
+		mMedicationID = medLocalId;
+		mMyMedication = MedTableOperations.getInstance().getMedicationStatement(context, medLocalId);
+	}
+
+	public void setCalendar() {
+		if (calendar == null){
+			calendar = Calendar.getInstance();
 		}
-		Long.parseLong(dosage);
+
+		if (Build.VERSION.SDK_INT >= 23) {
+			calendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getHour());
+			calendar.set(Calendar.MINUTE, mTimePicker.getMinute());
+			calendar.set(Calendar.SECOND, 0);
+		} else {
+			calendar.set(Calendar.HOUR_OF_DAY, mTimePicker.getCurrentHour());
+			calendar.set(Calendar.MINUTE, mTimePicker.getCurrentMinute());
+			calendar.set(Calendar.SECOND, 0);
+		}
+	}
+
+
+	private void setUpReminderSwitch() {
+		mReminderSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					mReminderSwitchState = isChecked;
+					mAlarmSetterLinearLayout.setVisibility(View.VISIBLE);
+				} else {
+					mReminderSwitchState = isChecked;
+					mAlarmSetterLinearLayout.setVisibility(View.GONE);
+				}
+			}
+		});
+	}
+
+	private void setUpToggleButton() {
+		mOngoingToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked) {
+					mEndDateLinearLayout.setVisibility(View.GONE);
+				} else {
+					mEndDateLinearLayout.setVisibility(View.VISIBLE);
+				}
+			}
+		});
 	}
 
 	private void setUpDateEditTextFields() {
@@ -290,10 +426,21 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	private void setUpUnitSelector() {
+		MedicationUnit[] medicationUnits;
+		medicationUnits = MedicationUnit.values();
 		ArrayAdapter<CharSequence> adapter =
-		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, units);
+		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, medicationUnits);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mDosageUnitSelector.setAdapter(adapter);
+	}
+
+	private void setUpTimeIntervalUnitSelector() {
+		TimeIntervalUnit[] timeIntervalUnits;
+		timeIntervalUnits = TimeIntervalUnit.values();
+		ArrayAdapter<CharSequence> adapter =
+		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, timeIntervalUnits);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mTimeIntervalUnitSelector.setAdapter(adapter);
 	}
 
 

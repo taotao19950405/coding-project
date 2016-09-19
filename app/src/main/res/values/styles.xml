@@ -22,7 +22,16 @@
 	<style name="MedicationFABStyle" parent="Widget.Design.FloatingActionButton">
 		<item name="android:layout_width">wrap_content</item>
 		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_margin">10dp</item>
 		<item name="android:src">@drawable/plus</item>
+	</style>
+	
+	<style name="section_Layout_style" parent="AppTheme">
+		<item name="android:layout_width">match_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginTop">5dp</item>
+		<item name="android:layout_marginBottom">5dp</item>
+		<item name="android:orientation">vertical</item>
 	</style>
 	
 	<style name="HorizontalDivider" parent="AppTheme">
@@ -31,6 +40,10 @@
 
 	<style name="LightBlueHorizontalDivider" parent="HorizontalDivider">
 		<item name="android:background">#14b1ba</item>
+	</style>
+
+	<style name="RedHorizontalDivider" parent="HorizontalDivider">
+		<item name="android:background">#f7001e</item>
 	</style>
 
 	<style name="LightGreenHorizontalDivider" parent="HorizontalDivider">

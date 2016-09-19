@@ -1,59 +1,80 @@
 package orionhealth.app.services;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 
+import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.data.dataModels.NotificationParcel;
-import orionhealth.app.data.spinnerEnum.Unit;
+import orionhealth.app.activities.main.MainActivity;
+import orionhealth.app.activities.main.TakeMedicationActivity;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
+import orionhealth.app.fhir.FhirServices;
+
+import java.util.LinkedList;
 
 /**
  * Created by bill on 4/07/16.
  */
-public class AlarmReceiver extends BroadcastReceiver {
-	public static int NOTIFICATION_ID = 0;
+public class AlarmReceiver extends WakefulBroadcastReceiver {
+	public static int FLAG_UPDATE = 1;
 	public static String NOTIFICATION_ID_KEY = "notification_id";
-	public static String MEDICATION_KEY = "medication";
+	public static String BUNDLE_KEY = "medication";
 	public static String PARCEL_KEY = "parcel";
+	public static int UPDATE_FLAG = 1;
+
 	// activity handle ringtone stop
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		int medId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
+		String jsonString = intent.getStringExtra(AlarmSetter.JSON_STRING_KEY);
+		long alarmTime = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
+
+		MedTableOperations.getInstance().
+		  		changeMedReminderStatus(context, alarmTime, MedUptakeStatus.OVERDUE.ordinal());
+
+		intent = new Intent(context, UpdateUIService.class);
+		context.startService(intent);
+
+		PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+		if (!powerManager.isInteractive()) {
+			Intent activityIntent = new Intent(context, TakeMedicationActivity.class);
+			activityIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+			activityIntent.putExtra(AlarmSetter.JSON_STRING_KEY, jsonString);
+			activityIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(activityIntent);
+		} else {
+		MedicationStatement medicationStatement =
+		  (MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
+
+		CodeableConceptDt conceptDt = (CodeableConceptDt) medicationStatement.getMedication();
+		String medName = conceptDt.getText();
+
+		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
+		takeMedicationIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+		takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 		Intent startRingToneIntent = new Intent(context, RingToneService.class);
 		context.startService(startRingToneIntent);
 
-		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, NOTIFICATION_ID);
-		PendingIntent pendingIntentCancel = PendingIntent.getService(context, 0, takeMedicationIntent, 0);
-		intent.setExtrasClassLoader(context.getClassLoader());
-
-		Bundle bundle = intent.getBundleExtra(MEDICATION_KEY);
-		NotificationParcel notificationParcel = bundle.getParcelable(PARCEL_KEY);
-
-		int drawable;
-		if (notificationParcel.getIcon() == Unit.MG.ordinal()) {
-			drawable = R.drawable.two_color_pill;
-		} else if (notificationParcel.getIcon() == Unit.ML.ordinal()) {
-			drawable = R.drawable.medicine;
-		} else if (notificationParcel.getIcon() == Unit.SPRAY.ordinal()) {
-			drawable = R.drawable.spray_can;
-		} else if (notificationParcel.getIcon() == Unit.TABLET.ordinal()) {
-			drawable= R.drawable.pill;
-		} else {
-			drawable = R.drawable.warning;
-		}
-
 		Notification notification = new NotificationCompat.Builder(context)
-		  .setContentTitle("Reminder: Take "+notificationParcel.getTitle())
-		  .setContentText("Random text")
-		  .setSmallIcon(drawable)
+		  .setContentTitle("Take " + medName)
+		  .setContentText("Medication Reminder")
+		  .setSmallIcon(R.drawable.medicine)
 		  .setPriority(Notification.PRIORITY_MAX)
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
 		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
@@ -63,8 +84,84 @@ public class AlarmReceiver extends BroadcastReceiver {
 //		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
 		  .build();
 
-		WakeLockService.acquire(context);
-		notificationManager.notify(AlarmReceiver.NOTIFICATION_ID, notification);
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.notify(medId, notification);
+
+		}
+		Intent alarmIntent = new Intent(context, AlarmSetter.class);
+		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, true);
+		context.sendBroadcast(alarmIntent);
 
 	}
+
+// int alarmIndex = intent.getIntExtra("here", -1);
+//		Bundle bundle = intent.getBundleExtra(BUNDLE_KEY);
+//		AlarmPackage alarmPackage = bundle.getParcelable(PARCEL_KEY);
+//		notificationId = alarmPackage.getId();
+//
+//		if (alarmIndex == -2){
+//			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//			alarmManager.cancel(alarmPendingIntent);
+//			return;
+//		}
+//
+//		MedicationStatement medStatement =
+//		  (MedicationStatement) FhirServices.getsFhirServices().toResource(alarmPackage.getJsonMedString());
+//		CodeableConceptDt codeableConcept = (CodeableConceptDt) medStatement.getMedication();
+//		this.title = codeableConcept.getText();
+//
+////		long[] alarmTimes = alarmPackage.getAlarmTimes();
+//
+//		if (alarmIndex >= 0) {
+//			Intent startRingToneIntent = new Intent(context, RingToneService.class);
+//			context.startService(startRingToneIntent);
+//			createNotification(context);
+//		}
+//
+//		alarmIndex ++;
+//
+//		if (3 != alarmIndex) {
+//			intent.putExtra("here", alarmIndex);
+//			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//			Calendar calendar = Calendar.getInstance();
+//			alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmPackage.getAlarmTime() + alarmIndex * alarmPackage.getIntervalTimeToNextAlarm(), alarmPendingIntent);
+//		}
+
+
+
+//	private void createNotification(Context context) {
+//
+//		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
+//		takeMedicationIntent.putExtra(NOTIFICATION_ID_KEY, notificationId);
+//		PendingIntent pendingIntentCancel = PendingIntent.getService(context, notificationId, takeMedicationIntent, 0);
+//
+//		int drawable;
+//		if (icon == MedicationUnit.MG.ordinal()) {
+//			drawable = R.drawable.two_color_pill;
+//		} else if (icon == MedicationUnit.ML.ordinal()) {
+//			drawable = R.drawable.medicine;
+//		} else if (icon == MedicationUnit.SPRAY.ordinal()) {
+//			drawable = R.drawable.spray_can;
+//		} else if (icon == MedicationUnit.TABLET.ordinal()) {
+//			drawable= R.drawable.pill;
+//		} else {
+//			drawable = R.drawable.warning;
+//		}
+//
+//		Notification notification = new NotificationCompat.Builder(context)
+//		  .setContentTitle("Take "+title)
+//		  .setContentText("Medication Reminder")
+//		  .setSmallIcon(drawable)
+//		  .setPriority(Notification.PRIORITY_MAX)
+//		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+//		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
+//		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
+//		  .setDeleteIntent(pendingIntentCancel)
+//		  .setFullScreenIntent(pendingIntentCancel, true)
+////		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
+//		  .build();
+//	}
 }

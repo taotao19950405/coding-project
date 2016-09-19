@@ -22,7 +22,7 @@
 	<string name="text_label_notes">Notes:</string>
     <string name="text_label_instructions">Instructions:</string>
 
-	<string name="text_label_reasonForUse">Reason for use:</string>
+	<string name="text_label_reasonForUse">Use Reason:</string>
 	<string name="text_label_condition">Conditon:</string>
 	<string name="text_label_category">Category:</string>
 	<string name="text_label_dateRecorded">Recorded date:</string>
@@ -37,7 +37,7 @@
     <string name="text_label_substance">Substance:</string>
 	<string name="text_label_allergy_details">Details:</string>
     <string name="text_label_allergy_reaction">Reaction:</string>
-    <string name="text_label_allergy_severity">Severity:</string>
+    <string name="text_label_allergy_criticality">Criticality:</string>
 
 	<string name="medication_information_header">Medication Information:</string>
 	<string name="allergy_information_header">Allergy Information:</string>
@@ -47,8 +47,8 @@
 	<string name="details_header">Details:</string>
 
 	<string name="edit_text_name_hint">Enter the name</string>
-	<string name="edit_text_dosage_hint">Enter the dosage</string>
-	<string name="edit_text_reasonForUse_hint">Enter the Use reason</string>
+	<string name="edit_text_dosage_hint">Enter the dosage  </string>
+	<string name="edit_text_reasonForUse_hint">Enter the use reason</string>
 	<string name="edit_text_effectiveStart_hint">Select start date</string>
 	<string name="edit_text_effectiveEnd_hint">Select end date</string>
     <string name="edit_text_notes_hint">Enter any extra notes</string>
@@ -61,7 +61,7 @@
 
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
-	<string name="title_activity_trial">TrialActivity</string>
+	<string name="title_activity_take_medication">Take Medication</string>
 
 	<string name="remove_med_dialog_title">Remove Medication</string>
 	<string name="remove_cond_dialog_title">Remove Condition</string>
@@ -70,8 +70,8 @@
 	<string name="remove_med_dialog_positive_button">Yes</string>
 	<string name="remove_med_dialog_negative_button">No</string>
 
-	<string name="remove_allergy_dialog_title">Remove Medication</string>
-	<string name="remove_allergy_dialog_message">Are you sure you want to remove this medication?</string>
+	<string name="remove_allergy_dialog_title">Remove Allergy</string>
+	<string name="remove_allergy_dialog_message">Are you sure you want to remove this allergy?</string>
 	<string name="remove_allergy_dialog_positive_button">Yes</string>
 	<string name="remove_allergy_dialog_negative_button">No</string>
 
@@ -89,6 +89,23 @@
 
 	<string name="action_settings">Settings</string>
 
+	<string-array name="minute_interval_array">
+		<item>5</item>
+		<item>10</item>
+		<item>15</item>
+		<item>20</item>
+		<item>25</item>
+		<item>30</item>
+		<item>35</item>
+		<item>40</item>
+		<item>45</item>
+		<item>50</item>
+		<item>55</item>
+		<item>60</item>
+	</string-array>
+
 <!-- TODO: Remove or change this placeholder text -->
 	<string name="hello_blank_fragment">Hello blank fragment</string>
+
+	<string name="hello_world">Hello world!</string>
 </resources>

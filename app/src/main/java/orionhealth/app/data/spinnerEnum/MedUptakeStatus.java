@@ -1,17 +1,16 @@
 package orionhealth.app.data.spinnerEnum;
 
 /**
- * Created by bill on 6/06/16.
+ * Created by bill on 14/09/16.
  */
-public enum Unit {
-	MG("mg"),
-	ML("ml"),
-	SPRAY("spray"),
-	TABLET("tablet");
+public enum MedUptakeStatus {
+	OVERDUE("overdue"),
+	PENDING("pending"),
+	TAKEN("taken");
 
 	private final String name;
 
-	Unit(String name) {
+	MedUptakeStatus(String name) {
 		this.name = name;
 	}
 
@@ -24,5 +23,4 @@ public enum Unit {
 	public String toString(){
 		return getName();
 	}
-
 }

@@ -4,9 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
+import orionhealth.app.data.dataModels.Criticality;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.AllergyTableInfo;
 import orionhealth.app.fhir.FhirServices;
 
@@ -30,14 +30,27 @@ public final class AllergyTableOperations {
         }
     }
 
-    public void addToAllergyTable(Context context, AllergyIntolerance allergyIntolerance) {
+    public int addToAllergyTable(Context context, AllergyIntolerance allergyIntolerance) {
         DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
         SQLiteDatabase database = dbo.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         String jsonStringAllergy = FhirServices.getsFhirServices().toJsonString(allergyIntolerance);
         cv.put(AllergyTableInfo.COLUMN_NAME_JSON_STRING, jsonStringAllergy);
-        database.insert(AllergyTableInfo.TABLE_NAME, null, cv);
+
+
+        int criticalityInt = Criticality.UNABLE_TO_DETERMINE.ordinal();
+
+        if (allergyIntolerance.getCriticality().toString().equals("CRITL")){
+            criticalityInt = Criticality.LOW_RISK.ordinal();
+        } else if (allergyIntolerance.getCriticality().toString().equals("CRITU")){
+            criticalityInt = Criticality.UNABLE_TO_DETERMINE.ordinal();
+        } else if (allergyIntolerance.getCriticality().toString().equals("CRITH")){
+            criticalityInt = Criticality.HIGH_RISK.ordinal();
+        }
+
+        cv.put(AllergyTableInfo.COLUMN_NAME_CRITICALITY, criticalityInt);
+		return (int) database.insert(AllergyTableInfo.TABLE_NAME, null, cv);
     }
 
     public Cursor getAllRows(Context context){
@@ -46,15 +59,18 @@ public final class AllergyTableOperations {
 
         String[] projection = {
                 AllergyTableInfo._ID,
-                AllergyTableInfo.COLUMN_NAME_JSON_STRING
+                AllergyTableInfo.COLUMN_NAME_JSON_STRING,
+                AllergyTableInfo.COLUMN_NAME_CRITICALITY
         };
 
         String sortOrder =
-                AllergyTableInfo._ID + " ASC";
+                AllergyTableInfo.COLUMN_NAME_CRITICALITY + " ASC";
 
         Cursor cursor = db.query(
                 AllergyTableInfo.TABLE_NAME, projection, null, null, null, null, sortOrder
         );
+
+
         return cursor;
     }
 
@@ -91,9 +107,22 @@ public final class AllergyTableOperations {
         SQLiteDatabase db = dbo.getWritableDatabase();
         ContentValues cv = new ContentValues();
         String updatedJsonAllergyString = aFhirServices.toJsonString(updatedAllergyIntolerance);
-        cv.put(AllergyTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonAllergyString);
         String selection = AllergyTableInfo._ID + " = ?";
+
         String[] selectionArgs = new String[]{String.valueOf(id)};
+
+        int criticalityInt = Criticality.UNABLE_TO_DETERMINE.ordinal();
+
+        if (updatedAllergyIntolerance.getCriticality().toString().equals("CRITL")){
+            criticalityInt = Criticality.LOW_RISK.ordinal();
+        } else if (updatedAllergyIntolerance.getCriticality().toString().equals("CRITU")){
+            criticalityInt = Criticality.UNABLE_TO_DETERMINE.ordinal();
+        } else if (updatedAllergyIntolerance.getCriticality().toString().equals("CRITH")){
+            criticalityInt = Criticality.HIGH_RISK.ordinal();
+        }
+
+        cv.put(AllergyTableInfo.COLUMN_NAME_CRITICALITY, criticalityInt);
+        cv.put(AllergyTableInfo.COLUMN_NAME_JSON_STRING, updatedJsonAllergyString);
         db.update(AllergyTableInfo.TABLE_NAME, cv, selection, selectionArgs);
     }
 

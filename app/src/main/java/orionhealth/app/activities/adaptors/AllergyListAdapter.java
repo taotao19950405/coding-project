@@ -2,6 +2,7 @@ package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import orionhealth.app.R;
+import orionhealth.app.data.dataModels.Criticality;
 import orionhealth.app.data.dataModels.MyAllergyIntolerance;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.fhir.FhirServices;
@@ -67,7 +69,7 @@ public class AllergyListAdapter extends BaseAdapter {
         MyAllergyIntolerance aAllergyIntolerance = (MyAllergyIntolerance) getItem(position);
         AllergyIntolerance allergyIntoleranceFhir = aAllergyIntolerance.getFhirAllergyIntolerance();
 
-        CodeableConceptDt codeableConceptSubstance = (CodeableConceptDt)  allergyIntoleranceFhir.getSubstance();
+        CodeableConceptDt codeableConceptSubstance = (CodeableConceptDt) allergyIntoleranceFhir.getSubstance();
         String substanceText = codeableConceptSubstance.getText();
         TextView displayAllergyName = (TextView) view.findViewById(R.id.list_display_substance_allergy);
         displayAllergyName.setText(substanceText);
@@ -82,8 +84,14 @@ public class AllergyListAdapter extends BaseAdapter {
         TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);
         displayAllergyReaction.setText(reaction);
 
+        if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITL")) {
+            view.setBackgroundColor(Color.rgb(255, 220, 193));
+        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITU")) {
+            view.setBackgroundColor(Color.rgb(255, 236, 222));
+        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITH")) {
+            view.setBackgroundColor(Color.rgb(255, 202, 161));
+        }
         return view;
-
     }
 }
 
