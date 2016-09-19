@@ -12,4 +12,9 @@
 			android:layout_margin="20dp"
 			android:text="No Upcoming Medication Today"/>
 
+	<View
+	android:layout_width="fill_parent"
+	android:layout_height="0.5dp"
+	android:background="@android:color/darker_gray"/>
+
 </RelativeLayout>

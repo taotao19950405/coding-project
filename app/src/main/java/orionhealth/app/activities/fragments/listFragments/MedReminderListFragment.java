@@ -8,11 +8,13 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.commonsware.cwac.merge.MergeAdapter;
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.MedReminderListAdaptor;
+import orionhealth.app.activities.adaptors.TakenMedListAdaptor;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 
@@ -23,6 +25,7 @@ public class MedReminderListFragment extends ListFragment {
 	private int medStatus;
 	private View headerView;
 	private View headerView2;
+	private View headerView3;
 	private View emptyListMessage;
 
 	private MedReminderListAdaptor cursorAdapter;
@@ -52,6 +55,12 @@ public class MedReminderListFragment extends ListFragment {
 		headerView2 = inflater.inflate(R.layout.template_header, container, false);
 		textView = (TextView) headerView2.findViewById(R.id.header_text);
 		textView.setText("Pending Medication");
+		headerView3 = inflater.inflate(R.layout.template_header, container, false);
+		textView = (TextView) headerView3.findViewById(R.id.header_text);
+		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.light_Green));
+		divider = headerView3.findViewById(R.id.header_divider);
+		divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_Green));
+		textView.setText("Taken Medication");
 		emptyListMessage = inflater.inflate(R.layout.template_empty_list_message, container, false);
 		return resultView;
 	}
@@ -81,6 +90,16 @@ public class MedReminderListFragment extends ListFragment {
 		listAdapter = new MedReminderListAdaptor(getContext(), cursor);
 
 		mergeAdapter.addAdapter(listAdapter);
+
+		cursor = MedTableOperations.getInstance().
+		  getMedReminders(getContext(), MedUptakeStatus.TAKEN.ordinal());
+
+		if (cursor.getCount() != 0) {
+			mergeAdapter.addView(headerView3);
+			listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+			mergeAdapter.addAdapter(listAdapter);
+		}
+
 
 		ListView listView = getListView();
 		listView.setAdapter(mergeAdapter);
