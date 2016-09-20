@@ -1,16 +1,22 @@
 package orionhealth.app.fhir;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
+import java.util.ArrayList;
+
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
+import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -20,6 +26,7 @@ import orionhealth.app.data.dataModels.MyCondition;
 import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.data.medicationDatabase.CondTableOperations;
+import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 /**
@@ -68,6 +75,106 @@ public final class FhirServices {
 		task.execute(resource);
 	}
 
+	public void updateMedicationServer(MyMedication resource, Context context){
+		UpdateMedicationToServerTask task = new UpdateMedicationToServerTask(context);
+		task.execute(resource);
+	}
+
+	public void inactiveMedication(MedicationStatement resource, Context context){
+		inactiveMedicationToServerTask task = new inactiveMedicationToServerTask(context);
+		task.execute(resource);
+	}
+
+	//	Fhir condition service started
+	public void  sendConditionToServer(MyCondition resource, Context context){
+		SendConditionToServerTask task = new SendConditionToServerTask(context);
+		task.execute(resource);
+	}
+
+	public void  updateConditionServer(MyCondition resource, Context context){
+		UpdateConditionToServerTask task = new UpdateConditionToServerTask(context);
+		task.execute(resource);
+	}
+
+	//	Fhir AllergyIntolerance service started
+	public void  sendAllergyToServer(MyAllergyIntolerance resource, Context context){
+		SendAllergyToServerTask task = new SendAllergyToServerTask(context);
+		task.execute(resource);
+	}
+
+//	Fhir medication service finished
+
+	public void  updateAllergyServer(MyAllergyIntolerance resource, Context context){
+		UpdateAllergyToServerTask task = new UpdateAllergyToServerTask(context);
+		task.execute(resource);
+	}
+
+	//	Fhir sync 1 - search whether all the local medication resources has been sent to the server, if not then send.
+	public void PushLocalToServer(Context context) {
+		//query from database of all the med resources
+		Cursor cursor = MedTableOperations.getInstance().getAllRows(context);
+		ArrayList<MyMedication> unsentMeds = new ArrayList<MyMedication>();
+
+		cursor.moveToFirst();
+
+		while (!cursor.isAfterLast()) {
+
+			String jsonMedString = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
+			int medID = cursor.getInt(0);
+//			Log.d("Local ID" , String.valueOf(medID));
+			MedicationStatement medStatement = (MedicationStatement) toResource(jsonMedString);
+
+			if (medStatement.getId().isEmpty()){
+				// set alarm boolean as false for convenience
+				unsentMeds.add(new MyMedication(medID, medStatement, false));
+			}
+			cursor.moveToNext();
+		}
+		System.out.println("The amount of unsent data" + unsentMeds.size());
+
+		String outcomeMessage;
+		try {
+			for (int j = 0; j < unsentMeds.size(); j++) {
+				sendMedicationToServer(unsentMeds.get(j), context);
+			}
+			outcomeMessage = "All local data is synced.";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			outcomeMessage = "Failed to Push";
+		}
+
+		Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+	}
+
+	//	Fhir sync 2 - search the patient "mTestO" in the server
+	public void PullServerToLocal(Context context){
+
+		FhirContext fhirContext = getFhirContextInstance();
+		IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
+		String outcomeMessage = "Search failed";
+
+		ResourceReferenceDt patientRef = new ResourceReferenceDt();
+
+		try {
+			// Perform a search - to be tested
+			Bundle results = client
+					.search()
+					.forResource(MedicationStatement.class)
+					.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.NAME.matches().value("mTest0")))
+					.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+					.execute();
+
+			System.out.println("Found " + results.getEntry().size() + " patients named 'mTestO'");
+			outcomeMessage = "New medication found in server";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			outcomeMessage = "Search failed";
+		}
+		Toast.makeText(context, outcomeMessage, Toast.LENGTH_LONG).show();
+	}
+
 	private class SendMedicationToServerTask extends AsyncTask<MyMedication, Integer, Void> {
 
 		private Context context;
@@ -96,7 +203,7 @@ public final class FhirServices {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				outcomeMessage = "Failed to Send to Server";
+				outcomeMessage = "Failed to Send to the Server";
 			}
 			return null;
 		}
@@ -106,11 +213,7 @@ public final class FhirServices {
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
-
-	public void updateMedicationServer(MyMedication resource, Context context){
-		UpdateMedicationToServerTask task = new UpdateMedicationToServerTask(context);
-		task.execute(resource);
-	}
+//	Fhir Condition service finished
 
 	private class UpdateMedicationToServerTask extends AsyncTask<MyMedication, Integer, Void> {
 
@@ -151,12 +254,6 @@ public final class FhirServices {
 		}
 	}
 
-
-	public void inactiveMedication(MedicationStatement resource, Context context){
-		inactiveMedicationToServerTask task = new inactiveMedicationToServerTask(context);
-		task.execute(resource);
-	}
-
 	private class inactiveMedicationToServerTask extends AsyncTask<MedicationStatement, Integer, Void> {
 
 		private Context context;
@@ -192,14 +289,6 @@ public final class FhirServices {
 			super.onPostExecute(v);
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
-	}
-
-//	Fhir medication service finished
-
-//	Fhir condition service started
-	public void  sendConditionToServer(MyCondition resource, Context context){
-		SendConditionToServerTask task = new SendConditionToServerTask(context);
-		task.execute(resource);
 	}
 
 	private class SendConditionToServerTask extends AsyncTask<MyCondition, Integer, Void> {
@@ -240,11 +329,6 @@ public final class FhirServices {
 		}
 	}
 
-	public void  updateConditionServer(MyCondition resource, Context context){
-		UpdateConditionToServerTask task = new UpdateConditionToServerTask(context);
-		task.execute(resource);
-	}
-
 	private class UpdateConditionToServerTask extends AsyncTask<MyCondition, Integer, Void> {
 
 		private Context context;
@@ -283,13 +367,7 @@ public final class FhirServices {
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
-//	Fhir Condition service finished
-
-//	Fhir AllergyIntolerance service started
-	public void  sendAllergyToServer(MyAllergyIntolerance resource, Context context){
-		SendAllergyToServerTask task = new SendAllergyToServerTask(context);
-		task.execute(resource);
-	}
+//	Fhir Allergy service finished
 
 	private class SendAllergyToServerTask extends AsyncTask<MyAllergyIntolerance, Integer, Void> {
 
@@ -327,11 +405,6 @@ public final class FhirServices {
 			super.onPostExecute(v);
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
-	}
-
-	public void  updateAllergyServer(MyAllergyIntolerance resource, Context context){
-		UpdateAllergyToServerTask task = new UpdateAllergyToServerTask(context);
-		task.execute(resource);
 	}
 
 	private class UpdateAllergyToServerTask extends AsyncTask<MyAllergyIntolerance, Integer, Void> {
@@ -372,5 +445,6 @@ public final class FhirServices {
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
-//	Fhir Allergy service finished
+
+
 }

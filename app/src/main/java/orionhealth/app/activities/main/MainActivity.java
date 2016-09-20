@@ -27,6 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.facebook.stetho.Stetho;
+
+import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
+import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
@@ -34,6 +37,7 @@ import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -126,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		};
 
+//write sth here to
 	}
 
 	@Override

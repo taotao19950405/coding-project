@@ -8,6 +8,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
@@ -17,6 +18,7 @@ import orionhealth.app.activities.main.EditMedicationActivity;
 import orionhealth.app.activities.external.AnimatedExpandableListView;
 import orionhealth.app.activities.adaptors.MedicationExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.fhir.FhirServices;
 
 /**
  * Created by bill on 25/04/16.
@@ -45,6 +47,16 @@ public class MedicationListFragment extends ListFragment {
 				startActivity(intent);
 			}
 		});
+
+		Button syncButton = (Button) view.findViewById(R.id.button_sync);
+		syncButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				FhirServices.getsFhirServices().PushLocalToServer(getContext());
+				FhirServices.getsFhirServices().PullServerToLocal(getContext());
+			}
+		});
+
 		return view;
 	};
 
