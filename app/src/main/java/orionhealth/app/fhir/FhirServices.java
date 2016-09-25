@@ -1,6 +1,7 @@
 package orionhealth.app.fhir;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,6 +25,9 @@ import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.IGenericClient;
+import orionhealth.app.activities.adaptors.MedicationExpandableListAdapter;
+import orionhealth.app.activities.main.AddDoctorActivity;
+import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.data.dataModels.MyAllergyIntolerance;
 import orionhealth.app.data.dataModels.MyCondition;
 import orionhealth.app.data.dataModels.MyMedication;
@@ -182,35 +186,43 @@ public final class FhirServices {
 				Bundle results = client
 						.search()
 						.forResource(MedicationStatement.class)
-						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Nick")))
-
+						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Johnsmith")))
 						.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
 						.execute();
 //				System.out.println(fhirContext.newJsonParser().encodeResourceToString(results));
 //				System.out.println("The entry size is" + results.getEntry().size());
 				// read found results to return the objects
 				for (int i = 0;i<results.getEntry().size();i++) {
-					System.out.println(results.getEntry().get(i).getFullUrl());
+//					System.out.println(results.getEntry().get(i).getFullUrl());
 					MedicationStatement newMed =  client.read()
 													.resource(MedicationStatement.class)
 													.withUrl(results.getEntry().get(i).getFullUrl())
 													.execute();
-					System.out.println(newMed.getId());
+//					System.out.println(newMed.getId());
 					newFoundMeds.add(newMed);
 				}
-				Cursor cursor = MedTableOperations.getInstance().getAllRows(context);
+
 				// check if the found objects already exists
 				for (int i = newFoundMeds.size()-1; i >-1;i--) {
+					System.out.println("scanning");
+					Cursor cursor = MedTableOperations.getInstance().getAllRows(context);
 					cursor.moveToFirst();
 
 					while (!cursor.isAfterLast()) {
 						String jsonMedString = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
 						MedicationStatement medStatement = (MedicationStatement) toResource(jsonMedString);
-						if (!medStatement.getId().equals(newFoundMeds.get(i).getId())){
+						if ((mServerBase+"/"+medStatement.getId()).equals(newFoundMeds.get(i).getId().getValue())){
 							newFoundMeds.remove(newFoundMeds.get(i));
-							System.out.println("index is "+i);
+//							System.out.println("the removed index is "+i);
 							break;
 						}
+//						else{
+//							System.out.println("the two ids:");
+//							System.out.println(mServerBase+"/"+medStatement.getId());
+//							System.out.println(newFoundMeds.get(i).getId());
+//
+//						}
+						cursor.moveToNext();
 					}
 				}
 				// add newly-found objects to the database
@@ -225,12 +237,15 @@ public final class FhirServices {
 			} catch (Exception e) {
 				e.printStackTrace();
 				outcomeMessage = "Search failed";
+
 			}
 			return null;
 		}
 		protected void onPostExecute(Void v) {
 			super.onPostExecute(v);
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+			Intent intent = new Intent(context, MainActivity.class);
+			context.startActivity(intent);
 		}
 	}
 
@@ -248,29 +263,28 @@ public final class FhirServices {
 			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
 
 			try {
-
+				// hardcoded patient, change value to reset the patient
 				Patient patient = new Patient();
 				patient.addIdentifier()
 						.setSystem("http://acme.org/mrns")
-						.setValue("12345");
+						.setValue("12356");
 				patient.addName()
-						.addFamily("Nick");
+						.addFamily("Johnsmith");
 				patient.setId(IdDt.newRandomUuid());
 
 				// Create a bundle that will be used as a transaction
 				Bundle bundle = new Bundle();
 				bundle.setType(BundleTypeEnum.TRANSACTION);
 
-				// Add the patient as an entry. This entry is a POST with an
-				// If-None-Exist header (conditional create) meaning that it
+				// Conditional create - it
 				// will only be created if there isn't already a Patient with
-				// the identifier 12345
+				// the identifier 12356 with HTTP POST
 				bundle.addEntry()
 						.setFullUrl(patient.getId().getValue())
 						.setResource(patient)
 						.getRequest()
 						.setUrl("Patient")
-						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|12345")
+						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|12356")
 						.setMethod(HTTPVerbEnum.POST);
 
 
@@ -285,11 +299,9 @@ public final class FhirServices {
 
 					// Create a client and post the transaction to the server
 					Bundle resp = client.transaction().withBundle(bundle).execute();
-//					resp.getIdElement();
-//					System.out.println("Test+");
-
+//
 					// Log the response
-					System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(resp));
+//					System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(resp));
 
 					IdDt id = (IdDt) resp.getId();
 					Log.d("SENT TO SERVER", "Got Id " + id);

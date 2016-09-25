@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 		Stetho.initializeWithDefaults(this);
 
 //      AllergyTableOperations.getInstance().clearAllergyTable(this);
-//		MedTableOperations.getInstance().clearMedTable(this);
+		MedTableOperations.getInstance().clearMedTable(this);
 //		CondTableOperations.getInstance().clearCondTable(this);
 
 		mDrawerList = (ListView)findViewById(R.id.navigation_drawer_list);
