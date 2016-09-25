@@ -15,8 +15,11 @@ import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Condition;
+import ca.uhn.fhir.model.dstu2.resource.Medication;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
+import ca.uhn.fhir.model.dstu2.valueset.BundleTypeEnum;
+import ca.uhn.fhir.model.dstu2.valueset.HTTPVerbEnum;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -72,6 +75,11 @@ public final class FhirServices {
 
 	public void sendMedicationToServer(MyMedication resource, Context context){
 		SendMedicationToServerTask task = new SendMedicationToServerTask(context);
+		task.execute(resource);
+	}
+
+	public void doctorSendMedicationToServer(MedicationStatement resource, Context context){
+		doctorSendMedicationToServerTask task = new doctorSendMedicationToServerTask(context);
 		task.execute(resource);
 	}
 
@@ -147,34 +155,162 @@ public final class FhirServices {
 		Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 	}
 
-	//	Fhir sync 2 - search the patient "mTestO" in the server
+	//	Fhir sync 2 - search the medication code "Test" in the server
 	public void PullServerToLocal(Context context){
-
-		FhirContext fhirContext = getFhirContextInstance();
-		IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
-		String outcomeMessage = "Search failed";
-
-		ResourceReferenceDt patientRef = new ResourceReferenceDt();
-
-		try {
-			// Perform a search - to be tested
-			Bundle results = client
-					.search()
-					.forResource(MedicationStatement.class)
-					.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.NAME.matches().value("mTest0")))
-					.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
-					.execute();
-
-			System.out.println("Found " + results.getEntry().size() + " patients named 'mTestO'");
-			outcomeMessage = "New medication found in server";
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			outcomeMessage = "Search failed";
-		}
-		Toast.makeText(context, outcomeMessage, Toast.LENGTH_LONG).show();
+		PullServerToLocalTask task = new PullServerToLocalTask(context);
+		task.execute();
 	}
 
+	private class PullServerToLocalTask extends AsyncTask<Object[], Integer, Void> {
+
+		private Context context;
+		private String outcomeMessage;
+
+		private PullServerToLocalTask(Context context) {
+			this.context = context;
+		}
+
+		@Override
+		protected Void doInBackground(Object[]... params) {
+			FhirContext fhirContext = getFhirContextInstance();
+			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
+			ArrayList<MedicationStatement> newFoundMeds = new ArrayList<MedicationStatement>();
+
+			try {
+				// Perform a search
+				System.out.println("performing search");
+				Bundle results = client
+						.search()
+						.forResource(MedicationStatement.class)
+						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Nick")))
+
+						.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+						.execute();
+//				System.out.println(fhirContext.newJsonParser().encodeResourceToString(results));
+//				System.out.println("The entry size is" + results.getEntry().size());
+				// read found results to return the objects
+				for (int i = 0;i<results.getEntry().size();i++) {
+					System.out.println(results.getEntry().get(i).getFullUrl());
+					MedicationStatement newMed =  client.read()
+													.resource(MedicationStatement.class)
+													.withUrl(results.getEntry().get(i).getFullUrl())
+													.execute();
+					System.out.println(newMed.getId());
+					newFoundMeds.add(newMed);
+				}
+				Cursor cursor = MedTableOperations.getInstance().getAllRows(context);
+				// check if the found objects already exists
+				for (int i = newFoundMeds.size()-1; i >-1;i--) {
+					cursor.moveToFirst();
+
+					while (!cursor.isAfterLast()) {
+						String jsonMedString = cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
+						MedicationStatement medStatement = (MedicationStatement) toResource(jsonMedString);
+						if (!medStatement.getId().equals(newFoundMeds.get(i).getId())){
+							newFoundMeds.remove(newFoundMeds.get(i));
+							System.out.println("index is "+i);
+							break;
+						}
+					}
+				}
+				// add newly-found objects to the database
+				for (int j = 0;j<newFoundMeds.size();j++) {
+					MyMedication myMedication = new MyMedication();
+					myMedication.setFhirMedStatement(newFoundMeds.get(j));
+					MedTableOperations.getInstance().addToMedTable(context, myMedication);
+				}
+
+				System.out.println("Found " + newFoundMeds.size() + " new resources");
+				outcomeMessage = "Found " + newFoundMeds.size() + " new resources";
+			} catch (Exception e) {
+				e.printStackTrace();
+				outcomeMessage = "Search failed";
+			}
+			return null;
+		}
+		protected void onPostExecute(Void v) {
+			super.onPostExecute(v);
+			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+		}
+	}
+
+	private class doctorSendMedicationToServerTask extends AsyncTask<MedicationStatement, Integer, Void> {
+
+		private Context context;
+		private String outcomeMessage;
+
+		private doctorSendMedicationToServerTask(Context context){
+			this.context = context;
+		}
+
+		protected Void doInBackground(MedicationStatement... params) {
+			FhirContext fhirContext = getFhirContextInstance();
+			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
+
+			try {
+
+				Patient patient = new Patient();
+				patient.addIdentifier()
+						.setSystem("http://acme.org/mrns")
+						.setValue("12345");
+				patient.addName()
+						.addFamily("Nick");
+				patient.setId(IdDt.newRandomUuid());
+
+				// Create a bundle that will be used as a transaction
+				Bundle bundle = new Bundle();
+				bundle.setType(BundleTypeEnum.TRANSACTION);
+
+				// Add the patient as an entry. This entry is a POST with an
+				// If-None-Exist header (conditional create) meaning that it
+				// will only be created if there isn't already a Patient with
+				// the identifier 12345
+				bundle.addEntry()
+						.setFullUrl(patient.getId().getValue())
+						.setResource(patient)
+						.getRequest()
+						.setUrl("Patient")
+						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|12345")
+						.setMethod(HTTPVerbEnum.POST);
+
+
+				for (int i = 0; i < params.length; i++) {
+					MedicationStatement m = params[i];
+					m.setPatient(new ResourceReferenceDt(patient.getId().getValue()));
+					bundle.addEntry()
+							.setResource(m)
+							.getRequest()
+							.setUrl("Observation")
+							.setMethod(HTTPVerbEnum.POST);
+
+					// Create a client and post the transaction to the server
+					Bundle resp = client.transaction().withBundle(bundle).execute();
+//					resp.getIdElement();
+//					System.out.println("Test+");
+
+					// Log the response
+					System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(resp));
+
+					IdDt id = (IdDt) resp.getId();
+					Log.d("SENT TO SERVER", "Got Id " + id);
+					outcomeMessage = "Sent to Server " +id;
+					return null;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				outcomeMessage = "Failed to Send to the Server";
+			}
+			return null;
+		}
+
+		protected void onPostExecute(Void v) {
+			super.onPostExecute(v);
+			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+		}
+	}
+
+//FHIR medication task started
 	private class SendMedicationToServerTask extends AsyncTask<MyMedication, Integer, Void> {
 
 		private Context context;
@@ -213,7 +349,6 @@ public final class FhirServices {
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
-//	Fhir Condition service finished
 
 	private class UpdateMedicationToServerTask extends AsyncTask<MyMedication, Integer, Void> {
 
@@ -290,6 +425,7 @@ public final class FhirServices {
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
 		}
 	}
+//	FHIR medication tasks stopped
 
 	private class SendConditionToServerTask extends AsyncTask<MyCondition, Integer, Void> {
 

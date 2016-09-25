@@ -10,6 +10,7 @@
 	<string name="title_activity_edit_condition">Edit Condition</string>
 
 	<string name="button_add">Add</string>
+	<string name="button_send">Send</string>
 	<string name="button_add_condition">Add</string>
 	<string name="button_save">Save</string>
 	<string name="button_edit"><b>Edit</b></string>

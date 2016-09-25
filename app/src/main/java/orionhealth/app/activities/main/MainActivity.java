@@ -28,9 +28,8 @@ import android.view.View;
 import android.widget.*;
 import com.facebook.stetho.Stetho;
 
-import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
-	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Conditions", "Calendar"};
+	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "My Conditions", "I am a doctor"};
 	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
@@ -234,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 				case 1: return MedReminderListFragment.newInstance();
 				case 2: return AllergyListFragment.newInstance();
 				case 3: return ConditionListFragment.newInstance();
+				case 4: return DoctorDetailsFragment.newInstance();
 				default: return UnderConstructionFragment.newInstance();
 			}
 		}
