@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
@@ -21,9 +22,11 @@ import java.util.Calendar;
  * Created by bill on 5/09/16.
  */
 public class MedReminderListAdaptor extends CursorAdapter {
+	private int icon;
 
-	public MedReminderListAdaptor(Context context, Cursor c) {
+	public MedReminderListAdaptor(Context context, Cursor c, int icon) {
 		super(context, c, FLAG_REGISTER_CONTENT_OBSERVER);
+		this.icon = icon;
 	}
 
 	@Override
@@ -38,6 +41,7 @@ public class MedReminderListAdaptor extends CursorAdapter {
 	public void bindView(View view, Context context, Cursor cursor) {
 		TextView reminderText = (TextView) view.findViewById(R.id.list_display_reminder);
 		TextView dateText = (TextView) view.findViewById(R.id.list_display_date);
+		ImageView statusImage = (ImageView) view.findViewById(R.id.status_icon);
 
 		String text =
 		  	cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
@@ -53,6 +57,7 @@ public class MedReminderListAdaptor extends CursorAdapter {
 		DateService dateService = new DateService();
 		dateService.setFormat(DateService.FLAG_TIME_FORMAT);
 		dateText.setText(dateService.formatToString(calendar.getTime()));
+		statusImage.setImageResource(icon);
 	}
 
 	@Override

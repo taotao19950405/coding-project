@@ -35,7 +35,7 @@ import orionhealth.app.data.spinnerEnum.MedicationUnit;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.TimeIntervalUnit;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.services.AlarmSetter;
+import orionhealth.app.broadCastReceivers.AlarmSetter;
 import orionhealth.app.services.DateService;
 
 /**
@@ -201,7 +201,6 @@ public class MedicationDetailsFragment extends Fragment {
 			AlarmPackage alarmPackage = createAlarmPackage();
 			myMedication.setAlarmPackage(alarmPackage);
 			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
-			setUpReminder(context);
 			myMedication.setLocalId(mMedicationID);
 			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
 
@@ -230,7 +229,6 @@ public class MedicationDetailsFragment extends Fragment {
 			mMyMedication.setAlarmPackage(alarmPackage);
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
 			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
-			setUpReminder(context);
 			mMyMedication.setLocalId(mMedicationID);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
@@ -353,14 +351,14 @@ public class MedicationDetailsFragment extends Fragment {
 
 	public void setUpReminder(Context context) {
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
-		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_ID_KEY, mMedicationID);
 		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, mReminderSwitchState);
 		context.sendBroadcast(alarmIntent);
 	}
 
 	public void removeReminder(Context context) {
 		Intent alarmIntent = new Intent(context, AlarmSetter.class);
-		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, mMedicationID);
+		alarmIntent.putExtra(AlarmSetter.REMINDER_ID_KEY, mMedicationID);
 		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, false);
 		context.sendBroadcast(alarmIntent);
 	}

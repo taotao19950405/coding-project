@@ -3,7 +3,7 @@
 	android:id="@+id/list_group"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:padding="12dp"
+	android:padding="10dp"
 	android:orientation="horizontal"
 	xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -25,7 +25,7 @@
                   android:layout_height="wrap_content"
                   android:paddingLeft="12dp"
                   android:paddingRight="15dp"
-									android:paddingBottom="8dp"
+									android:paddingBottom="4dp"
                   android:orientation="horizontal"
                   android:id="@+id/display_name">
 

@@ -76,11 +76,11 @@
         </activity>
 
         <receiver
-            android:name=".services.AlarmReceiver"
+            android:name=".broadCastReceivers.AlarmReceiver"
             android:exported="false"
             android:process=":remote" />
         <receiver
-            android:name=".services.AlarmSetter"
+            android:name=".broadCastReceivers.AlarmSetter"
             android:exported="false"
             android:process=":remote" />
 

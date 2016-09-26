@@ -13,29 +13,17 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by bill on 10/07/16.
  */
 public class RingToneService extends Service {
 	private boolean isRinging = false;
 	private Ringtone ringtone;
-//	private final class ServiceHandler extends Handler {
-//		public ServiceHandler(Looper looper) {
-//			super(looper);
-//		}
-//		@Override
-//		public void handleMessage(Message msg) {
-//			try {
-//				Thread.sleep(5000);
-//			} catch (InterruptedException e) {
-//				// Restore interrupt status.
-//				Thread.currentThread().interrupt();
-//			}
-//			// Stop the service using the startId, so that we don't stop
-//			// the service in the middle of handling another job
-//			stopSelf(msg.arg1);
-//		}
-//	}
+	private long ringDuration = 60000;
+
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -45,6 +33,15 @@ public class RingToneService extends Service {
 			ringtone = r;
 			ringtone.play();
 			isRinging = true;
+			TimerTask task = new TimerTask() {
+				@Override
+				public void run() {
+					stopSelf();
+				}
+			};
+			Timer timer = new Timer();
+			timer.schedule(task, ringDuration);
+
 		}
 		return START_STICKY;
 	}
