@@ -43,6 +43,8 @@ public final class FhirServices {
 	private static FhirServices sFhirServices;
 	private FhirContext mFhirContext;
 	private String mServerBase = "http://fhirtest.uhn.ca/baseDstu2";
+	private Patient mPatient;
+
 
 	private FhirServices(){
 	}
@@ -182,11 +184,13 @@ public final class FhirServices {
 
 			try {
 				// Perform a search
+
 				System.out.println("performing search");
 				Bundle results = client
 						.search()
 						.forResource(MedicationStatement.class)
-						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Johnsmith")))
+						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Marysmith")))
+//						.where(MedicationStatement.PATIENT.hasId(mPatient.getId()));
 						.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
 						.execute();
 //				System.out.println(fhirContext.newJsonParser().encodeResourceToString(results));
@@ -267,9 +271,9 @@ public final class FhirServices {
 				Patient patient = new Patient();
 				patient.addIdentifier()
 						.setSystem("http://acme.org/mrns")
-						.setValue("12356");
+						.setValue("23456");
 				patient.addName()
-						.addFamily("Johnsmith");
+						.addFamily("Marysmith");
 				patient.setId(IdDt.newRandomUuid());
 
 				// Create a bundle that will be used as a transaction
@@ -278,13 +282,13 @@ public final class FhirServices {
 
 				// Conditional create - it
 				// will only be created if there isn't already a Patient with
-				// the identifier 12356 with HTTP POST
+				// the identifier 23456 with HTTP POST
 				bundle.addEntry()
 						.setFullUrl(patient.getId().getValue())
 						.setResource(patient)
 						.getRequest()
 						.setUrl("Patient")
-						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|12356")
+						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|23456")
 						.setMethod(HTTPVerbEnum.POST);
 
 
@@ -294,7 +298,7 @@ public final class FhirServices {
 					bundle.addEntry()
 							.setResource(m)
 							.getRequest()
-							.setUrl("Observation")
+							.setUrl("MedicationStatement")
 							.setMethod(HTTPVerbEnum.POST);
 
 					// Create a client and post the transaction to the server
@@ -303,6 +307,7 @@ public final class FhirServices {
 					// Log the response
 //					System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(resp));
 
+					mPatient.setId(resp.getEntry().get(0).getFullUrl());
 					IdDt id = (IdDt) resp.getId();
 					Log.d("SENT TO SERVER", "Got Id " + id);
 					outcomeMessage = "Sent to Server " +id;
