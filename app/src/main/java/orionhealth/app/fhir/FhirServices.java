@@ -189,7 +189,7 @@ public final class FhirServices {
 				Bundle results = client
 						.search()
 						.forResource(MedicationStatement.class)
-						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Marysmith")))
+						.where(MedicationStatement.PATIENT.hasChainedProperty(Patient.FAMILY.matches().value("Maryjane")))
 //						.where(MedicationStatement.PATIENT.hasId(mPatient.getId()));
 						.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
 						.execute();
@@ -248,6 +248,7 @@ public final class FhirServices {
 		protected void onPostExecute(Void v) {
 			super.onPostExecute(v);
 			Toast.makeText(context,outcomeMessage, Toast.LENGTH_LONG).show();
+//			refreshing the list after async task(pull)
 			Intent intent = new Intent(context, MainActivity.class);
 			context.startActivity(intent);
 		}
@@ -271,9 +272,9 @@ public final class FhirServices {
 				Patient patient = new Patient();
 				patient.addIdentifier()
 						.setSystem("http://acme.org/mrns")
-						.setValue("23456");
+						.setValue("34567");
 				patient.addName()
-						.addFamily("Marysmith");
+						.addFamily("Maryjane");
 				patient.setId(IdDt.newRandomUuid());
 
 				// Create a bundle that will be used as a transaction
@@ -288,7 +289,7 @@ public final class FhirServices {
 						.setResource(patient)
 						.getRequest()
 						.setUrl("Patient")
-						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|23456")
+						.setIfNoneExist("Patient?identifier=http://acme.org/mrns|34567")
 						.setMethod(HTTPVerbEnum.POST);
 
 
@@ -307,7 +308,7 @@ public final class FhirServices {
 					// Log the response
 //					System.out.println(fhirContext.newJsonParser().setPrettyPrint(true).encodeResourceToString(resp));
 
-					mPatient.setId(resp.getEntry().get(0).getFullUrl());
+//					mPatient.setId(resp.getEntry().get(0).getFullUrl());
 					IdDt id = (IdDt) resp.getId();
 					Log.d("SENT TO SERVER", "Got Id " + id);
 					outcomeMessage = "Sent to Server " +id;

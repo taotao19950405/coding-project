@@ -48,6 +48,7 @@ public class MedicationListFragment extends ListFragment {
 			}
 		});
 
+// this is where sync gets called
 		Button syncButton = (Button) view.findViewById(R.id.button_sync);
 		syncButton.setOnClickListener(new View.OnClickListener() {
 			@Override
