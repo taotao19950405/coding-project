@@ -1,5 +1,7 @@
 package orionhealth.app.activities.main;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,8 @@ public class TakeMedicationActivity extends AppCompatActivity {
 				setCursor();
 				notifyItemRemoved(position);
 				notifyItemRangeChanged(position, getItemCount());
+				NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel((int) remId);
 				if (getItemCount() == 0) {
 					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 					startActivity(intent);

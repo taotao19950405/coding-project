@@ -136,9 +136,9 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 		imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
 
 		if (isExpanded) {
-			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
+			imageView.setImageResource(R.drawable.up_arrow);
 		} else {
-			imageView.setImageResource(R.drawable.arrow_down_grey_11dp);
+			imageView.setImageResource(R.drawable.arrow_down);
 		}
 
 		return result;

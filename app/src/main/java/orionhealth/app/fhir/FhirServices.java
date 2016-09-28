@@ -5,12 +5,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
+import ca.uhn.fhir.model.dstu2.composite.CodingDt;
+import ca.uhn.fhir.model.dstu2.resource.*;
+import ca.uhn.fhir.rest.api.SummaryEnum;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
 import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.model.dstu2.resource.AllergyIntolerance;
-import ca.uhn.fhir.model.dstu2.resource.Condition;
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import ca.uhn.fhir.model.dstu2.valueset.MedicationStatementStatusEnum;
 import ca.uhn.fhir.model.primitive.IdDt;
 import ca.uhn.fhir.rest.api.MethodOutcome;
@@ -21,6 +22,9 @@ import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.data.medicationDatabase.AllergyTableOperations;
 import orionhealth.app.data.medicationDatabase.CondTableOperations;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by bill on 1/05/16.
@@ -66,6 +70,73 @@ public final class FhirServices {
 	public void sendMedicationToServer(MyMedication resource, Context context){
 		SendMedicationToServerTask task = new SendMedicationToServerTask(context);
 		task.execute(resource);
+	}
+
+	public ArrayList<String> searchMedication(CharSequence constraint) {
+		FhirContext fhirContext = getFhirContextInstance();
+		IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
+		ArrayList<String> result = new ArrayList<>();
+
+		Bundle response = client
+		  .search()
+		  .forResource(Medication.class)
+		  .where(Medication.CODE.isMissing(false))
+		  .count(50)
+		  .returnBundle(Bundle.class)
+		  .execute();
+
+		while ((response.getLink(Bundle.LINK_NEXT) != null)) {
+
+			List<Bundle.Entry> entryList = response.getEntry();
+			for (int i = 0; i < entryList.size(); i++) {
+				Bundle.Entry entry = entryList.get(i);
+				Medication med = (Medication) entry.getResource();
+
+				List<CodingDt> list = med.getCode().getCoding();
+
+				if (!list.isEmpty()) {
+					CodingDt code = list.get(0);
+
+					String medName = code.getDisplay();
+
+					if (medName != null && medName.toLowerCase().contains(constraint.toString().toLowerCase())) {
+						result.add(medName);
+					}
+
+					if (result.size() == 5) {
+						return result;
+					}
+				}
+			}
+
+			response = client.loadPage().next(response).execute();
+		}
+
+//		if (response.getLink(Bundle.LINK_NEXT) != null) {
+//			response = client.loadPage().next(response).execute();
+//			List<Bundle.Entry> entryList2 = response.getEntry();
+//			for (int i = 0; i < entryList2.size(); i++) {
+//				Bundle.Entry entry = entryList2.get(i);
+//				Medication med = (Medication) entry.getResource();
+//
+//				List<CodingDt> list = med.getCode().getCoding();
+//
+//				if (!list.isEmpty()) {
+//					CodingDt code = list.get(0);
+//
+//					String medName = code.getDisplay();
+//
+//					if (medName != null && medName.toLowerCase().contains(constraint.toString().toLowerCase())) {
+//						result.add(medName);
+//					}
+//
+//					if (result.size() == 5) {
+//						return result;
+//					}
+//				}
+//			}
+//		}
+		return result;
 	}
 
 	private class SendMedicationToServerTask extends AsyncTask<MyMedication, Integer, Void> {

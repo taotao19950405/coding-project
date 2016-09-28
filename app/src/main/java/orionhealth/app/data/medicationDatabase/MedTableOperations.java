@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.broadCastReceivers.AlarmSetter;
 import orionhealth.app.data.dataModels.AlarmPackage;
@@ -168,7 +169,6 @@ public final class MedTableOperations {
 		String selection = MedTableInfo._ID + " LIKE ?";
 		String[] selectionArgs = { String.valueOf(id) };
 		db.delete(MedTableInfo.TABLE_NAME, selection, selectionArgs);
-		removeMedReminder(context, id);
 	}
 
 	public void removeMedReminder(Context context, int medId) {
