@@ -28,26 +28,28 @@ import android.view.View;
 import android.widget.*;
 import com.facebook.stetho.Stetho;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
 	private TabbedPagerAdapter mTabbedPagerAdapter;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
-	private String[] mTabsTitles = {"My Medication", "Today", "My Allergies", "Conditions", "Calendar"};
+	private String[] mTabsTitles = {"Today", "My Medication", "My Allergies", "Conditions", "Calendar"};
 	private int mNumOfTabs = mTabsTitles.length;
 
 	private ListView mDrawerList;
 	private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-	private String[] mHamburgerTitles = {"Profile", "Notifications", "Settings"};
+	private String[] mHamburgerTitles = {"Profile", "Notifications", "Doctor", "Settings"};
 	private static String SAVED_SLIDE_POSITION = "SAVED_SLIDE_POSITION";
 	public static int CurrentTabNumber = 0;
 
@@ -126,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		};
 
+//write sth here to
 	}
 
 	@Override
@@ -161,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
 		mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Item", Toast.LENGTH_SHORT).show();
+                if (position == 2) {
+					Intent intent = new Intent(getApplicationContext(), AddDoctorActivity.class);
+					startActivity(intent);
+				}
             }
         });
 	}
@@ -209,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
 	/*--------the following was added to support tabbed navigation--------*/
 
 	public void setTabIcons(){
-		mTabLayout.getTabAt(0).setIcon(R.mipmap.white_medicine);
-		mTabLayout.getTabAt(1).setIcon(R.mipmap.ic_schedule_white_24dp);
+		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_schedule_white_24dp);
+		mTabLayout.getTabAt(1).setIcon(R.mipmap.white_medicine);
 		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
 		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
 		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
@@ -225,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		public Fragment getItem(int position) {
 			switch (position){
-				case 0: return MedicationListFragment.newInstance();
-				case 1: return MedReminderListFragment.newInstance();
+				case 0: return MedReminderListFragment.newInstance();
+				case 1: return MedicationListFragment.newInstance();
 				case 2: return AllergyListFragment.newInstance();
 				case 3: return ConditionListFragment.newInstance();
 				default: return UnderConstructionFragment.newInstance();

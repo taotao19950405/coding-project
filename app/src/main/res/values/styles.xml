@@ -7,6 +7,9 @@
 		<item name="colorControlNormal">#14b1ba</item>
 	</style>
 
+	<style name="AppTheme2" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+	</style>
+
 	<style name="AllergyTheme" parent="AppTheme">
 		<item name="colorAccent">#36a4ff</item>
 		<item name="colorControlNormal">#14b1ba</item>

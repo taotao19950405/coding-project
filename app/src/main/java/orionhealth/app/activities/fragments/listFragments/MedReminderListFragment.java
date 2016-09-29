@@ -1,6 +1,7 @@
 package orionhealth.app.activities.fragments.listFragments;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -8,13 +9,12 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.commonsware.cwac.merge.MergeAdapter;
 import orionhealth.app.R;
 import orionhealth.app.activities.adaptors.MedReminderListAdaptor;
-import orionhealth.app.activities.adaptors.TakenMedListAdaptor;
+import orionhealth.app.activities.main.TakeMedicationActivity;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 
@@ -27,6 +27,7 @@ public class MedReminderListFragment extends ListFragment {
 	private View headerView2;
 	private View headerView3;
 	private View emptyListMessage;
+	private int overdueMedNum = 0;
 
 	private MedReminderListAdaptor cursorAdapter;
 
@@ -72,31 +73,32 @@ public class MedReminderListFragment extends ListFragment {
 		MergeAdapter mergeAdapter = new MergeAdapter();
 		Cursor cursor =
 		  MedTableOperations.getInstance().
-			getMedReminders((getContext()), MedUptakeStatus.OVERDUE.ordinal());
+			getMedRemindersForStatus((getContext()), MedUptakeStatus.OVERDUE.ordinal());
 		if (cursor.getCount() != 0) {
 			mergeAdapter.addView(headerView);
+			overdueMedNum = cursor.getCount();
 		}
-		MedReminderListAdaptor listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+		MedReminderListAdaptor listAdapter = new MedReminderListAdaptor(getContext(), cursor, R.drawable.cancel);
 		mergeAdapter.addAdapter(listAdapter);
 		mergeAdapter.addView(headerView2);
 
 		cursor = MedTableOperations.getInstance().
-		  			getMedReminders(getContext(), MedUptakeStatus.PENDING.ordinal());
+		  getMedRemindersForStatus(getContext(), MedUptakeStatus.PENDING.ordinal());
 
 		if (cursor.getCount() == 0){
 			mergeAdapter.addView(emptyListMessage);
 		}
 
-		listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+		listAdapter = new MedReminderListAdaptor(getContext(), cursor, R.drawable.clock);
 
 		mergeAdapter.addAdapter(listAdapter);
 
 		cursor = MedTableOperations.getInstance().
-		  getMedReminders(getContext(), MedUptakeStatus.TAKEN.ordinal());
+		  getMedRemindersForStatus(getContext(), MedUptakeStatus.TAKEN.ordinal());
 
 		if (cursor.getCount() != 0) {
 			mergeAdapter.addView(headerView3);
-			listAdapter = new MedReminderListAdaptor(getContext(), cursor);
+			listAdapter = new MedReminderListAdaptor(getContext(), cursor, R.drawable.checked);
 			mergeAdapter.addAdapter(listAdapter);
 		}
 
@@ -109,6 +111,10 @@ public class MedReminderListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id){
 		super.onListItemClick(l, v, position, id);
+		if (position <= overdueMedNum) {
+			Intent activityIntent = new Intent(getContext(), TakeMedicationActivity.class);
+			getContext().startActivity(activityIntent);
+		}
 
 	};
 

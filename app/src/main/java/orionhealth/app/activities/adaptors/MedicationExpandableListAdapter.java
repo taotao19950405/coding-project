@@ -2,6 +2,7 @@ package orionhealth.app.activities.adaptors;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,9 +137,9 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 		imageView = (ImageView) indicator.findViewById(R.id.indicator_image);
 
 		if (isExpanded) {
-			imageView.setImageResource(R.drawable.arrow_up_grey_11dp);
+			imageView.setImageResource(R.drawable.up_arrow);
 		} else {
-			imageView.setImageResource(R.drawable.arrow_down_grey_11dp);
+			imageView.setImageResource(R.drawable.arrow_down);
 		}
 
 		return result;
@@ -192,5 +193,13 @@ public class MedicationExpandableListAdapter extends AnimatedExpandableListView.
 		return true;
 	}
 
+	@Override
+	public void registerDataSetObserver(DataSetObserver observer) {
+		super.registerDataSetObserver(observer);
+	}
 
+	@Override
+	public void unregisterDataSetObserver(DataSetObserver observer) {
+		super.unregisterDataSetObserver(observer);
+	}
 }

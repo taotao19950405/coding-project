@@ -1,27 +1,26 @@
-package orionhealth.app.services;
+package orionhealth.app.broadCastReceivers;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import android.database.Cursor;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.util.Log;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.activities.main.MainActivity;
 import orionhealth.app.activities.main.TakeMedicationActivity;
+import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 import orionhealth.app.fhir.FhirServices;
-
-import java.util.LinkedList;
+import orionhealth.app.services.MedResponseService;
+import orionhealth.app.services.RingToneService;
+import orionhealth.app.services.UpdateUIService;
 
 /**
  * Created by bill on 4/07/16.
@@ -37,22 +36,27 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 	// intent send information about medication
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		int medId = intent.getIntExtra(AlarmSetter.MED_ID_KEY, -1);
-		String jsonString = intent.getStringExtra(AlarmSetter.JSON_STRING_KEY);
+		int medId = intent.getIntExtra(AlarmSetter.REMINDER_ID_KEY, -1);
 		long alarmTime = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
 
 		MedTableOperations.getInstance().
-		  		changeMedReminderStatus(context, alarmTime, MedUptakeStatus.OVERDUE.ordinal());
+		  		changeMedReminderStatus(context, medId, MedUptakeStatus.OVERDUE.ordinal());
+
+		Cursor cursor = MedTableOperations.getInstance().getMedReminder(context, medId);
+		cursor.moveToFirst();
+		String jsonString =
+				cursor.getString(cursor.getColumnIndex(DatabaseContract.MedTableInfo.COLUMN_NAME_JSON_STRING));
+
 
 		intent = new Intent(context, UpdateUIService.class);
 		context.startService(intent);
 
+		Intent startRingToneIntent = new Intent(context, RingToneService.class);
+		context.startService(startRingToneIntent);
+
 		PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		if (!powerManager.isInteractive()) {
 			Intent activityIntent = new Intent(context, TakeMedicationActivity.class);
-			activityIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
-			activityIntent.putExtra(AlarmSetter.JSON_STRING_KEY, jsonString);
-			activityIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
 			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(activityIntent);
 		} else {
@@ -63,36 +67,28 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 		String medName = conceptDt.getText();
 
 		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
+		takeMedicationIntent.putExtra(AlarmSetter.REMINDER_ID_KEY, medId);
 		takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
 		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-
-		Intent startRingToneIntent = new Intent(context, RingToneService.class);
-		context.startService(startRingToneIntent);
 
 		Notification notification = new NotificationCompat.Builder(context)
 		  .setContentTitle("Take " + medName)
 		  .setContentText("Medication Reminder")
 		  .setSmallIcon(R.drawable.medicine)
-		  .setPriority(Notification.PRIORITY_MAX)
+		  .setPriority(Notification.PRIORITY_HIGH)
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
 		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
 		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
 		  .setDeleteIntent(pendingIntentCancel)
 		  .setFullScreenIntent(pendingIntentCancel, true)
-//		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, MainActivity.class), 0))
+		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, TakeMedicationActivity.class), PendingIntent.FLAG_CANCEL_CURRENT))
 		  .build();
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(medId, notification);
 
 		}
-		Intent alarmIntent = new Intent(context, AlarmSetter.class);
-		alarmIntent.putExtra(AlarmSetter.MED_ID_KEY, medId);
-		alarmIntent.putExtra(AlarmSetter.REMINDER_SET_KEY, true);
-		context.sendBroadcast(alarmIntent);
-
 	}
 
 // int alarmIndex = intent.getIntExtra("here", -1);

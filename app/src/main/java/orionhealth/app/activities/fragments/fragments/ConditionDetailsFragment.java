@@ -380,34 +380,6 @@ public class ConditionDetailsFragment extends Fragment {
 
     }
 
-//    public static class DatePickerFragment extends DialogFragment
-//            implements DatePicker.OnDateSetListener {
-//
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the current date as the default date in the picker
-//            final Calendar c = Calendar.getInstance();
-//            int year = c.get(Calendar.YEAR);
-//            int month = c.get(Calendar.MONTH);
-//            int day = c.get(Calendar.DAY_OF_MONTH);
-//
-//            // Create a new instance of DatePicker and return it
-//            return new DatePicker(getActivity(), this, year, month, day);
-//        }
-//
-//        public void onDateSet(DatePicker view, int year, int month, int day) {
-//           EditText dateEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_effectiveStart);
-//            dateEditTextField.setText(day + "/" + month + "/" + year);
-//        }
-//
-//
-//        public void showDatePickerDialog(View v) {
-//            DialogFragment newFragment = new DatePickerFragment();
-//            newFragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-//        }
-//
-//    }
-
 
 }
 

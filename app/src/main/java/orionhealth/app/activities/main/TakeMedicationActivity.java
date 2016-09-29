@@ -1,21 +1,26 @@
 package orionhealth.app.activities.main;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.*;
-import android.widget.TextView;
-import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
-import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
-import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.services.AlarmSetter;
-import orionhealth.app.services.DateService;
+import orionhealth.app.activities.adaptors.MyAdapter;
+import orionhealth.app.data.medicationDatabase.MedTableOperations;
+import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 import orionhealth.app.services.RingToneService;
 
-import java.util.Calendar;
-
 public class TakeMedicationActivity extends AppCompatActivity {
+
+	private RecyclerView mRecyclerView;
+	private RecyclerView.Adapter mAdapter;
+	private RecyclerView.LayoutManager mLayoutManager;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,33 +29,36 @@ public class TakeMedicationActivity extends AppCompatActivity {
 		Window win = getWindow();
 		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
 		win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		Intent startRingToneIntent = new Intent(this, RingToneService.class);
-		startService(startRingToneIntent);
 
-		int medId = getIntent().getIntExtra(AlarmSetter.MED_ID_KEY, -1);
+		getSupportActionBar().setElevation(0);
+		mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
-		String jsonMedString = getIntent().getStringExtra(AlarmSetter.JSON_STRING_KEY);
-		MedicationStatement medStatement =
-		  		(MedicationStatement) FhirServices.getsFhirServices().toResource(jsonMedString);
+		mLayoutManager = new LinearLayoutManager(this);
+		mRecyclerView.setLayoutManager(mLayoutManager);
 
-		CodeableConceptDt codeableConceptDt =
-		  (CodeableConceptDt) medStatement.getMedication();
+		final Cursor cursor =
+		  MedTableOperations.getInstance().
+			getMedRemindersForStatus(this, MedUptakeStatus.OVERDUE.ordinal());
 
-		long alarmTime = getIntent().getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
+		mAdapter = new MyAdapter(this, cursor) {
+			@Override
+			public void onTakeButtonClick(long remId, int position) {
+				Intent service = new Intent(getApplicationContext(), RingToneService.class);
+				getApplicationContext().stopService(service);
+				MedTableOperations.getInstance().changeMedReminderStatus(getApplicationContext(), (int) remId, MedUptakeStatus.TAKEN.ordinal());
+				setCursor();
+				notifyItemRemoved(position);
+				notifyItemRangeChanged(position, getItemCount());
+				NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel((int) remId);
+				if (getItemCount() == 0) {
+					Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+					startActivity(intent);
+				}
+			}
 
-		DateService dateService = new DateService();
-		dateService.setFormat(DateService.FLAG_TIME_FORMAT);
-
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(alarmTime);
-
-		String timeString = dateService.formatToString(calendar.getTime());
-
-		TextView medTitleTextView = (TextView) findViewById(R.id.med_title_text_view);
-		medTitleTextView.setText(codeableConceptDt.getText());
-
-		TextView medTimeTextView = (TextView) findViewById(R.id.med_time_text_view);
-		medTimeTextView.setText(timeString);
+		};
+		mRecyclerView.setAdapter(mAdapter);
 
 	}
 
@@ -72,10 +80,4 @@ public class TakeMedicationActivity extends AppCompatActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void takeMedication(View view) {
-		Intent service = new Intent(this, RingToneService.class);
-		getApplicationContext().stopService(service);
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
-	}
 }
