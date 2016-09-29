@@ -10,6 +10,7 @@
 	<string name="title_activity_edit_condition">Edit Condition</string>
 
 	<string name="button_add">Add</string>
+	<string name="button_send">Send</string>
 	<string name="button_add_condition">Add</string>
 	<string name="button_save">Save</string>
 	<string name="button_edit"><b>Edit</b></string>
@@ -62,6 +63,7 @@
 	<string name="drawer_open">Open navigation drawer</string>
 	<string name="drawer_close">Close navigation drawer</string>
 	<string name="title_activity_take_medication">Take Medication</string>
+	<string name="title_activity_doctor">Doctor</string>
 
 	<string name="remove_med_dialog_title">Remove Medication</string>
 	<string name="remove_cond_dialog_title">Remove Condition</string>

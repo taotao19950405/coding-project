@@ -76,7 +76,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 		  .setContentTitle("Take " + medName)
 		  .setContentText("Medication Reminder")
 		  .setSmallIcon(R.drawable.medicine)
-		  .setPriority(Notification.PRIORITY_MAX)
+		  .setPriority(Notification.PRIORITY_HIGH)
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
 		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
 		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)

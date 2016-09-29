@@ -3,6 +3,7 @@
     package="orionhealth.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 	  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".activities.main.MainActivity"
-            android:label="@string/title_activity_my_medication" >
+            android:label="@string/title_activity_my_medication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -90,8 +91,14 @@
 
         <activity
             android:name=".activities.main.TakeMedicationActivity"
-            android:label="@string/title_activity_take_medication" >
+            android:label="@string/title_activity_take_medication">
         </activity>
+
+			<activity
+				android:name=".activities.main.AddDoctorActivity"
+				android:label="@string/title_activity_doctor" >
+			</activity>
+
     </application>
 
 </manifest>

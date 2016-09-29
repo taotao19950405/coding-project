@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.*;
 import com.facebook.stetho.Stetho;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 	private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-	private String[] mHamburgerTitles = {"Profile", "Notifications", "Settings"};
+	private String[] mHamburgerTitles = {"Profile", "Notifications", "Doctor", "Settings"};
 	private static String SAVED_SLIDE_POSITION = "SAVED_SLIDE_POSITION";
 	public static int CurrentTabNumber = 0;
 
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		};
 
+//write sth here to
 	}
 
 	@Override
@@ -162,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
 		mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "Item", Toast.LENGTH_SHORT).show();
+                if (position == 2) {
+					Intent intent = new Intent(getApplicationContext(), AddDoctorActivity.class);
+					startActivity(intent);
+				}
             }
         });
 	}
