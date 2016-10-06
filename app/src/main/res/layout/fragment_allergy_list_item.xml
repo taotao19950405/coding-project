@@ -2,7 +2,7 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="7dp"
+    android:padding="10dp"
     android:orientation="horizontal"
     android:id="@+id/display_substance_details_allergy"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -46,14 +46,13 @@
             android:id="@+id/list_display_reaction_allergy"
             android:paddingLeft="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"/>
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
+        android:paddingLeft="12dp"
         android:paddingRight="15dp"
         android:orientation="horizontal"
         android:id="@+id/display_details_allergy">
@@ -69,8 +68,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginRight="6dp"
-        android:id="@+id/alarm_indicator">
+        android:layout_marginRight="5dp">
 
         <ImageView
             android:id="@+id/high_risk_allergy_indicator"
@@ -81,3 +79,4 @@
 
     </RelativeLayout>
 </LinearLayout>
+
