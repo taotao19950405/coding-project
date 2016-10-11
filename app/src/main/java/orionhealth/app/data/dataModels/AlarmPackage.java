@@ -6,8 +6,9 @@ import android.os.Parcelable;
 /**
  * Created by bill on 11/07/16.
  */
-public class AlarmPackage implements Parcelable{
-	private long alarmTime;
+public class AlarmPackage {
+	private int hour;
+	private int minute;
 	private int timeToNextAlarm;
 	private int dailyNumOfAlarms;
 
@@ -20,14 +21,17 @@ public class AlarmPackage implements Parcelable{
 		return timeToNextAlarm;
 	}
 
-	public long getAlarmTime() {
-		return this.alarmTime;
-	}
-
 	public long getDailyNumOfAlarms() {
 		return this.dailyNumOfAlarms;
 	}
 
+	public int getHour() {
+		return hour;
+	}
+
+	public int getMinute() {
+		return minute;
+	}
 //	public long[] getAlarmTimes() { return this.alarmTimes; }
 
 
@@ -35,49 +39,17 @@ public class AlarmPackage implements Parcelable{
 		this.timeToNextAlarm = timeInterval;
 	}
 
-	public void setAlarmTime(long alarmTime) {
-		this.alarmTime = alarmTime;
-	}
-
 	public void setDailyNumOfAlarmsTime(int dailyNumOfAlarms) {
 		this.dailyNumOfAlarms = dailyNumOfAlarms;
 	}
 
-	protected AlarmPackage(Parcel in) {
-		alarmTime = in.readLong();
-		timeToNextAlarm = in.readInt();
-//		alarmTimes = in.createLongArray();
+	public void setHour(int hour) {
+		this.hour = hour;
 	}
 
-	public static final Creator<AlarmPackage> CREATOR = new Creator<AlarmPackage>() {
-		@Override
-		public AlarmPackage createFromParcel(Parcel in) {
-			return new AlarmPackage(in);
-		}
-
-		@Override
-		public AlarmPackage[] newArray(int size) {
-			return new AlarmPackage[size];
-		}
-	};
-
-	@Override
-	public int describeContents() {
-		return 0;
+	public void setMinute(int minute) {
+		this.minute = minute;
 	}
 
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeLong(alarmTime);
-		dest.writeInt(timeToNextAlarm);
-//		dest.writeLongArray(alarmTimes);
-	}
 
-//	public void setAlarmTimes() {
-//		alarmTimes = new long[dailyNumOfAlarms];
-//		for (int i = 0; i < alarmTimes.length; i++) {
-//			alarmTimes[i] = alarmTime + i * timeToNextAlarm;
-//		}
-//
-//	}
 }

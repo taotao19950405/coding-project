@@ -182,9 +182,9 @@
 	</LinearLayout>
 
 		<RelativeLayout
-			style="@style/section_Layout_style"
-			android:paddingTop="7dp"
-			android:paddingBottom="7dp">
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="7dp">
 
 			<TextView android:layout_width="wrap_content"
 								android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
 								android:layout_centerVertical="true"
 								android:textStyle="bold"
 								android:paddingLeft="4dp"
-								android:text="Set Reminders?"/>
+								android:text="Reminders"/>
 
 			<Switch android:id="@+id/switch_reminder"
 							android:layout_width="wrap_content"
@@ -207,41 +207,105 @@
 	<LinearLayout android:id="@+id/alarm_setter_linear_layout"
 								android:layout_width="match_parent"
 								android:layout_height="wrap_content"
-								android:padding="10dp"
+								android:paddingLeft="10dp"
+								android:paddingRight="10dp"
+								android:paddingBottom="10dp"
 								android:orientation="vertical">
 
 	<LinearLayout style="@style/section_Layout_style">
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textStyle="bold"
-		android:paddingLeft="4dp"
-		android:text="Daily Start Time:"/>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
 
-	<TimePicker
-		android:id="@+id/time_picker"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:timePickerMode="spinner"
-	/>
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent">
 
-	</LinearLayout>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerVertical="true"
+					android:padding="10dp"
+					android:text="Remind me to take"/>
 
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textStyle="bold"
-		android:text="Time Interval:"/>
+			</RelativeLayout>
 
+			<NumberPicker
+				android:id="@+id/daily_frequency_value_spinner"
+				android:layout_width="25dp"
+				android:layout_height="wrap_content"
+			/>
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerVertical="true"
+					android:padding="10dp"
+					android:text="Dose(s) Everyday"/>
+
+			</RelativeLayout>
+
+		</LinearLayout>
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:paddingTop="15dp"
-		android:paddingLeft="15dp"
-		android:paddingRight="15dp"
-		android:paddingBottom="0dp">
+		android:orientation="horizontal">
+
+		<RelativeLayout
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
+		android:paddingLeft="4dp"
+		android:text="Starting at"/>
+
+		</RelativeLayout>
+
+	<TimePicker
+		android:id="@+id/time_picker"
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"
+		android:timePickerMode="spinner"
+	/>
+		</LinearLayout>
+
+	</LinearLayout>
+
+
+	<!---	<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_row="0"
+				android:layout_column="0"
+				android:textStyle="bold"
+				android:text="Time Interval:"/> -->
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<RelativeLayout
+				android:layout_width="wrap_content"
+				android:layout_height="match_parent">
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_centerVertical="true"
+					android:padding="5dp"
+					android:text="With"/>
+
+			</RelativeLayout>
 
 			<NumberPicker
 				android:id="@+id/time_interval_value_spinner"
@@ -251,42 +315,42 @@
 			/>
 
 			<RelativeLayout
-				android:layout_width="0dp"
+				android:layout_width="wrap_content"
 				android:layout_height="match_parent"
-				android:layout_weight="1">
+				android:layout_weight="0">
+
+				<LinearLayout
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:layout_centerVertical="true">
+
 
 				<Spinner
 					android:id="@+id/time_interval_unit_spinner"
-					android:layout_width="match_parent"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_centerVertical="true"
 				/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingLeft="2dp"
+					android:text="Intervals"/>
+
+				</LinearLayout>
 
 			</RelativeLayout>
 
 		</LinearLayout>
 
-		<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:text="Daily Number of Dosages"/>
-
-		<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:paddingTop="15dp"
-			android:paddingLeft="15dp"
-			android:paddingRight="15dp"
-			android:paddingBottom="0dp">
-
-			<NumberPicker
-				android:id="@+id/daily_frequency_value_spinner"
+	<!--		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-			/>
-
-		</LinearLayout>
+				android:layout_row="0"
+				android:layout_column="1"
+				android:textStyle="bold"
+				android:text="Daily Number of Dosages"/> -->
 
 	</LinearLayout>
 

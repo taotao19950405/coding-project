@@ -108,7 +108,7 @@ public class MedicationDetailsFragment extends Fragment {
 		mTimeIntervalValueSelector.setMinValue(1);
 		mTimeIntervalValueSelector.setMaxValue(12);
 
-		mFrequencySelector = (NumberPicker) mAlarmSetterLinearLayout.findViewById(R.id.daily_frequency_value_spinner);
+		mFrequencySelector = (NumberPicker) detailsFragment.findViewById(R.id.daily_frequency_value_spinner);
 		mFrequencySelector.setMinValue(1);
 		mFrequencySelector.setMaxValue(5);
 		mFrequencySelector.setWrapSelectorWheel(false);
@@ -202,8 +202,7 @@ public class MedicationDetailsFragment extends Fragment {
 			MyMedication myMedication = new MyMedication();
 			myMedication.setFhirMedStatement(medStatement);
 			myMedication.setReminderSet(mReminderSwitchState);
-			AlarmPackage alarmPackage = createAlarmPackage();
-			myMedication.setAlarmPackage(alarmPackage);
+			myMedication.createAlarmPackage();
 			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			myMedication.setLocalId(mMedicationID);
 			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
@@ -229,8 +228,7 @@ public class MedicationDetailsFragment extends Fragment {
 			MedicationStatement medStatement = createMedStatement();
 			mMyMedication.setFhirMedStatement(medStatement);
 			mMyMedication.setReminderSet(mReminderSwitchState);
-			AlarmPackage alarmPackage = createAlarmPackage();
-			mMyMedication.setAlarmPackage(alarmPackage);
+			mMyMedication.createAlarmPackage();
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
 			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
 			mMyMedication.setLocalId(mMedicationID);
@@ -305,17 +303,17 @@ public class MedicationDetailsFragment extends Fragment {
 		return medicationStatement;
 	}
 
-	public AlarmPackage createAlarmPackage() {
-		if (mReminderSwitchState) {
-			AlarmPackage alarmPackage = new AlarmPackage();
-			alarmPackage.setAlarmTime(calendar.getTimeInMillis());
-			alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
-			alarmPackage.setDailyNumOfAlarmsTime(mFrequencySelector.getValue());
-			return alarmPackage;
-		} else {
-			return null;
-		}
-	}
+//	public AlarmPackage createAlarmPackage() {
+//		if (mReminderSwitchState) {
+//			AlarmPackage alarmPackage = new AlarmPackage();
+//			alarmPackage.setAlarmTime(calendar.getTimeInMillis());
+//			alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
+//			alarmPackage.setDailyNumOfAlarmsTime(mFrequencySelector.getValue());
+//			return alarmPackage;
+//		} else {
+//			return null;
+//		}
+//	}
 
 	public void removeMedication(){
 		DialogFragment removeMedDialogue = new RemoveMedicationDialogFragment();

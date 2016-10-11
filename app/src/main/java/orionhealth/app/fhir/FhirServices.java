@@ -101,7 +101,7 @@ public final class FhirServices {
 		  .search()
 		  .forResource(Medication.class)
 		  .where(Medication.CODE.isMissing(false))
-		  .count(50)
+		  .count(100)
 		  .returnBundle(Bundle.class)
 		  .execute();
 

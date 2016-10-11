@@ -6,44 +6,61 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
 
-<LinearLayout
+<GridLayout
 							android:layout_width="match_parent"
 							android:layout_height="wrap_content"
+							android:rowCount="1"
+							android:columnCount="2"
 							android:paddingLeft="16dp"
-							android:paddingTop="9dp"
 							android:paddingBottom="9dp"
-							android:paddingRight="16dp"
-							android:orientation="horizontal">
+							android:paddingRight="16dp">
+
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_row="0"
+		android:layout_column="0">
 
 	<TextView
 		android:id="@+id/list_display_date"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_centerInParent="true"
 		android:textStyle="bold"
 		android:textSize="16sp"
-		android:padding="5dp"
-		android:gravity="center_vertical"/>
+		android:padding="10dp"/>
+
+	<ImageView
+		android:id="@+id/status_icon"
+		android:layout_width="10dp"
+		android:layout_height="wrap_content"
+		android:layout_alignEnd="@id/list_display_date"
+		android:layout_alignBottom="@id/list_display_date"/>
+
+	</RelativeLayout>
+
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="10dp"
+		android:layout_row="0"
+		android:layout_column="1">
 
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_centerVertical="true"
 		android:textSize="16sp"
-		android:padding="5dp"
+		android:paddingLeft="10dp"
 		android:id="@+id/list_display_reminder"/>
 
-	<ImageView
-		android:id="@+id/status_icon"
-		android:layout_width="wrap_content"
-		android:layout_height="match_parent"
-		android:layout_marginTop="10dp"
-		android:paddingTop="5dp"
-		android:paddingBottom="5dp"/>
+	</RelativeLayout>
 
-	</LinearLayout>
+	</GridLayout>
 
-	<View
+	<!-- <View
 		android:layout_width="fill_parent"
 		android:layout_height="0.5dp"
-		android:background="@color/light_Grey"/>
+		android:background="@color/light_Grey"/> -->
 
 </LinearLayout>

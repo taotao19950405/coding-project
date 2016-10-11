@@ -91,7 +91,11 @@
 
         <activity
             android:name=".activities.main.TakeMedicationActivity"
-            android:label="@string/title_activity_take_medication">
+            android:label="@string/title_activity_take_medication"
+						android:parentActivityName=".activities.main.MainActivity" >
+					<meta-data
+						android:name="android.support.PARENT_ACTIVITY"
+						android:value=".activities.main.MainActivity" />
         </activity>
 
 			<activity

@@ -158,6 +158,7 @@ public final class MedTableOperations {
 			MyMedication myMedication = new MyMedication();
 			myMedication.setFhirMedStatement(medStatement);
 			myMedication.setReminderSet(reminderSet);
+			myMedication.createAlarmPackage();
 			return myMedication;
 		}
 		return null;
@@ -229,14 +230,18 @@ public final class MedTableOperations {
 		if (alarmPackage != null) {
 			DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 			SQLiteDatabase database = dbo.getWritableDatabase();
+			Calendar currentTime = Calendar.getInstance();
 			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.HOUR_OF_DAY, alarmPackage.getHour());
+			calendar.set(Calendar.MINUTE, alarmPackage.getMinute());
+			calendar.set(Calendar.SECOND, 0);
 			for (int i = 0; i < alarmPackage.getDailyNumOfAlarms(); i++) {
-				long alarmTime = alarmPackage.getAlarmTime() + i * alarmPackage.getIntervalTimeToNextAlarm();
-				if (calendar.getTimeInMillis() < alarmTime) {
+				long alarmTime = calendar.getTimeInMillis() + i * alarmPackage.getIntervalTimeToNextAlarm() * 60 * 1000;
+				if (currentTime.getTimeInMillis() < alarmTime) {
 					ContentValues cv2 = new ContentValues();
 					cv2.put(MedReminderTableInfo.COLUMN_NAME_MED_ID, medId);
 					cv2.put(MedReminderTableInfo.COLUMN_NAME_TIME, alarmTime);
-						cv2.put(MedReminderTableInfo.COLUMN_NAME_STATUS, MedUptakeStatus.PENDING.ordinal());
+					cv2.put(MedReminderTableInfo.COLUMN_NAME_STATUS, MedUptakeStatus.PENDING.ordinal());
 					long remId = database.insert(MedReminderTableInfo.TABLE_NAME, null, cv2);
 					int remIDInt = (int) remId;
 					Intent alarmIntent = new Intent(context, AlarmSetter.class);
