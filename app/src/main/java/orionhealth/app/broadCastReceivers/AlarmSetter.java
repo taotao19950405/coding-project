@@ -20,18 +20,17 @@ public class AlarmSetter extends BroadcastReceiver {
 		Boolean isReminderSet = intent.getBooleanExtra(REMINDER_SET_KEY, false);
 		int medId = intent.getIntExtra(REMINDER_ID_KEY, -1);
 		long alarmTime = intent.getLongExtra(ALARM_TIME_KEY, -1);
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		if (isReminderSet) {
 			intent = new Intent(context, AlarmReceiver.class);
 			intent.putExtra(REMINDER_ID_KEY, medId);
 			intent.putExtra(ALARM_TIME_KEY, alarmTime);
 			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, medId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, alarmPendingIntent);
 			return;
 		} else {
 			intent = new Intent(context, AlarmReceiver.class);
 			PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, medId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			alarmManager.cancel(alarmPendingIntent);
 		}
 

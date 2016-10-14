@@ -34,6 +34,7 @@ import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedReminderListFragment;
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
+import orionhealth.app.broadCastReceivers.AlarmDailyResetter;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 		DatabaseInitializer.getInstance(this);   // Update Database if needed
         setContentView(R.layout.activity_my_medication);
 //Method to look at database in chrome://inspect.
-		Stetho.initializeWithDefaults(this);
+//		Stetho.initializeWithDefaults(this);
 
 //      AllergyTableOperations.getInstance().clearAllergyTable(this);
 //		MedTableOperations.getInstance().clearMedTable(this);
@@ -167,6 +168,10 @@ public class MainActivity extends AppCompatActivity {
                 if (position == 2) {
 					Intent intent = new Intent(getApplicationContext(), AddDoctorActivity.class);
 					startActivity(intent);
+				}
+				if (position == 0) {
+					MedTableOperations.getInstance().resetMedicationDay(getApplicationContext());
+					Toast.makeText(getApplicationContext() ,"RESET", Toast.LENGTH_SHORT).show();
 				}
             }
         });

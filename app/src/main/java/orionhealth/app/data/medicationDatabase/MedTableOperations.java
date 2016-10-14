@@ -10,8 +10,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.broadCastReceivers.AlarmSetter;
 import orionhealth.app.data.dataModels.AlarmPackage;
@@ -20,6 +22,7 @@ import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
 import orionhealth.app.fhir.FhirServices;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedTableInfo;
 import orionhealth.app.data.medicationDatabase.DatabaseContract.MedReminderTableInfo;
+import orionhealth.app.data.medicationDatabase.DatabaseContract.MedHistoryTableInfo;
 
 import java.util.Calendar;
 
@@ -100,6 +103,14 @@ public final class MedTableOperations {
 		return c;
 	}
 
+	public MergeCursor getTodayMedReminders(Context context) {
+		Cursor[] cursors = new Cursor[3];
+		cursors[0] = getMedRemindersForStatus(context, MedUptakeStatus.OVERDUE.ordinal());
+		cursors[1] = getMedRemindersForStatus(context, MedUptakeStatus.PENDING.ordinal());
+		cursors[2] = getMedRemindersForStatus(context, MedUptakeStatus.TAKEN.ordinal());
+		return new MergeCursor(cursors);
+	}
+
 	public Cursor getMedRemindersForStatus(Context context, int status){
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase db = dbo.getReadableDatabase();
@@ -107,6 +118,7 @@ public final class MedTableOperations {
 		String query = 	"SELECT " + MedReminderTableInfo.TABLE_NAME+"."+MedReminderTableInfo._ID +
 		  				", " + MedTableInfo.COLUMN_NAME_JSON_STRING +
 		  				", " + MedReminderTableInfo.COLUMN_NAME_TIME +
+						", " + MedReminderTableInfo.COLUMN_NAME_STATUS +
 		  				" FROM " + MedTableInfo.TABLE_NAME + " " +
 		  				" JOIN " + MedReminderTableInfo.TABLE_NAME +
 		  				" ON " + MedTableInfo.TABLE_NAME+"."+MedTableInfo._ID +
@@ -224,6 +236,44 @@ public final class MedTableOperations {
 		SQLiteDatabase db = dbo.getWritableDatabase();
 		db.delete(MedTableInfo.TABLE_NAME, null, null);
 		db.delete(MedReminderTableInfo.TABLE_NAME, null, null);
+	}
+
+	public void resetMedicationDay(Context context) {
+		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
+		SQLiteDatabase database = dbo.getWritableDatabase();
+		MergeCursor mergeCursor = getTodayMedReminders(context);
+		Log.d("RESET", "HELLO");
+
+		while (mergeCursor.moveToNext()) {
+			String jsonMedString = mergeCursor.getString(mergeCursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING ));
+			int status = mergeCursor.getInt(mergeCursor.getColumnIndex(MedReminderTableInfo.COLUMN_NAME_STATUS));
+			long time = mergeCursor.getLong(mergeCursor.getColumnIndex(MedReminderTableInfo.COLUMN_NAME_TIME));
+			ContentValues cv = new ContentValues();
+			cv.put(MedHistoryTableInfo.COLUMN_NAME_MED_JSON_STRING, jsonMedString);
+			cv.put(MedHistoryTableInfo.COLUMN_NAME_STATUS, status);
+			cv.put(MedHistoryTableInfo.COLUMN_NAME_TIME, time);
+			database.insert(MedHistoryTableInfo.TABLE_NAME, null, cv);
+		}
+
+		database.delete(MedReminderTableInfo.TABLE_NAME, null, null);
+
+		Cursor cursor = getAllRows(context);
+		while (cursor.moveToNext()) {
+			Boolean reminderSet
+					= cursor.getInt(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_REMINDER_SET)) != 0;
+			int id =
+					cursor.getInt(cursor.getColumnIndex(MedTableInfo._ID));
+			String jsonString =
+					cursor.getString(cursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING));
+			MedicationStatement medStatement =
+					(MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
+			MyMedication myMedication = new MyMedication();
+			myMedication.setFhirMedStatement(medStatement);
+			myMedication.setReminderSet(reminderSet);
+			myMedication.createAlarmPackage();
+			addMedReminder(context, id, myMedication.getAlarmPackage());
+		}
+
 	}
 
 	private void addMedReminder(Context context, int medId, AlarmPackage alarmPackage) {

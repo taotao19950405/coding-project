@@ -24,6 +24,13 @@ public final class DatabaseContract {
 		public static final String COLUMN_NAME_STATUS = "status";
 	}
 
+	public static  abstract class MedHistoryTableInfo implements BaseColumns {
+		public static final String TABLE_NAME = "medication_history";
+		public static final String COLUMN_NAME_MED_JSON_STRING = "med_json_string";
+		public static final String COLUMN_NAME_TIME = "time";
+		public static final String COLUMN_NAME_STATUS = "status";
+	}
+
 	public static abstract class AllergyTableInfo implements BaseColumns{
 		public static final String TABLE_NAME = "allergy";
 		public static final String COLUMN_NAME_JSON_STRING = "json_string_allergy";

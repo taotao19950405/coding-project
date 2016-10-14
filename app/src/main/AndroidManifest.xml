@@ -84,6 +84,10 @@
             android:name=".broadCastReceivers.AlarmSetter"
             android:exported="false"
             android:process=":remote" />
+        <receiver
+            android:name=".broadCastReceivers.AlarmDailyResetter"
+            android:exported="false"
+            android:process=":remote" />
 
         <service android:name=".services.RingToneService" />
         <service android:name=".services.MedResponseService" />

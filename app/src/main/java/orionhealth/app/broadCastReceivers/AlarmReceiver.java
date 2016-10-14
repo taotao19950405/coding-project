@@ -80,7 +80,6 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
 		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
 		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
-		  .setDeleteIntent(pendingIntentCancel)
 		  .setFullScreenIntent(pendingIntentCancel, true)
 		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, TakeMedicationActivity.class), PendingIntent.FLAG_CANCEL_CURRENT))
 		  .build();
