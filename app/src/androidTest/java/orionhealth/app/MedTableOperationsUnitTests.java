@@ -30,14 +30,14 @@ public class MedTableOperationsUnitTests {
 	private MedTableOperations medTableOperations;
 	private Context context;
 
-	@Before
-	public void setup() {
-		 medTableOperations = MedTableOperations.getInstance();
-		 context =
-		   		new RenamingDelegatingContext(InstrumentationRegistry
-				                              .getInstrumentation()
-				                              .getTargetContext(), "test_");
-	}
+//	@Before
+//	public void setup() {
+//		 medTableOperations = MedTableOperations.getInstance();
+//		 context =
+//		   		new RenamingDelegatingContext(InstrumentationRegistry
+//				                              .getInstrumentation()
+//				                              .getTargetContext(), "test_");
+//	}
 
 	@Test
 	public void MedTableOperations_add() {
@@ -100,37 +100,37 @@ public class MedTableOperationsUnitTests {
 //		medTableOperations.clearMedTable(context);
 	}
 
-	public void testIfTwoMedicationEqual(MedicationStatement medicationStatement1,
-										 MedicationStatement medicationStatement2) {
-		assertThat(medicationStatement1.getStatus(), is(medicationStatement2.getStatus()));
-		assertThat(medicationStatement1.getNote(), is(medicationStatement2.getNote()));
-		assertThat(medicationStatement1.getResourceName(), is(medicationStatement2.getResourceName()));
-
-		CodeableConceptDt codeableConceptDt1;
-		CodeableConceptDt codeableConceptDt12;
-
-		ResourceReferenceDt resourceReferenceDt1;
-		ResourceReferenceDt resourceReferenceDt2;
-
-		if (medicationStatement1.getMedication() != null) {
-			codeableConceptDt1 = (CodeableConceptDt) medicationStatement1.getMedication();
-			codeableConceptDt12 = (CodeableConceptDt) medicationStatement2.getMedication();
-			assertThat(codeableConceptDt1.getText(), is(codeableConceptDt12.getText()));
-		}
-
-		if (medicationStatement1.getReasonForUse() != null) {
-			codeableConceptDt1 = (CodeableConceptDt) medicationStatement1.getReasonForUse();
-			codeableConceptDt12 = (CodeableConceptDt) medicationStatement2.getReasonForUse();
-			assertThat(codeableConceptDt1.getText(), is(codeableConceptDt12.getText()));
-		}
-
-		if (medicationStatement1.getPatient() != null) {
-			resourceReferenceDt1 = medicationStatement1.getPatient();
-			resourceReferenceDt2 = medicationStatement2.getPatient();
-			assertThat(resourceReferenceDt1.getDisplay(), is(resourceReferenceDt2.getDisplay()));
-		}
-
-	}
+//	public void testIfTwoMedicationEqual(MedicationStatement medicationStatement1,
+//										 MedicationStatement medicationStatement2) {
+//		assertThat(medicationStatement1.getStatus(), is(medicationStatement2.getStatus()));
+//		assertThat(medicationStatement1.getNote(), is(medicationStatement2.getNote()));
+//		assertThat(medicationStatement1.getResourceName(), is(medicationStatement2.getResourceName()));
+//
+//		CodeableConceptDt codeableConceptDt1;
+//		CodeableConceptDt codeableConceptDt12;
+//
+//		ResourceReferenceDt resourceReferenceDt1;
+//		ResourceReferenceDt resourceReferenceDt2;
+//
+//		if (medicationStatement1.getMedication() != null) {
+//			codeableConceptDt1 = (CodeableConceptDt) medicationStatement1.getMedication();
+//			codeableConceptDt12 = (CodeableConceptDt) medicationStatement2.getMedication();
+//			assertThat(codeableConceptDt1.getText(), is(codeableConceptDt12.getText()));
+//		}
+//
+//		if (medicationStatement1.getReasonForUse() != null) {
+//			codeableConceptDt1 = (CodeableConceptDt) medicationStatement1.getReasonForUse();
+//			codeableConceptDt12 = (CodeableConceptDt) medicationStatement2.getReasonForUse();
+//			assertThat(codeableConceptDt1.getText(), is(codeableConceptDt12.getText()));
+//		}
+//
+//		if (medicationStatement1.getPatient() != null) {
+//			resourceReferenceDt1 = medicationStatement1.getPatient();
+//			resourceReferenceDt2 = medicationStatement2.getPatient();
+//			assertThat(resourceReferenceDt1.getDisplay(), is(resourceReferenceDt2.getDisplay()));
+//		}
+//
+//	}
 }
 
 

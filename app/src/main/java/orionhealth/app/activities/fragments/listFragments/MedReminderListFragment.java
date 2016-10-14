@@ -51,16 +51,14 @@ public class MedReminderListFragment extends ListFragment {
 		TextView textView = (TextView) headerView.findViewById(R.id.header_text);
 		textView.setText("Overdue Medication");
 		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.light_red));
-		View divider = headerView.findViewById(R.id.header_divider);
-		divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_red));
+
 		headerView2 = inflater.inflate(R.layout.template_header, container, false);
 		textView = (TextView) headerView2.findViewById(R.id.header_text);
 		textView.setText("Pending Medication");
 		headerView3 = inflater.inflate(R.layout.template_header, container, false);
 		textView = (TextView) headerView3.findViewById(R.id.header_text);
 		textView.setTextColor(ContextCompat.getColor(getContext(), R.color.light_Green));
-		divider = headerView3.findViewById(R.id.header_divider);
-		divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.light_Green));
+
 		textView.setText("Taken Medication");
 		emptyListMessage = inflater.inflate(R.layout.template_empty_list_message, container, false);
 		return resultView;

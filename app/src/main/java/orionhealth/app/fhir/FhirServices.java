@@ -10,6 +10,7 @@ import android.widget.Toast;
 import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.CodingDt;
 import ca.uhn.fhir.model.dstu2.resource.*;
+import ca.uhn.fhir.okhttp.client.OkHttpRestfulClientFactory;
 import ca.uhn.fhir.rest.api.SummaryEnum;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 
@@ -69,6 +70,9 @@ public final class FhirServices {
 	private FhirContext getFhirContextInstance() {
 		if (mFhirContext == null) {
 			mFhirContext = FhirContext.forDstu2();
+			OkHttpRestfulClientFactory okHttpRestfulClientFactory = new OkHttpRestfulClientFactory();
+			okHttpRestfulClientFactory.setFhirContext(mFhirContext);
+			mFhirContext.setRestfulClientFactory(okHttpRestfulClientFactory);
 			return mFhirContext;
 		}else{
 			return mFhirContext;
@@ -228,6 +232,7 @@ public final class FhirServices {
 		@Override
 		protected Void doInBackground(Object[]... params) {
 			FhirContext fhirContext = getFhirContextInstance();
+
 			IGenericClient client = fhirContext.newRestfulGenericClient(mServerBase);
 			ArrayList<MedicationStatement> newFoundMeds = new ArrayList<MedicationStatement>();
 			ArrayList<String> newFoundMedIds = new ArrayList<>();

@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.facebook.stetho.Stetho;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;

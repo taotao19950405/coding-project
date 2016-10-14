@@ -78,7 +78,7 @@ public class MedicationDetailsFragment extends Fragment {
 
 		mNameTextField = (AutoCompleteTextView) detailsFragment.findViewById(R.id.edit_text_name);
 		AutoCompleteAdaptor adapter = new AutoCompleteAdaptor(getActivity(), android.R.layout.simple_dropdown_item_1line);
-//		mNameTextField.setAdapter(adapter);
+		mNameTextField.setAdapter(adapter);
 
 		mDosageTextField = (EditText) detailsFragment.findViewById(R.id.edit_text_dosage);
 
@@ -206,7 +206,7 @@ public class MedicationDetailsFragment extends Fragment {
 			myMedication.createAlarmPackage();
 			mMedicationID = MedTableOperations.getInstance().addToMedTable(context, myMedication);
 			myMedication.setLocalId(mMedicationID);
-//			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
+			FhirServices.getsFhirServices().sendMedicationToServer(myMedication, context);
 		} catch (NoNameException e) {
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
 			throw e;
@@ -229,7 +229,7 @@ public class MedicationDetailsFragment extends Fragment {
 			mMyMedication.setReminderSet(mReminderSwitchState);
 			mMyMedication.createAlarmPackage();
 			MedTableOperations.getInstance().updateMedication(context, mMedicationID, mMyMedication);
-//			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
+			FhirServices.getsFhirServices().updateMedicationServer(mMyMedication, context);
 			mMyMedication.setLocalId(mMedicationID);
 		} catch (NoNameException e){
 			Toast.makeText(context, "Please enter a name", Toast.LENGTH_SHORT).show();
@@ -320,7 +320,7 @@ public class MedicationDetailsFragment extends Fragment {
 	}
 
 	public void onRemovePositiveClick(Context context) {
-//		FhirServices.getsFhirServices().inactiveMedication(mMyMedication.getFhirMedStatement(), context);
+		FhirServices.getsFhirServices().inactiveMedication(mMyMedication.getFhirMedStatement(), context);
 		MedTableOperations.getInstance().removeMedReminder(context, mMedicationID);
 		MedTableOperations.getInstance().removeMedication(context, mMedicationID);
 	}
