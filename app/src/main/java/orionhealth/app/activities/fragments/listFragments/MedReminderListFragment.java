@@ -31,9 +31,6 @@ public class MedReminderListFragment extends ListFragment {
 
 	private MedReminderListAdaptor cursorAdapter;
 
-	public MedReminderListFragment() {
-	}
-
 	public static MedReminderListFragment newInstance() {
 		return newInstance(MedUptakeStatus.PENDING.ordinal());
 	}

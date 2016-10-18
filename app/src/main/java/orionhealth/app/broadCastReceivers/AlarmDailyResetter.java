@@ -20,12 +20,14 @@ public class AlarmDailyResetter extends BroadcastReceiver {
 
     public static void scheduleAlarmResetter(Context context) {
         Intent intent = new Intent(context, AlarmDailyResetter.class);
-//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 10, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        Calendar calendar = Calendar.getInstance();
-//        alarmManager.setExact(AlarmManager.RTC, calendar.getTimeInMillis(), alarmPendingIntent);
-        context.sendBroadcast(intent);
-        Log.d("RESET", "scheduleAlarm");
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent alarmPendingIntent = PendingIntent.getBroadcast(context, 20, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.SECOND, 59);
+        alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis() + 2000, AlarmManager.INTERVAL_DAY, alarmPendingIntent);
     }
 
     @Override

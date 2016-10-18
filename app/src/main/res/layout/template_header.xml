@@ -3,15 +3,15 @@
 							android:id="@+id/pending_med_title"
 							android:orientation="vertical"
 							android:layout_width="match_parent"
-							android:layout_height="wrap_content">
+							android:layout_height="wrap_content"
+							android:paddingLeft="10dp">
 
 	<TextView
 		android:id="@+id/header_text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:textSize="16sp"
 		android:textStyle="bold"
 		style="@style/LightBlueHeader"/>
-
-
 
 </LinearLayout>

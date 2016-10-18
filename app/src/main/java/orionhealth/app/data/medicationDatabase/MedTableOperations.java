@@ -242,7 +242,6 @@ public final class MedTableOperations {
 		DatabaseInitializer dbo = DatabaseInitializer.getInstance(context);
 		SQLiteDatabase database = dbo.getWritableDatabase();
 		MergeCursor mergeCursor = getTodayMedReminders(context);
-		Log.d("RESET", "HELLO");
 
 		while (mergeCursor.moveToNext()) {
 			String jsonMedString = mergeCursor.getString(mergeCursor.getColumnIndex(MedTableInfo.COLUMN_NAME_JSON_STRING ));

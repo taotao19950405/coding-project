@@ -25,9 +25,6 @@ public class ConditionListFragment extends ListFragment {
 	public final static String SELECTED_COND_ID = "conditionListFragment.SELECTED_COND_ID";
 	private ListView mSimpleListView;
 
-	public ConditionListFragment() {
-	}
-
 	public static ConditionListFragment newInstance() {
 		ConditionListFragment fragment = new ConditionListFragment();
 		return fragment;

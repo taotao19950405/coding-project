@@ -29,10 +29,6 @@ public class AllergyListFragment extends ListFragment {
     public final static String SELECTED_ALLERGY_ID = "allergyListFragment.SELECTED_ALLERGY_ID";
     private ListView aAllergyList;
 
-
-    public AllergyListFragment() {
-    }
-
     public static AllergyListFragment newInstance() {
         AllergyListFragment allergyFragment = new AllergyListFragment();
         return allergyFragment;

@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import orionhealth.app.R;
+import orionhealth.app.activities.fragments.fragments.CalendarFragment;
 import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 					startActivity(intent);
 				}
 				if (position == 0) {
-					MedTableOperations.getInstance().resetMedicationDay(getApplicationContext());
+					AlarmDailyResetter.scheduleAlarmResetter(getApplicationContext());
 					Toast.makeText(getApplicationContext() ,"RESET", Toast.LENGTH_SHORT).show();
 				}
             }
@@ -235,10 +236,11 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		public Fragment getItem(int position) {
 			switch (position){
-				case 0: return MedReminderListFragment.newInstance();
-				case 1: return MedicationListFragment.newInstance();
-				case 2: return AllergyListFragment.newInstance();
-				case 3: return ConditionListFragment.newInstance();
+				case 0: return new MedReminderListFragment();
+				case 1: return new MedicationListFragment();
+				case 2: return new AllergyListFragment();
+				case 3: return new ConditionListFragment();
+				case 4: return new CalendarFragment();
 				default: return UnderConstructionFragment.newInstance();
 			}
 		}

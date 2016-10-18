@@ -33,9 +33,6 @@ public class MedicationListFragment extends ListFragment implements SwipeRefresh
 	private MedicationExpandableListAdapter listAdapter;
 	private Cursor cursor;
 
-	public MedicationListFragment() {
-	}
-
 	public static MedicationListFragment newInstance() {
 		MedicationListFragment fragment = new MedicationListFragment();
 		return fragment;
