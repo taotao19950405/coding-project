@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -84,12 +85,9 @@ public class AllergyListAdapter extends BaseAdapter {
         TextView displayAllergyReaction = (TextView) view.findViewById(R.id.list_display_reaction_allergy);
         displayAllergyReaction.setText(reaction);
 
-        if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITL")) {
-            view.setBackgroundColor(Color.rgb(255, 220, 193));
-        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITU")) {
-            view.setBackgroundColor(Color.rgb(255, 236, 222));
-        } else if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITH")) {
-            view.setBackgroundColor(Color.rgb(255, 202, 161));
+        ImageView image = (ImageView) view.findViewById(R.id.high_risk_allergy_indicator);
+        if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITH")) {
+            image.setImageResource(R.drawable.warning);
         }
         return view;
     }
