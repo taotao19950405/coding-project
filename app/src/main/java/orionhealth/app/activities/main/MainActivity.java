@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.*;
@@ -29,6 +30,7 @@ import android.widget.*;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.CalendarFragment;
 import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
+import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 	private BroadcastReceiver receiver;
-	public MedReminderListFragment todayListFragment;
+	public MedicationListFragment medFragment;
 
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mTabbedPagerAdapter);
 
+
 		if (savedInstanceState != null) {
 			CurrentTabNumber = savedInstanceState.getInt(SAVED_SLIDE_POSITION);
 		}
@@ -124,7 +127,9 @@ public class MainActivity extends AppCompatActivity {
 		receiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				Log.d("asdf", "OnReceive");
+				if (medFragment != null) {
+					medFragment.swipeRefreshLayout.setRefreshing(false);
+				}
 				mTabbedPagerAdapter.notifyDataSetChanged();
 			}
 		};
@@ -227,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
 	}
 
-	public class TabbedPagerAdapter extends FragmentPagerAdapter {
+	public class TabbedPagerAdapter extends FragmentPagerAdapter{
 
 		public TabbedPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -237,7 +242,8 @@ public class MainActivity extends AppCompatActivity {
 		public Fragment getItem(int position) {
 			switch (position){
 				case 0: return new MedReminderListFragment();
-				case 1: return new MedicationListFragment();
+				case 1: medFragment = new MedicationListFragment();
+						return medFragment;
 				case 2: return new AllergyListFragment();
 				case 3: return new ConditionListFragment();
 				case 4: return new CalendarFragment();
@@ -259,6 +265,12 @@ public class MainActivity extends AppCompatActivity {
 		public int getItemPosition(Object object) {
 			//updates all views in pager when notifyDataSetChanged is called
 			return POSITION_NONE;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// give an ID different from position when position has been changed
+			return position;
 		}
 	}
 

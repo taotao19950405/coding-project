@@ -20,7 +20,7 @@ import orionhealth.app.activities.external.AnimatedExpandableListView;
 import orionhealth.app.activities.adaptors.MedicationExpandableListAdapter;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.fhir.FhirServices;
-import orionhealth.app.services.UpdateUIService;
+
 
 /**
  * Created by bill on 25/04/16.
@@ -28,8 +28,8 @@ import orionhealth.app.services.UpdateUIService;
 public class MedicationListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
 
 	public final static String SELECTED_MED_ID = "medicationListFragment.SELECTED_MED_ID";
+	public SwipeRefreshLayout swipeRefreshLayout;
 	private AnimatedExpandableListView mAnimatedExpandableListView;
-	private SwipeRefreshLayout swipeRefreshLayout;
 	private MedicationExpandableListAdapter listAdapter;
 	private Cursor cursor;
 
@@ -94,9 +94,12 @@ public class MedicationListFragment extends ListFragment implements SwipeRefresh
 	public void onRefresh() {
 		FhirServices.getsFhirServices().PushLocalToServer(getContext());
 		FhirServices.getsFhirServices().PullServerToLocal(getContext());
-		swipeRefreshLayout.setRefreshing(false);
-//		cursor = MedTableOperations.getInstance().getAllRows(getContext());
-//		listAdapter.notifyDataSetChanged();
-//		mAnimatedExpandableListView.setAdapter(listAdapter);
+//		swipeRefreshLayout.setRefreshing(false);
+	}
+
+	@Override
+	public void onDestroyView() {
+		swipeRefreshLayout.removeAllViews();
+		super.onDestroyView();
 	}
 }

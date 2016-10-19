@@ -248,6 +248,7 @@ public final class FhirServices {
 				        .and(MedicationStatement.STATUS.exactly().code("active"))
 						.returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
 						.execute();
+
 				// read found results to return the objects
 				for (int i = 0;i<results.getEntry().size();i++) {
 //					System.out.println(results.getEntry().get(i).getFullUrl());
