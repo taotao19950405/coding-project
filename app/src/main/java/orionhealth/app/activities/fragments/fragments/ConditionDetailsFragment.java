@@ -345,9 +345,17 @@ public class ConditionDetailsFragment extends Fragment {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
-                DialogFragment dialogFragment = new DatePicker();
-                dialogFragment.show(getFragmentManager(), tag);
-                hideKeyBoard(v);
+                DatePicker datePicker = new DatePicker();
+                EditText editText = (EditText) v;
+                Date date = dateService.parseDate(editText.getText().toString());
+                if (date != null) {
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                } else {
+                    datePicker.setDate();
+                }
+                datePicker.show(getFragmentManager(), v.getId()+"");
             }
         }
     }
@@ -361,8 +369,17 @@ public class ConditionDetailsFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            DialogFragment dialogFragment = new DatePicker();
-            dialogFragment.show(getFragmentManager(), tag);
+            DatePicker datePicker = new DatePicker();
+            EditText editText = (EditText) v;
+            Date date = dateService.parseDate(editText.getText().toString());
+            if (date != null) {
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                datePicker.setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            } else {
+                datePicker.setDate();
+            }
+            datePicker.show(getFragmentManager(), v.getId()+"");
         }
     }
 

@@ -77,7 +77,11 @@ public class AllergyListAdapter extends BaseAdapter {
 
         String detailsText = allergyIntoleranceFhir.getNote().getText();
         TextView displayAllergyDetails = (TextView) view.findViewById(R.id.list_display_details_allergy);
-        displayAllergyDetails.setText(detailsText);
+        if (detailsText == null) {
+            displayAllergyDetails.setVisibility(View.GONE);
+        } else {
+            displayAllergyDetails.setText(detailsText);
+        }
 
         ArrayList<AllergyIntolerance.Reaction> listReaction = (ArrayList<AllergyIntolerance.Reaction>) allergyIntoleranceFhir.getReaction();
         CodeableConceptDt manifestationCodeableConcept = listReaction.get(0).getManifestation().get(0);
@@ -86,9 +90,14 @@ public class AllergyListAdapter extends BaseAdapter {
         displayAllergyReaction.setText(reaction);
 
         ImageView image = (ImageView) view.findViewById(R.id.high_risk_allergy_indicator);
-        if (allergyIntoleranceFhir.getCriticality().toString().equals("CRITH")) {
+        if (allergyIntoleranceFhir.getCriticality().equals("CRITH")) {
+            image.setImageResource(R.drawable.exclamation);
+        } else if (allergyIntoleranceFhir.getCriticality().equals("CRITL")) {
             image.setImageResource(R.drawable.warning);
+        } else {
+            image.setImageResource(R.drawable.question);
         }
+
         return view;
     }
 }

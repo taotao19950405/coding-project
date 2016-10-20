@@ -302,18 +302,6 @@ public class MedicationDetailsFragment extends Fragment {
 		return medicationStatement;
 	}
 
-//	public AlarmPackage createAlarmPackage() {
-//		if (mReminderSwitchState) {
-//			AlarmPackage alarmPackage = new AlarmPackage();
-//			alarmPackage.setAlarmTime(calendar.getTimeInMillis());
-//			alarmPackage.setTimeIntervalToNextAlarm(mTimeIntervalValueSelector.getValue() * 5 * 60 * 1000);
-//			alarmPackage.setDailyNumOfAlarmsTime(mFrequencySelector.getValue());
-//			return alarmPackage;
-//		} else {
-//			return null;
-//		}
-//	}
-
 	public void removeMedication(){
 		DialogFragment removeMedDialogue = new RemoveMedicationDialogFragment();
 		removeMedDialogue.show(getFragmentManager(), "removeMedication");

@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
-	android:paddingLeft="16dp"
-	android:paddingRight="16dp"
+	android:padding="10dp"
+	android:orientation="horizontal"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<ImageView
+		android:src="@drawable/heart"
+		android:layout_width="wrap_content"
+		android:layout_height="match_parent"
+		android:padding="7dp"/>
+
+<LinearLayout 
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
 	android:orientation="vertical">
 
 		<TextView
 			android:paddingLeft="15dp"
-			android:paddingBottom="8dp"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
 			android:fontFamily="sans-serif-condensed"
 			android:textSize="16sp"
+			android:paddingBottom="2dp"
 			android:textStyle="bold"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:id="@+id/list_display_condition"/>
 
 
-		<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+		<TextView
 			android:id="@+id/list_display_date"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
 			android:paddingLeft="15dp"
-			android:paddingRight="15dp"
-			android:orientation="horizontal"
-			android:text="@string/text_hardcoded_Date"
-			android:gravity="center_vertical"/>
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"/>
+</LinearLayout>
+
 </LinearLayout>

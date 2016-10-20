@@ -16,21 +16,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.*;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import orionhealth.app.R;
 import orionhealth.app.activities.fragments.fragments.CalendarFragment;
-import orionhealth.app.activities.fragments.fragments.DoctorDetailsFragment;
-import orionhealth.app.activities.fragments.fragments.MedicationDetailsFragment;
 import orionhealth.app.activities.fragments.fragments.UnderConstructionFragment;
 import orionhealth.app.activities.fragments.listFragments.AllergyListFragment;
 import orionhealth.app.activities.fragments.listFragments.ConditionListFragment;
@@ -38,7 +34,6 @@ import orionhealth.app.activities.fragments.listFragments.MedReminderListFragmen
 import orionhealth.app.activities.fragments.listFragments.MedicationListFragment;
 import orionhealth.app.broadCastReceivers.AlarmDailyResetter;
 import orionhealth.app.data.medicationDatabase.DatabaseInitializer;
-import orionhealth.app.data.medicationDatabase.MedTableOperations;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -227,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
 	public void setTabIcons(){
 		mTabLayout.getTabAt(0).setIcon(R.mipmap.ic_schedule_white_24dp);
 		mTabLayout.getTabAt(1).setIcon(R.mipmap.white_medicine);
-		mTabLayout.getTabAt(2).setIcon(R.mipmap.ic_warning_white_24dp);
-		mTabLayout.getTabAt(3).setIcon(R.mipmap.ic_notifications_none_white_24dp);
+		mTabLayout.getTabAt(2).setIcon(R.drawable.sneeze);
+		mTabLayout.getTabAt(3).setIcon(R.drawable.treatment);
 		mTabLayout.getTabAt(4).setIcon(R.mipmap.ic_date_range_white_24dp);
 	}
 

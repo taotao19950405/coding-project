@@ -7,76 +7,42 @@
     android:id="@+id/display_substance_details_allergy"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ImageView
+            android:id="@+id/high_risk_allergy_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="7dp"/>
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="2dp"
-        android:orientation="horizontal"
-        android:id="@+id/display_substance_allergy">
 
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:id="@+id/list_display_substance_allergy"
             android:paddingLeft="15dp"
             android:fontFamily="sans-serif-condensed"
             android:textSize="16sp"
+            android:paddingBottom="2dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="15dp"
-        android:orientation="horizontal"
-        android:id="@+id/display_reaction_allergy">
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:id="@+id/list_display_reaction_allergy"
             android:paddingLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-    </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="15dp"
-        android:orientation="horizontal"
-        android:id="@+id/display_details_allergy">
-
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:id="@+id/list_display_details_allergy"
             android:paddingLeft="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
     </LinearLayout>
-    </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginRight="5dp">
-
-        <ImageView
-            android:id="@+id/high_risk_allergy_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
-
-    </RelativeLayout>
 </LinearLayout>
 
