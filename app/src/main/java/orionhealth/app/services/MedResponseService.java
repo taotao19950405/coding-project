@@ -12,6 +12,7 @@ import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
  * Created by bill on 11/07/16.
  */
 public class MedResponseService extends IntentService {
+	public static String BOOLEAN_KEY = "boolean_key";
 
 	public MedResponseService() {
 		super("MED_RESPONSE_SERVICE");
@@ -29,17 +30,18 @@ public class MedResponseService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
+		Boolean medTaken = intent.getBooleanExtra(BOOLEAN_KEY, true);
+		Intent service = new Intent(getApplicationContext(), RingToneService.class);
+		getApplicationContext().stopService(service);
 		int notificationId = intent.getIntExtra(AlarmSetter.REMINDER_ID_KEY, -1);
 		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(notificationId);
-		Intent service = new Intent(getApplicationContext(), RingToneService.class);
-		getApplicationContext().stopService(service);
-		WakeLockService.release();
 
-		long time = intent.getLongExtra(AlarmSetter.ALARM_TIME_KEY, -1);
-		MedTableOperations.getInstance().changeMedReminderStatus(getApplicationContext(), notificationId, MedUptakeStatus.TAKEN.ordinal());
+		if (medTaken) {
+			MedTableOperations.getInstance().changeMedReminderStatus(getApplicationContext(), notificationId, MedUptakeStatus.TAKEN.ordinal());
 
-		intent = new Intent(this, UpdateUIService.class);
-		startService(intent);
+			intent = new Intent(this, UpdateUIService.class);
+			startService(intent);
+		}
 	}
 }

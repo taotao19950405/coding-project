@@ -60,32 +60,39 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 			activityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(activityIntent);
 		} else {
-		MedicationStatement medicationStatement =
-		  (MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
+			MedicationStatement medicationStatement =
+			  (MedicationStatement) FhirServices.getsFhirServices().toResource(jsonString);
 
-		CodeableConceptDt conceptDt = (CodeableConceptDt) medicationStatement.getMedication();
-		String medName = conceptDt.getText();
+			CodeableConceptDt conceptDt = (CodeableConceptDt) medicationStatement.getMedication();
+			String medName = conceptDt.getText();
 
-		Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
-		takeMedicationIntent.putExtra(AlarmSetter.REMINDER_ID_KEY, medId);
-		takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
-		PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			Intent takeMedicationIntent = new Intent(context, MedResponseService.class);
+			takeMedicationIntent.putExtra(AlarmSetter.REMINDER_ID_KEY, medId);
+			takeMedicationIntent.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+			takeMedicationIntent.putExtra(MedResponseService.BOOLEAN_KEY, true);
+			PendingIntent pendingIntentCancel = PendingIntent.getService(context, medId, takeMedicationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+			Intent takeMedicationIntent2 = new Intent(context, MedResponseService.class);
+			takeMedicationIntent2.putExtra(AlarmSetter.REMINDER_ID_KEY, medId);
+			takeMedicationIntent2.putExtra(AlarmSetter.ALARM_TIME_KEY, alarmTime);
+			takeMedicationIntent2.putExtra(MedResponseService.BOOLEAN_KEY, false);
+			PendingIntent pendingIntentCancel2 = PendingIntent.getService(context, medId, takeMedicationIntent2, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		Notification notification = new NotificationCompat.Builder(context)
-		  .setContentTitle("Take " + medName)
-		  .setContentText("Medication Reminder")
-		  .setSmallIcon(R.drawable.medicine)
-		  .setPriority(Notification.PRIORITY_MAX)
-		  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-		  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
-		  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel)
-		  .setFullScreenIntent(pendingIntentCancel, true)
-		  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, TakeMedicationActivity.class), PendingIntent.FLAG_CANCEL_CURRENT))
-		  .build();
+			Notification notification = new NotificationCompat.Builder(context)
+			  .setContentTitle("Take " + medName)
+			  .setContentText("Medication Reminder")
+			  .setSmallIcon(R.drawable.medicine)
+			  .setPriority(Notification.PRIORITY_MAX)
+			  .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+			  .addAction(R.mipmap.ic_done_all_black_18dp, "take", pendingIntentCancel)
+			  .addAction(R.mipmap.ic_clear_black_18dp, "dismiss", pendingIntentCancel2)
+			  .setFullScreenIntent(pendingIntentCancel, true)
+			  .setContentIntent(PendingIntent.getActivity(context, 0, new Intent(context, TakeMedicationActivity.class), PendingIntent.FLAG_CANCEL_CURRENT))
+			  .setDeleteIntent(pendingIntentCancel2)
+			  .build();
 
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.notify(medId, notification);
+			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.notify(medId, notification);
 
 		}
 	}

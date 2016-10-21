@@ -3,12 +3,18 @@
 package orionhealth.app.data.dataModels;
 
 import android.os.Build;
+import android.util.Log;
+
+import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.composite.SimpleQuantityDt;
 import ca.uhn.fhir.model.dstu2.composite.TimingDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
+import ca.uhn.fhir.model.dstu2.valueset.UnitsOfTimeEnum;
 import ca.uhn.fhir.model.primitive.DateTimeDt;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by bill on 8/04/16.
@@ -39,8 +45,44 @@ public class MyMedication {
 			mAlarmPackage.setHour(dateTimeDt.getHour());
 			mAlarmPackage.setMinute(dateTimeDt.getMinute());
 			mAlarmPackage.setDailyNumOfAlarmsTime(repeat.getFrequency());
-			mAlarmPackage.setTimeIntervalToNextAlarm(repeat.getPeriod().intValue());
+
+			if (repeat.getPeriodUnits().equals(UnitsOfTimeEnum.MIN.getCode())) {
+				mAlarmPackage.setTimeIntervalToNextAlarm(repeat.getPeriod().intValue());
+			} else if (repeat.getPeriodUnits().equals(UnitsOfTimeEnum.H.getCode())) {
+				mAlarmPackage.setTimeIntervalToNextAlarm(repeat.getPeriod().intValue() * 60);
+			} else {
+				Log.d(TAG, repeat.getPeriodUnits());
+				Log.d(TAG, UnitsOfTimeEnum.H.toString());
+			}
 		}
+	}
+
+	public String getName() {
+		CodeableConceptDt codeableConcept = (CodeableConceptDt) getFhirMedStatement().getMedication();
+		return codeableConcept.getText();
+	}
+
+	public int getDosage() {
+		List<MedicationStatement.Dosage> listDosage = getFhirMedStatement().getDosage();
+		MedicationStatement.Dosage dosage = listDosage.get(0);
+		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
+		return simpleQuantityDt.getValueElement().getValueAsInteger();
+	}
+
+	public int getDosageUnitID() {
+		List<MedicationStatement.Dosage> listDosage = getFhirMedStatement().getDosage();
+		MedicationStatement.Dosage dosage = listDosage.get(0);
+		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
+		String unitIdString = simpleQuantityDt.getCode();
+		return Integer.parseInt(unitIdString);
+
+	}
+
+	public String getDosageUnit() {
+		List<MedicationStatement.Dosage> listDosage = getFhirMedStatement().getDosage();
+		MedicationStatement.Dosage dosage = listDosage.get(0);
+		SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
+		return simpleQuantityDt.getUnit();
 	}
 
 	@Override

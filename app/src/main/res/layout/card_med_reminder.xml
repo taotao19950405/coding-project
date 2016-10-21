@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-							xmlns:card_view="http://schemas.android.com/apk/res-auto"
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							style="@style/AppTheme2"
-							android:orientation="vertical">
 
-	<android.support.v7.widget.CardView
-		xmlns:card_view="http://schemas.android.com/apk/res-auto"
-		android:id="@+id/card_view"
-		android:layout_gravity="center"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="5dp"
-		card_view:cardCornerRadius="4dp">
+<android.support.v7.widget.CardView
+	android:id="@+id/card_view"
+	xmlns:card_view="http://schemas.android.com/apk/res-auto"
+	android:layout_gravity="center"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_margin="5dp"
+	card_view:cardCornerRadius="4dp"
+	xmlns:android="http://schemas.android.com/apk/res/android">
 
 		<LinearLayout
-			android:layout_margin="10dp"
-			android:padding="5dp"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:background="@color/dark_green">
 
 			<TextView
 				android:id="@+id/med_title_text_view"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_margin="5dp"
-				android:textSize="16sp"
-				android:textStyle="bold"/>
+				android:textSize="18sp"
+				android:textStyle="bold"
+				android:textColor="@android:color/white"
+				android:padding="10dp"/>
+
+			</LinearLayout>
 
 			<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:orientation="horizontal"
-				android:layout_margin="5dp">
+				android:padding="20dp">
 
 				<LinearLayout
 					android:layout_width="0dp"
@@ -45,12 +47,18 @@
 					<TextView
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
+						android:textStyle="italic"
 						android:text="OVERDUE" />
 
 					<TextView
 						android:id="@+id/med_time_text_view"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content" />
+
+					<View
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:minHeight="50dp"/>
 
 					<Button
 						android:id="@+id/button_take"
@@ -64,34 +72,30 @@
 
 				</LinearLayout>
 
-				<NumberPicker
-					android:id="@+id/reminder_number_picker"
+				<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content">
 
-				</NumberPicker>
+					<NumberPicker
+						android:id="@+id/reminder_number_picker"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content">
 
-				<RelativeLayout
-					android:layout_width="wrap_content"
-					android:layout_height="match_parent">
+					</NumberPicker>
 
-				<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Tablets"
-					android:layout_centerVertical="true" />
+					<RelativeLayout
+						android:layout_width="wrap_content"
+						android:layout_height="match_parent">
 
-				</RelativeLayout>
+					<TextView
+						android:id="@+id/take_med_dosage_unit"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerVertical="true" />
 
-			</LinearLayout>
+					</RelativeLayout>
 
-
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
-
+				</LinearLayout>
 
 			</LinearLayout>
 
@@ -99,4 +103,3 @@
 
 	</android.support.v7.widget.CardView>
 
-</LinearLayout>

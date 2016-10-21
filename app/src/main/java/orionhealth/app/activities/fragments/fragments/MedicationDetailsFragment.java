@@ -108,6 +108,7 @@ public class MedicationDetailsFragment extends Fragment {
 		mTimeIntervalValueSelector.setDisplayedValues(array);
 		mTimeIntervalValueSelector.setMinValue(1);
 		mTimeIntervalValueSelector.setMaxValue(12);
+		mTimeIntervalValueSelector.setWrapSelectorWheel(false);
 
 		mFrequencySelector = (NumberPicker) detailsFragment.findViewById(R.id.daily_frequency_value_spinner);
 		mFrequencySelector.setMinValue(1);
@@ -127,46 +128,37 @@ public class MedicationDetailsFragment extends Fragment {
 		if (mMyMedication != null) {
 			MedicationStatement medStatement = mMyMedication.getFhirMedStatement();
 			EditText nameEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_name);
-			CodeableConceptDt codeableConcept = (CodeableConceptDt) medStatement.getMedication();
-			nameEditTextField.setText(codeableConcept.getText());
+			nameEditTextField.setText(mMyMedication.getName());
 
 			EditText dosageEditTextField = (EditText) getActivity().findViewById(R.id.edit_text_dosage);
-			List<MedicationStatement.Dosage> listDosage = medStatement.getDosage();
-			MedicationStatement.Dosage dosage = listDosage.get(0);
-			SimpleQuantityDt simpleQuantityDt = (SimpleQuantityDt) dosage.getQuantity();
-			dosageEditTextField.setText(simpleQuantityDt.getValueElement().getValueAsInteger() + "");
+			dosageEditTextField.setText(mMyMedication.getDosage() + "");
 
-			TimingDt timingDt = dosage.getTiming();
-			if (!timingDt.getEvent().isEmpty() && mMyMedication.getReminderSet()) {
-				DateTimeDt dateTimeDt = timingDt.getEvent().get(0);
-				TimingDt.Repeat repeat = timingDt.getRepeat();
+			mMyMedication.createAlarmPackage();
+			AlarmPackage alarmPackage = mMyMedication.getAlarmPackage();
+
+			if (alarmPackage != null) {
 				if (Build.VERSION.SDK_INT >= 23) {
-					mTimePicker.setHour(dateTimeDt.getHour());
-					mTimePicker.setMinute(dateTimeDt.getMinute());
+					mTimePicker.setHour(alarmPackage.getHour());
+					mTimePicker.setMinute(alarmPackage.getMinute());
 				} else {
-					mTimePicker.setCurrentHour(dateTimeDt.getHour());
-					mTimePicker.setCurrentMinute(dateTimeDt.getMinute());
+					mTimePicker.setCurrentHour(alarmPackage.getHour());
+					mTimePicker.setCurrentMinute(alarmPackage.getMinute());
 				}
-				mFrequencySelector.setValue(repeat.getFrequency());
-				mTimeIntervalValueSelector.setValue(repeat.getPeriod().intValue() / 5);
+				mFrequencySelector.setValue((int) alarmPackage.getDailyNumOfAlarms());
+
+				if (alarmPackage.getIntervalTimeToNextAlarm() >= 60) {
+					mTimeIntervalUnitSelector.setSelection(1);
+					mTimeIntervalValueSelector.setValue(alarmPackage.getIntervalTimeToNextAlarm() / 60);
+				} else {
+					mTimeIntervalUnitSelector.setSelection(0);
+					mTimeIntervalValueSelector.setValue(alarmPackage.getIntervalTimeToNextAlarm() / 5);
+				}
 			}
 
-			String unitIdString = simpleQuantityDt.getCode();
 			Spinner spinner = (Spinner) getActivity().findViewById(R.id.unit_spinner);
-			if (unitIdString == null) {
-				String myString = simpleQuantityDt.getUnit();
-				int index = 0;
-				for (int i = 0; i < spinner.getCount(); i++) {
-					if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(myString)) {
-						index = i;
-						break;
-					}
-				}
-				spinner.setSelection(index);
-			} else {
-				int unitId = Integer.parseInt(unitIdString);
-				spinner.setSelection(unitId);
-			}
+			spinner.setSelection(mMyMedication.getDosageUnitID());
+
+			CodeableConceptDt codeableConcept;
 			EditText reasonForUseEditTextField =
 			  (EditText) getActivity().findViewById(R.id.edit_text_reasonForUse);
 			codeableConcept = (CodeableConceptDt) medStatement.getReasonForUse();
@@ -291,8 +283,14 @@ public class MedicationDetailsFragment extends Fragment {
 		timingDt.addEvent(calendar.getTime());
 		TimingDt.Repeat repeat = new TimingDt.Repeat();
 		repeat.setFrequency(mFrequencySelector.getValue());
-		repeat.setPeriodUnits(UnitsOfTimeEnum.MIN);
-		repeat.setPeriod(mTimeIntervalValueSelector.getValue()*5);
+
+		if (mTimeIntervalUnitSelector.getSelectedItemPosition() == 0) {
+			repeat.setPeriodUnits(UnitsOfTimeEnum.MIN);
+			repeat.setPeriod(mTimeIntervalValueSelector.getValue() * 5);
+		} else if (mTimeIntervalUnitSelector.getSelectedItemPosition() == 1) {
+			repeat.setPeriodUnits(UnitsOfTimeEnum.H);
+			repeat.setPeriod(mTimeIntervalValueSelector.getValue());
+		}
 		timingDt.setRepeat(repeat);
 
 		dosageFhir.setTiming(timingDt);
@@ -422,6 +420,8 @@ public class MedicationDetailsFragment extends Fragment {
 		  new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, timeIntervalUnits);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		mTimeIntervalUnitSelector.setAdapter(adapter);
+		mTimeIntervalUnitSelector.setOnItemSelectedListener(new MyOnItemSelectedListener());
+
 	}
 
 
@@ -484,6 +484,24 @@ public class MedicationDetailsFragment extends Fragment {
 				datePicker.setDate();
 			}
 			datePicker.show(getFragmentManager(), v.getId()+"");
+		}
+	}
+
+	public class MyOnItemSelectedListener implements AdapterView.OnItemSelectedListener {
+
+		public void onItemSelected(AdapterView<?> parent,
+								   View view, int pos, long id) {
+			if (pos == 0) {
+				String[] array = getResources().getStringArray(R.array.minute_interval_array);
+				mTimeIntervalValueSelector.setDisplayedValues(array);
+			} else if (pos == 1) {
+				String[] array = getResources().getStringArray(R.array.hour_interval_array);
+				mTimeIntervalValueSelector.setDisplayedValues(array);
+			}
+		}
+
+		public void onNothingSelected(AdapterView parent) {
+			// Do nothing.
 		}
 	}
 

@@ -14,6 +14,7 @@ import ca.uhn.fhir.model.dstu2.composite.CodeableConceptDt;
 import ca.uhn.fhir.model.dstu2.resource.MedicationStatement;
 import orionhealth.app.R;
 import orionhealth.app.activities.main.MainActivity;
+import orionhealth.app.data.dataModels.MyMedication;
 import orionhealth.app.data.medicationDatabase.DatabaseContract;
 import orionhealth.app.data.medicationDatabase.MedTableOperations;
 import orionhealth.app.data.spinnerEnum.MedUptakeStatus;
@@ -33,7 +34,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 	private int numOfElements;
 
 	public class ViewHolder extends RecyclerView.ViewHolder {
-		public TextView title, time;
+		public TextView title, time, dosageUnit;
 		public NumberPicker dosagePicker;
 		public Button takeButton;
 
@@ -43,6 +44,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 			time = (TextView) view.findViewById(R.id.med_time_text_view);
 			dosagePicker = (NumberPicker) view.findViewById(R.id.reminder_number_picker);
 			takeButton = (Button) view.findViewById((R.id.button_take));
+			dosageUnit = (TextView) view.findViewById(R.id.take_med_dosage_unit);
 		}
 	}
 
@@ -73,9 +75,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
 			MedicationStatement medicationStatement =
 			  (MedicationStatement) FhirServices.getsFhirServices().toResource(text);
-			CodeableConceptDt conceptDt = (CodeableConceptDt) medicationStatement.getMedication();
 
-			holder.title.setText(conceptDt.getText());
+			MyMedication myMedication = new MyMedication(-1, medicationStatement, false);
+
+			holder.title.setText(myMedication.getName());
 
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(l);
@@ -94,8 +97,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 				}
 			});
 
+			int dosage = myMedication.getDosage();
+
+			holder.dosagePicker.setWrapSelectorWheel(false);
 			holder.dosagePicker.setMinValue(0);
-			holder.dosagePicker.setMaxValue(10);
+			holder.dosagePicker.setMaxValue(dosage * 2);
+			holder.dosagePicker.setValue(dosage);
+
+			holder.dosageUnit.setText(myMedication.getDosageUnit());
 		}
 	}
 
